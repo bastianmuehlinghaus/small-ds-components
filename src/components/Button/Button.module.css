@@ -12,9 +12,7 @@
   justify-content: center;
   gap: var(--sds-button-space-gap);
   box-sizing: border-box;
-  border-style: solid;
-  border-width: var(--sds-border-width-default);
-  border-color: transparent;
+  border: none;
   border-radius: var(--sds-button-border-radius);
   appearance: none;
   cursor: pointer;
@@ -133,7 +131,7 @@
 
 .secondary {
   background-color: var(--sds-button-secondary-color-background-default);
-  border-color: var(--sds-button-secondary-color-border-default);
+  border: var(--sds-border-width-default) solid var(--sds-button-secondary-color-border-default);
   color: var(--sds-button-secondary-color-content-default);
 }
 
