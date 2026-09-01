@@ -4,6 +4,14 @@ storybook-static/
 .DS_Store
 *.log
 
+# Editor state. Vim swap files are dotfiles, so `git status` hides them but
+# `git add .` picks them up anyway — one got committed in 4d38ee1.
+*.swp
+*.swo
+*~
+.idea/
+.vscode/
+
 # Söhne is a licensed commercial typeface. A licence to *use* it is not a
 # licence to redistribute the files, and a public repo is redistribution.
 # See .storybook/public/fonts/README.md.
