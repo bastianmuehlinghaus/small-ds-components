@@ -28,7 +28,9 @@
     "lint:css": "stylelint \"src/**/*.css\"",
     "typecheck": "tsc --noEmit",
     "lint:rules": "node test/stylelint/run.mjs",
-    "lint": "npm run lint:css && npm run lint:rules"
+    "lint": "npm run lint:css && npm run lint:rules",
+    "verify": "node scripts/verify-build.mjs",
+    "prepublishOnly": "npm run build && npm run lint && npm run verify"
   },
   "peerDependencies": {
     "react": "^19.2.8",

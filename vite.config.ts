@@ -8,6 +8,7 @@ export default defineConfig({
       entry: "src/index.ts",
       formats: ["es"],
       fileName: () => "index.js",
+      cssFileName: "styles",
     },
     rollupOptions: {
       // Consumers bring their own React and Radix; bundling them would risk
