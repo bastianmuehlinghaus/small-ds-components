@@ -1,0 +1,128 @@
+/**
+ * Accordion has no Tier 3 tokens in Figma, so it composes from Tier 2
+ * semantics — which is the deliberate choice, not a shortcut. `--sds-motion-*`
+ * comes from Tier 1 under the documented exception.
+ */
+
+.root {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+}
+
+.item {
+  border-bottom: var(--sds-border-width-default) solid var(--sds-color-border-default);
+}
+
+.header {
+  display: flex;
+  margin: 0;
+}
+
+.trigger {
+  composes: sds-type-heading-xsmall from "@small-ds/tokens/typography.css";
+
+  display: flex;
+  flex: 1;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--sds-space-inline-md);
+  box-sizing: border-box;
+
+  /* min-height, never height — see CLAUDE.md on the rem/px split. */
+  min-height: var(--sds-size-control-lg);
+  padding-block: var(--sds-space-inset-md);
+  padding-inline: 0;
+  border: none;
+  background-color: transparent;
+  color: var(--sds-color-content-default);
+  text-align: left;
+  appearance: none;
+  cursor: pointer;
+
+  transition-property: background-color;
+  transition-duration: var(--sds-motion-duration-fast);
+  transition-timing-function: var(--sds-motion-easing-standard);
+}
+
+/* The state token is an alpha colour, so it composites over whatever surface
+   the accordion is placed on rather than replacing it. */
+.trigger:hover {
+  background-color: var(--sds-color-state-hover);
+}
+
+.trigger:focus-visible {
+  outline: var(--sds-border-width-focus) solid var(--sds-color-border-focus);
+  outline-offset: calc(var(--sds-border-width-focus) * -1);
+}
+
+.chevron {
+  flex-shrink: 0;
+  width: var(--sds-size-icon-md);
+  height: var(--sds-size-icon-md);
+  color: var(--sds-color-content-subtle);
+
+  transition-property: transform;
+  transition-duration: var(--sds-motion-duration-moderate);
+  transition-timing-function: var(--sds-motion-easing-standard);
+}
+
+.trigger[data-state="open"] .chevron {
+  transform: rotate(180deg);
+}
+
+/* Radix measures the panel and exposes --radix-accordion-content-height, which
+   is what makes a height transition from `auto` possible at all. */
+.content {
+  overflow: hidden;
+}
+
+.content[data-state="open"] {
+  animation-name: slide-down;
+  animation-duration: var(--sds-motion-duration-moderate);
+  animation-timing-function: var(--sds-motion-easing-standard);
+}
+
+.content[data-state="closed"] {
+  animation-name: slide-up;
+  animation-duration: var(--sds-motion-duration-moderate);
+  animation-timing-function: var(--sds-motion-easing-standard);
+}
+
+.contentInner {
+  composes: sds-type-body-small from "@small-ds/tokens/typography.css";
+
+  padding-block-end: var(--sds-space-inset-lg);
+  color: var(--sds-color-content-subtle);
+}
+
+@keyframes slide-down {
+  from {
+    height: 0;
+  }
+
+  to {
+    height: var(--radix-accordion-content-height);
+  }
+}
+
+@keyframes slide-up {
+  from {
+    height: var(--radix-accordion-content-height);
+  }
+
+  to {
+    height: 0;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .content[data-state="open"],
+  .content[data-state="closed"] {
+    animation: none;
+  }
+
+  .chevron {
+    transition-property: none;
+  }
+}
