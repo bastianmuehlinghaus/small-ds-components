@@ -3,6 +3,14 @@
 React components on Radix primitives, driven entirely by `@small-ds/tokens`.
 Currently Button, Accordion and DropdownMenu.
 
+**Figma:** [Small DS: Components](https://www.figma.com/design/VBd0r5d1gcGPQSKrR8LzCp/Small-DS--Components)
+(`VBd0r5d1gcGPQSKrR8LzCp`, page `Components`) — the same three components as
+Figma component sets, built from the token library. Button 45 variants
+(Variant × Size × State), Menu Item 16 (Type × State), Accordion Item 6
+(State × Interaction), plus four icon components.
+Tokens live in [Small DS: Design Tokens](https://www.figma.com/design/DABmspHvLwmzYjMrFBjVQW/Small-DS--Design-Tokens)
+(`DABmspHvLwmzYjMrFBjVQW`).
+
 Radix owns behaviour — focus management, keyboard navigation, ARIA, collision
 -aware positioning. This package owns appearance, and every value in it comes
 from a token.
@@ -121,6 +129,47 @@ every other check still looks green.
   left of the menu's item labels. Not corrected: `alignOffset={-1}` would be a
   magic number of exactly the kind rule 2 exists to prevent, and wrong the moment
   the menu's border changes. `secondary` triggers align exactly.
+
+## Working in the Figma components file
+
+**Söhne is not available to the Figma MCP environment.** The font is installed
+locally, but the MCP runs against Figma's cloud font set —
+`listAvailableFontsAsync` returns ~1,900 families and none of them is Söhne, and
+`loadFontAsync` fails with *"The font family Söhne does not exist"*. Enabling
+Figma's third-party agent integration does not change this; it points at the
+same cloud endpoint.
+
+Everything downstream follows from that. **Text styles have to be applied by
+hand in the desktop app**, and a text node whose font cannot be loaded is
+severely restricted:
+
+| Operation on a styled text node | |
+|---|---|
+| `clone()`, reposition, rename | works |
+| bind a fill to a colour variable | works |
+| `appendChild` — into *any* frame, auto-layout or not | **fails** |
+| `textAutoResize`, `characters`, `setTextStyleIdAsync` | **fails** |
+
+So the build order is forced: **create the structure first, style last.** Once
+text is styled it can never be moved, which is why the Figma Button is a single
+frame rather than a component wrapping an inner surface — and therefore why its
+focus ring is an outside stroke that replaces Secondary's border, where CSS uses
+`outline` + `border` together.
+
+Two more consequences worth knowing before you debug them:
+
+- **Auto-layout cannot hug unmeasurable text.** The Open accordion variants
+  reported 48px while visibly overflowing, because the frame could not measure
+  its own content. They carry an explicit height instead.
+- **`setBoundVariableForPaint` keeps the paint's original colour as a fallback,
+  and Figma does not always resolve it.** Half the Button variants rendered
+  black with invisible labels while their bindings were correct. Always resolve
+  the variable through its alias chain and write that colour *as well as* the
+  binding.
+
+Tier 1 is not published to the library, so only Tier 2 and Tier 3 collections
+are importable there. The semantic-layer rule is enforced by the library
+boundary in Figma exactly as stylelint enforces it here.
 
 ## Commands
 
