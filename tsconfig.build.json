@@ -4,8 +4,13 @@
     "noEmit": false,
     "declaration": true,
     "emitDeclarationOnly": true,
-    "outDir": "dist"
+    "outDir": "dist",
+    "rootDir": "./src"
   },
-  "include": ["src"],
-  "exclude": ["src/**/*.stories.tsx"]
+  "include": [
+    "src"
+  ],
+  "exclude": [
+    "src/**/*.stories.tsx"
+  ]
 }

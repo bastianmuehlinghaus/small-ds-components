@@ -1,0 +1,152 @@
+/**
+ * DropdownMenu has no Tier 3 tokens in Figma, so it composes from Tier 2
+ * semantics. `--sds-motion-*` comes from Tier 1 under the documented exception.
+ *
+ * Deliberately no min-width: there is no token for menu width, and inventing
+ * one would be a hardcoded value under a nicer name. The surface hugs its
+ * content instead.
+ */
+
+.content,
+.subContent {
+  box-sizing: border-box;
+  padding: var(--sds-space-inset-xs);
+  border: var(--sds-border-width-default) solid var(--sds-color-border-default);
+  border-radius: var(--sds-radius-surface);
+  background-color: var(--sds-color-background-raised);
+  box-shadow: var(--sds-shadow-overlay);
+
+  /* Radix measures the space between trigger and viewport edge, so a long menu
+     scrolls instead of overflowing off-screen. */
+  max-height: var(--radix-dropdown-menu-content-available-height);
+  overflow-y: auto;
+
+  /* Grow from the edge nearest the trigger rather than from the centre. */
+  transform-origin: var(--radix-dropdown-menu-content-transform-origin);
+}
+
+.content[data-state="open"],
+.subContent[data-state="open"] {
+  animation-name: enter;
+  animation-duration: var(--sds-motion-duration-fast);
+  animation-timing-function: var(--sds-motion-easing-entrance);
+}
+
+.content[data-state="closed"],
+.subContent[data-state="closed"] {
+  animation-name: exit;
+  animation-duration: var(--sds-motion-duration-fast);
+  animation-timing-function: var(--sds-motion-easing-exit);
+}
+
+.item,
+.subTrigger {
+  composes: sds-type-body-small from "@small-ds/tokens/typography.css";
+
+  display: flex;
+  align-items: center;
+  gap: var(--sds-space-inline-sm);
+  box-sizing: border-box;
+  min-height: var(--sds-size-control-sm);
+  padding-block: var(--sds-space-inset-xs);
+  padding-inline: var(--sds-space-inset-md);
+  border-radius: var(--sds-radius-control);
+  color: var(--sds-color-content-default);
+  cursor: pointer;
+  user-select: none;
+
+  /* Radix drives highlight through [data-highlighted] as the pointer and the
+     keyboard converge on one model, so the browser's own ring would double up. */
+  outline: none;
+
+  transition-property: background-color;
+  transition-duration: var(--sds-motion-duration-fast);
+  transition-timing-function: var(--sds-motion-easing-standard);
+}
+
+.item[data-highlighted],
+.subTrigger[data-highlighted],
+.subTrigger[data-state="open"] {
+  background-color: var(--sds-color-state-hover);
+}
+
+.item[data-state="checked"] {
+  background-color: var(--sds-color-state-selected);
+}
+
+.item[data-disabled],
+.subTrigger[data-disabled] {
+  color: var(--sds-color-content-disabled);
+  cursor: not-allowed;
+}
+
+/* A fixed slot so labels align whether or not a row is currently checked. */
+.indicator {
+  display: inline-flex;
+  flex-shrink: 0;
+  align-items: center;
+  justify-content: center;
+  width: var(--sds-size-icon-sm);
+  height: var(--sds-size-icon-sm);
+}
+
+.indicator :where(svg) {
+  width: var(--sds-size-icon-sm);
+  height: var(--sds-size-icon-sm);
+}
+
+.subChevron {
+  flex-shrink: 0;
+  width: var(--sds-size-icon-sm);
+  height: var(--sds-size-icon-sm);
+  margin-inline-start: auto;
+  color: var(--sds-color-content-subtle);
+}
+
+.label {
+  composes: sds-type-label-small from "@small-ds/tokens/typography.css";
+
+  padding-block: var(--sds-space-inset-xs);
+  padding-inline: var(--sds-space-inset-md);
+  color: var(--sds-color-content-subtle);
+}
+
+.separator {
+  height: var(--sds-border-width-default);
+  margin-block: var(--sds-space-inset-xs);
+  margin-inline: 0;
+  background-color: var(--sds-color-border-default);
+}
+
+@keyframes enter {
+  from {
+    opacity: 0;
+    transform: scale(0.96);
+  }
+
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+@keyframes exit {
+  from {
+    opacity: 1;
+    transform: scale(1);
+  }
+
+  to {
+    opacity: 0;
+    transform: scale(0.96);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .content[data-state="open"],
+  .content[data-state="closed"],
+  .subContent[data-state="open"],
+  .subContent[data-state="closed"] {
+    animation: none;
+  }
+}
