@@ -5,11 +5,6 @@
  */
 
 .base {
-  /* Type comes from the Figma text style, never from font properties here.
-     Label/Large is what the Figma button binds at size md; sm and lg reuse it
-     because the Tier 3 tokens do not model per-size typography. */
-  composes: sds-type-label-large from "@small-ds/tokens/typography.css";
-
   position: relative;
   isolation: isolate;
   display: inline-flex;
@@ -63,9 +58,16 @@
 /* --- sizes ------------------------------------------------------------------
    min-height, never height: type is in rem and these tokens are in px, so a
    raised browser font size must be able to grow the control rather than clip
-   the label. */
+   the label.
+
+   Type comes from the Figma text style, never from font properties here. The
+   label ramp tracks the size ramp one-to-one, matching the Figma binding —
+   node 196:66 (the "Send" button at md) binds Label/Medium. `composes` cannot
+   be conditional, so it lives on each size rather than on .base. */
 
 .sm {
+  composes: sds-type-label-small from "@small-ds/tokens/typography.css";
+
   min-height: var(--sds-button-size-height-sm);
   padding-inline: var(--sds-button-space-inset-x-sm);
 }
@@ -76,11 +78,15 @@
 }
 
 .md {
+  composes: sds-type-label-medium from "@small-ds/tokens/typography.css";
+
   min-height: var(--sds-button-size-height-md);
   padding-inline: var(--sds-button-space-inset-x-md);
 }
 
 .lg {
+  composes: sds-type-label-large from "@small-ds/tokens/typography.css";
+
   min-height: var(--sds-button-size-height-lg);
   padding-inline: var(--sds-button-space-inset-x-lg);
 }

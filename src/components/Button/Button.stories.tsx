@@ -82,7 +82,10 @@ export const AsLink: Story = {
 
 /**
  * Reproduces the "Send" button from the Figma portfolio frame (node 196:66):
- * knockout background, pill radius, Label/Large, 40px tall.
+ * knockout background, pill radius, Label/Medium, 40px tall.
+ *
+ * This story is the tripwire for drift between Figma and code. If the Figma
+ * binding changes, this is what should start looking wrong first.
  */
 export const FigmaParity: Story = {
   name: "Figma parity — Send",
