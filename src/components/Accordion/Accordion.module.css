@@ -39,16 +39,6 @@
   text-align: left;
   appearance: none;
   cursor: pointer;
-
-  transition-property: background-color;
-  transition-duration: var(--sds-motion-duration-fast);
-  transition-timing-function: var(--sds-motion-easing-standard);
-}
-
-/* The state token is an alpha colour, so it composites over whatever surface
-   the accordion is placed on rather than replacing it. */
-.trigger:hover {
-  background-color: var(--sds-color-state-hover);
 }
 
 .trigger:focus-visible {
@@ -62,9 +52,15 @@
   height: var(--sds-size-icon-md);
   color: var(--sds-color-content-subtle);
 
-  transition-property: transform;
+  transition-property: transform, color;
   transition-duration: var(--sds-motion-duration-moderate);
   transition-timing-function: var(--sds-motion-easing-standard);
+}
+
+/* Hover is carried by the chevron alone. It is already the affordance, so
+   strengthening it reads as interactive without painting the full row. */
+.trigger:hover .chevron {
+  color: var(--sds-color-content-default);
 }
 
 .trigger[data-state="open"] .chevron {
@@ -123,6 +119,6 @@
   }
 
   .chevron {
-    transition-property: none;
+    transition-property: color;
   }
 }
