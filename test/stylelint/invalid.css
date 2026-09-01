@@ -1,0 +1,19 @@
+/* Every declaration here must be rejected. 10 violations expected. */
+.hardcoded {
+  padding: 12px;          /* 1 */
+  color: #141414;         /* 2 */
+  border-radius: 4px;     /* 3 */
+}
+
+.past-the-semantic-layer {
+  background-color: var(--sds-color-neutral-900);        /* 4 */
+  gap: var(--sds-spacing-16);                            /* 5 */
+  font-size: var(--sds-typography-font-size-16);         /* 6 */
+  border-width: var(--sds-border-width-1);               /* 7 */
+  min-height: var(--sds-size-control-40);                /* 8 */
+  border-radius: var(--sds-border-radius-12);            /* 9 */
+}
+
+.bare-timing {
+  transition: background-color 200ms ease;               /* 10 */
+}

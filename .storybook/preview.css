@@ -1,0 +1,10 @@
+/* Preview chrome. Not part of the library — this is the page the stories sit
+   on, so it paints itself from tokens to make both modes checkable. */
+body {
+  margin: 0;
+  padding: var(--sds-space-inset-xl);
+  background-color: var(--sds-color-background-default);
+  color: var(--sds-color-content-default);
+  font-family: var(--sds-typography-font-family-sans), ui-sans-serif, system-ui, sans-serif;
+  -webkit-font-smoothing: antialiased;
+}

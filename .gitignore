@@ -1,0 +1,11 @@
+node_modules/
+dist/
+storybook-static/
+.DS_Store
+*.log
+
+# Söhne is a licensed commercial typeface. A licence to *use* it is not a
+# licence to redistribute the files, and a public repo is redistribution.
+# See .storybook/public/fonts/README.md.
+*.woff
+*.woff2

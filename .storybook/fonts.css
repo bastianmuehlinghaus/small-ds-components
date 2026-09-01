@@ -1,0 +1,23 @@
+/**
+ * Söhne, for Storybook only.
+ *
+ * The font files are gitignored — see public/fonts/README.md. If they are
+ * absent these rules fail silently and the stack in
+ * --sds-typography-font-family-sans falls through to the system sans. Metrics
+ * are identical either way; only the letterforms differ.
+ */
+@font-face {
+  font-family: "Söhne";
+  src: url("/fonts/soehne-buch.woff2") format("woff2");
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "Söhne";
+  src: url("/fonts/soehne-halbfett.woff2") format("woff2");
+  font-weight: 600;
+  font-style: normal;
+  font-display: swap;
+}

@@ -1,0 +1,30 @@
+/* Every declaration here must pass. Tier 2 names that shadow a Tier 1 name are
+   the interesting cases — the rule has to tell them apart. */
+.tier2 {
+  background-color: var(--sds-color-background-raised);
+  color: var(--sds-color-content-default);
+  border-width: var(--sds-border-width-default); /* vs Tier 1 --sds-border-width-1 */
+  min-height: var(--sds-size-control-md);        /* vs Tier 1 --sds-size-control-40 */
+  border-radius: var(--sds-radius-surface);      /* vs Tier 1 --sds-border-radius-12 */
+  padding: var(--sds-space-inset-lg);            /* vs Tier 1 --sds-spacing-16 */
+  gap: var(--sds-space-inline-sm);
+  box-shadow: var(--sds-shadow-overlay);
+}
+
+.tier3 {
+  background-color: var(--sds-button-primary-color-background-default);
+  color: var(--sds-button-primary-color-content-default);
+  border-radius: var(--sds-button-border-radius);
+}
+
+/* motion/* is the one sanctioned exception: it has no Tier 2 layer. */
+.motion-exception {
+  transition: background-color var(--sds-motion-duration-fast) var(--sds-motion-easing-standard);
+}
+
+.structural {
+  border: none;
+  width: 100%;
+  margin: 0;
+  inset: auto;
+}
