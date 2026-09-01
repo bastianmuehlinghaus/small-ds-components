@@ -31,12 +31,17 @@ export type DropdownMenuContentProps = ComponentPropsWithoutRef<typeof Radix.Con
 export const DropdownMenuContent = forwardRef<
   ComponentRef<typeof Radix.Content>,
   DropdownMenuContentProps
->(function DropdownMenuContent({ className, sideOffset = 4, ...props }, ref) {
+>(function DropdownMenuContent({ className, sideOffset = 4, align = "start", ...props }, ref) {
   return (
     <Radix.Portal>
       <Radix.Content
         ref={ref}
         sideOffset={sideOffset}
+        // Radix defaults to "center". "start" shares the trigger's leading
+        // edge, which puts the trigger label and the item labels on the same
+        // vertical line — the button's 16px inset and the menu's 4px + 12px
+        // happen to sum identically, so no token changes are needed.
+        align={align}
         className={cx(styles.content, className)}
         {...props}
       />
