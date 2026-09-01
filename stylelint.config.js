@@ -26,6 +26,12 @@ const TIER_1 = String.raw`/--sds-(?:color-(?:neutral|utility|alpha)|typography|l
 const TIMING_LITERAL = String.raw`/(^|\s)\.?\d+(\.\d+)?m?s(\s|$|,)/`;
 const EASING_LITERAL = String.raw`/(^|\s)(ease|linear|ease-in|ease-out|ease-in-out|step-start|step-end)(\s|$|,)|cubic-bezier\(/`;
 
+/* A raw colour or dimension as the whole value of a local custom property.
+   strict-value does not inspect custom properties, so without this a component
+   could launder a hardcoded value through one: `--overlay-hover: #00000014`. */
+const LITERAL_COLOR = String.raw`/^#[0-9a-fA-F]{3,8}$|^rgba?\(|^hsla?\(|^oklch\(/`;
+const LITERAL_DIMENSION = String.raw`/^-?\d*\.?\d+(px|rem|em|%|vh|vw)$/`;
+
 /* Properties that encode a visual decision, and so must come from a token. */
 const TOKENISED_PROPERTIES = [
   "/color$/",
@@ -77,6 +83,7 @@ export default {
         "/.*/": [TIER_1],
         transition: [TIMING_LITERAL, EASING_LITERAL],
         animation: [TIMING_LITERAL, EASING_LITERAL],
+        "/^--/": [LITERAL_COLOR, LITERAL_DIMENSION],
       },
       {
         message:
@@ -90,6 +97,8 @@ export default {
     /* CSS Modules syntax that stylelint-config-standard does not know about. */
     "property-no-unknown": [true, { ignoreProperties: ["composes"] }],
     "selector-class-pattern": null,
+    // A blank line after `composes` separates inherited type from local rules.
+    "declaration-empty-line-before": null,
     "custom-property-pattern": null,
     "value-keyword-case": null,
   },

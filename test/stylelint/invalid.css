@@ -17,3 +17,7 @@
 .bare-timing {
   transition: background-color 200ms ease;               /* 10 */
 }
+
+.laundered-through-a-custom-property {
+  --overlay-hover: #00000014;                            /* 11 */
+}
