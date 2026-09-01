@@ -15,7 +15,7 @@ const run = async (file) => {
 
 const valid = await run("valid.css");
 const invalid = await run("invalid.css");
-const EXPECTED = 10;
+const EXPECTED = 11;
 
 let failures = 0;
 const check = (label, ok, detail = "") => {
@@ -29,9 +29,10 @@ check(`invalid.css is rejected (${EXPECTED} violations)`, invalid.length === EXP
   `got ${invalid.length}`);
 
 const byRule = invalid.reduce((a, w) => ((a[w.rule] = (a[w.rule] || 0) + 1), a), {});
-check("3 hardcoded values caught", byRule["scale-unlimited/declaration-strict-value"] === 3,
+check("3 hardcoded values caught by strict-value", byRule["scale-unlimited/declaration-strict-value"] === 3,
   `got ${byRule["scale-unlimited/declaration-strict-value"] ?? 0}`);
-check("7 semantic-layer breaches caught", byRule["declaration-property-value-disallowed-list"] === 7,
+check("8 blocked by the disallowed list (6 Tier 1 + bare timing + laundered literal)",
+  byRule["declaration-property-value-disallowed-list"] === 8,
   `got ${byRule["declaration-property-value-disallowed-list"] ?? 0}`);
 
 console.log(failures === 0 ? "\nLint rules behave as specified.\n" : `\n${failures} check(s) failed.\n`);

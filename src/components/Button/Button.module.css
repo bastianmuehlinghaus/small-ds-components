@@ -1,0 +1,147 @@
+/**
+ * Button reads Tier 3 `--sds-button-*` exclusively for its own decisions.
+ * Tier 2 appears only for things Tier 3 does not model (the focus ring width,
+ * icon sizing), and `--sds-motion-*` from Tier 1 under the documented exception.
+ */
+
+.base {
+  /* Type comes from the Figma text style, never from font properties here.
+     Label/Large is what the Figma button binds at size md; sm and lg reuse it
+     because the Tier 3 tokens do not model per-size typography. */
+  composes: sds-type-label-large from "@small-ds/tokens/typography.css";
+
+  position: relative;
+  isolation: isolate;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--sds-button-space-gap);
+  box-sizing: border-box;
+  border-style: solid;
+  border-width: var(--sds-border-width-default);
+  border-color: transparent;
+  border-radius: var(--sds-button-border-radius);
+  appearance: none;
+  cursor: pointer;
+  text-decoration: none;
+  white-space: nowrap;
+  user-select: none;
+}
+
+/* State layer. The overlay tokens are alpha colours designed to sit *on top of*
+   the background rather than replace it, which is why this is a pseudo-element
+   and not a background-color swap — a swap would lose the knockout fill. */
+.base::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  background-color: var(--sds-button-overlay, transparent);
+  transition-property: background-color;
+  transition-duration: var(--sds-motion-duration-fast);
+  transition-timing-function: var(--sds-motion-easing-standard);
+  pointer-events: none;
+}
+
+.base:focus-visible {
+  outline: var(--sds-border-width-focus) solid var(--sds-button-color-border-focus);
+  outline-offset: var(--sds-border-width-focus);
+}
+
+.base:disabled {
+  cursor: not-allowed;
+}
+
+/* Icons scale with the control. `:where()` keeps specificity at zero so a
+   consumer's own icon styles still win. */
+.base :where(svg) {
+  width: var(--sds-size-icon-md);
+  height: var(--sds-size-icon-md);
+  flex-shrink: 0;
+}
+
+/* --- sizes ------------------------------------------------------------------
+   min-height, never height: type is in rem and these tokens are in px, so a
+   raised browser font size must be able to grow the control rather than clip
+   the label. */
+
+.sm {
+  min-height: var(--sds-button-size-height-sm);
+  padding-inline: var(--sds-button-space-inset-x-sm);
+}
+
+.sm :where(svg) {
+  width: var(--sds-size-icon-sm);
+  height: var(--sds-size-icon-sm);
+}
+
+.md {
+  min-height: var(--sds-button-size-height-md);
+  padding-inline: var(--sds-button-space-inset-x-md);
+}
+
+.lg {
+  min-height: var(--sds-button-size-height-lg);
+  padding-inline: var(--sds-button-space-inset-x-lg);
+}
+
+/* --- variants ---------------------------------------------------------- */
+
+.default {
+  background-color: var(--sds-button-default-color-background-default);
+  color: var(--sds-button-default-color-content-default);
+}
+
+
+.default:disabled {
+  background-color: var(--sds-button-default-color-background-disabled);
+  color: var(--sds-button-default-color-content-disabled);
+}
+
+.default:hover:not(:disabled) {
+  --sds-button-overlay: var(--sds-button-default-color-overlay-hover);
+}
+
+.default:active:not(:disabled) {
+  --sds-button-overlay: var(--sds-button-default-color-overlay-pressed);
+}
+
+.primary {
+  background-color: var(--sds-button-primary-color-background-default);
+  color: var(--sds-button-primary-color-content-default);
+}
+
+
+.primary:disabled {
+  background-color: var(--sds-button-primary-color-background-disabled);
+  color: var(--sds-button-primary-color-content-disabled);
+}
+
+.primary:hover:not(:disabled) {
+  --sds-button-overlay: var(--sds-button-primary-color-overlay-hover);
+}
+
+.primary:active:not(:disabled) {
+  --sds-button-overlay: var(--sds-button-primary-color-overlay-pressed);
+}
+
+.secondary {
+  background-color: var(--sds-button-secondary-color-background-default);
+  border-color: var(--sds-button-secondary-color-border-default);
+  color: var(--sds-button-secondary-color-content-default);
+}
+
+
+.secondary:disabled {
+  background-color: var(--sds-button-secondary-color-background-disabled);
+  border-color: var(--sds-button-secondary-color-border-disabled);
+  color: var(--sds-button-secondary-color-content-disabled);
+}
+
+.secondary:hover:not(:disabled) {
+  --sds-button-overlay: var(--sds-button-secondary-color-overlay-hover);
+}
+
+.secondary:active:not(:disabled) {
+  --sds-button-overlay: var(--sds-button-secondary-color-overlay-pressed);
+}
