@@ -41,7 +41,9 @@
 
 .item,
 .subTrigger {
-  composes: sds-type-body-small from "@small-ds/tokens/typography.css";
+  /* Label, not Body: a menu item is a control label rather than running prose.
+     Also matches the trigger — a md Button is Label/Medium since #6. */
+  composes: sds-type-label-medium from "@small-ds/tokens/typography.css";
 
   display: flex;
   align-items: center;
