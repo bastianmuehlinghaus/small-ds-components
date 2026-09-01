@@ -1,16 +1,13 @@
-export { Button } from "./components/Button";
-export type { ButtonProps, ButtonVariant, ButtonSize } from "./components/Button";
-
 export {
   Accordion,
   AccordionRoot,
   AccordionItem,
   AccordionTrigger,
   AccordionContent,
-} from "./components/Accordion";
+} from "./Accordion";
 export type {
   AccordionRootProps,
   AccordionItemProps,
   AccordionTriggerProps,
   AccordionContentProps,
-} from "./components/Accordion";
+} from "./Accordion";
