@@ -82,6 +82,12 @@
   padding-inline: var(--sds-button-space-inset-x-md);
 }
 
+/* Figma binds the Medium icon slot to size/icon/sm, not md. */
+.md :where(svg) {
+  width: var(--sds-size-icon-sm);
+  height: var(--sds-size-icon-sm);
+}
+
 .lg {
   composes: sds-type-label-large from "@small-ds/tokens/typography.css";
 
