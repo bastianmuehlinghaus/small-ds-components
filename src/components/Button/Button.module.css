@@ -18,11 +18,10 @@
   text-decoration: none;
   white-space: nowrap;
   user-select: none;
-  padding-inline: var(--sds-button-space-inset-x);
 }
 
-/* Spacing lives on the label, not as a flex gap: the button's own inset is the
-   icon-side inset, and the label's inset adds to it on text-only sides and
+/* Spacing lives on the label, not as a flex gap: the button's per-size inset is
+   the icon-side inset, and the label's inset adds to it on text-only sides and
    becomes the label-to-icon distance next to an icon. One structure gives the
    tighter icon side on either end without knowing where the icon is — the
    same structure as the Figma component's Label container. */
@@ -76,6 +75,7 @@
   composes: sds-type-label-small from "@small-ds/tokens/typography.css";
 
   min-height: var(--sds-button-size-height-sm);
+  padding-inline: var(--sds-button-space-inset-x-sm);
 }
 
 .sm :where(svg) {
@@ -87,6 +87,7 @@
   composes: sds-type-label-medium from "@small-ds/tokens/typography.css";
 
   min-height: var(--sds-button-size-height-md);
+  padding-inline: var(--sds-button-space-inset-x-md);
 }
 
 /* --- variants ---------------------------------------------------------- */
