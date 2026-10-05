@@ -102,7 +102,9 @@
   width: var(--sds-size-icon-sm);
   height: var(--sds-size-icon-sm);
   margin-inline-start: auto;
-  color: var(--sds-color-content-subtle);
+
+  /* No colour of its own: it follows the row's content colour, as the Figma
+     Menu Item binds it — including content/disabled on a disabled row. */
 }
 
 .label {
