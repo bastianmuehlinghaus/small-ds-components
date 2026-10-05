@@ -5,7 +5,7 @@ Currently Button, Accordion and DropdownMenu.
 
 **Figma:** [Small DS: Components](https://www.figma.com/design/VBd0r5d1gcGPQSKrR8LzCp/Small-DS--Components)
 (`VBd0r5d1gcGPQSKrR8LzCp`, page `Components`) — the same three components as
-Figma component sets, built from the token library. Button 45 variants
+Figma component sets, built from the token library. Button 30 variants
 (Variant × Size × State), Menu Item 16 (Type × State), Accordion Item 6
 (State × Interaction), plus four icon components.
 Tokens live in [Small DS: Design Tokens](https://www.figma.com/design/DABmspHvLwmzYjMrFBjVQW/Small-DS--Design-Tokens)
@@ -59,7 +59,7 @@ type without touching Tier 1:
 
 `composes` must be the **first declaration** in a rule and works only on a
 simple class selector, so it cannot be conditional. Button needs different type
-per size, which is why its `composes` sits on `.sm` / `.md` / `.lg` rather than
+per size, which is why its `composes` sits on `.sm` / `.md` rather than
 on `.base`. Copy that shape if another component needs per-variant type.
 
 **5. Controls use `min-height`, never `height`.** Type is in `rem` and layout in
