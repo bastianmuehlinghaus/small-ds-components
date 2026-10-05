@@ -6,7 +6,7 @@ const meta = {
   component: Button,
   argTypes: {
     variant: { control: "inline-radio", options: ["default", "primary", "secondary"] },
-    size: { control: "inline-radio", options: ["sm", "md", "lg"] },
+    size: { control: "inline-radio", options: ["sm", "md"] },
     disabled: { control: "boolean" },
   },
   args: { children: "Send", variant: "default", size: "md" },
@@ -38,7 +38,6 @@ export const Sizes: Story = {
     <Row>
       <Button {...args} variant="primary" size="sm">Small</Button>
       <Button {...args} variant="primary" size="md">Medium</Button>
-      <Button {...args} variant="primary" size="lg">Large</Button>
     </Row>
   ),
 };
@@ -64,7 +63,6 @@ export const WithIcon: Story = {
     <Row>
       <Button {...args} variant="primary" size="sm">Continue <ArrowIcon /></Button>
       <Button {...args} variant="primary" size="md">Continue <ArrowIcon /></Button>
-      <Button {...args} variant="primary" size="lg">Continue <ArrowIcon /></Button>
     </Row>
   ),
 };

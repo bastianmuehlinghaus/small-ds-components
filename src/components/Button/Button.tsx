@@ -4,7 +4,7 @@ import { Slot } from "@radix-ui/react-slot";
 import styles from "./Button.module.css";
 
 export type ButtonVariant = "default" | "primary" | "secondary";
-export type ButtonSize = "sm" | "md" | "lg";
+export type ButtonSize = "sm" | "md";
 
 export interface ButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
   /** Visual weight. Mirrors the three variants defined in the Figma tokens. */
