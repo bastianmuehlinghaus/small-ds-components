@@ -43,9 +43,24 @@
   cursor: pointer;
 }
 
+/* Focus rings the whole item, as in Figma — side padding and, when open, the
+   content — and covers the bottom rule. Focus itself lands on the trigger, so
+   the item reads it through :has(). Without :has() the ring stays on the
+   trigger rather than disappearing. */
 .trigger:focus-visible {
   outline: var(--sds-border-width-focus) solid var(--sds-color-border-focus);
   outline-offset: calc(var(--sds-border-width-focus) * -1);
+}
+
+@supports selector(:has(*)) {
+  .trigger:focus-visible {
+    outline: none;
+  }
+
+  .item:has(.trigger:focus-visible) {
+    outline: var(--sds-border-width-focus) solid var(--sds-color-border-focus);
+    outline-offset: calc(var(--sds-border-width-focus) * -1);
+  }
 }
 
 .chevron {
