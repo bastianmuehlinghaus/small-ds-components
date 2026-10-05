@@ -7,7 +7,8 @@ Currently Button, Accordion and DropdownMenu.
 (`VBd0r5d1gcGPQSKrR8LzCp`, page `Components`) — the same three components as
 Figma component sets, built from the token library. Button 30 variants
 (Variant × Size × State), Menu Item 16 (Type × State), Accordion Item 6
-(State × Interaction), plus four icon components.
+(State × Interaction), plus three icon components — chevron right, down and
+up, exported here as `ChevronRightIcon`, `ChevronDownIcon`, `ChevronUpIcon`.
 Tokens live in [Small DS: Design Tokens](https://www.figma.com/design/DABmspHvLwmzYjMrFBjVQW/Small-DS--Design-Tokens)
 (`DABmspHvLwmzYjMrFBjVQW`).
 

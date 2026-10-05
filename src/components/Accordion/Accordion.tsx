@@ -2,6 +2,7 @@ import { forwardRef } from "react";
 import type { ComponentPropsWithoutRef, ComponentRef } from "react";
 import * as RadixAccordion from "@radix-ui/react-accordion";
 import { cx } from "../../cx";
+import { ChevronDownIcon } from "../Icon";
 import styles from "./Accordion.module.css";
 
 /* Radix owns the behaviour here — roving focus, Home/End, ARIA wiring and the
@@ -26,12 +27,6 @@ export const AccordionItem = forwardRef<
   return <RadixAccordion.Item ref={ref} className={cx(styles.item, className)} {...props} />;
 });
 
-const ChevronIcon = () => (
-  <svg className={styles.chevron} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" aria-hidden="true">
-    <path d="m6 9 6 6 6-6" strokeLinecap="round" strokeLinejoin="round" />
-  </svg>
-);
-
 export type AccordionTriggerProps = ComponentPropsWithoutRef<typeof RadixAccordion.Trigger>;
 
 /**
@@ -46,7 +41,7 @@ export const AccordionTrigger = forwardRef<
     <RadixAccordion.Header className={styles.header}>
       <RadixAccordion.Trigger ref={ref} className={cx(styles.trigger, className)} {...props}>
         {children}
-        <ChevronIcon />
+        <ChevronDownIcon className={styles.chevron} />
       </RadixAccordion.Trigger>
     </RadixAccordion.Header>
   );

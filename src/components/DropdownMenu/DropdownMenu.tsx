@@ -2,6 +2,7 @@ import { forwardRef } from "react";
 import type { ComponentPropsWithoutRef, ComponentRef } from "react";
 import * as Radix from "@radix-ui/react-dropdown-menu";
 import { cx } from "../../cx";
+import { ChevronRightIcon } from "../Icon";
 import styles from "./DropdownMenu.module.css";
 
 /* Radix owns behaviour: focus trapping, roving highlight, type-ahead,
@@ -17,12 +18,6 @@ const CheckIcon = () => (
 const DotIcon = () => (
   <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
     <circle cx="12" cy="12" r="5" />
-  </svg>
-);
-
-const ChevronRightIcon = () => (
-  <svg className={styles.subChevron} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" aria-hidden="true">
-    <path d="m9 6 6 6-6 6" strokeLinecap="round" strokeLinejoin="round" />
   </svg>
 );
 
@@ -123,7 +118,7 @@ export const DropdownMenuSubTrigger = forwardRef<
   return (
     <Radix.SubTrigger ref={ref} className={cx(styles.subTrigger, className)} {...props}>
       {children}
-      <ChevronRightIcon />
+      <ChevronRightIcon className={styles.subChevron} />
     </Radix.SubTrigger>
   );
 });

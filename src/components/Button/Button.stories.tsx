@@ -1,5 +1,6 @@
 import type { Meta, StoryObj } from "@storybook/react-vite";
 import { Button } from "./Button";
+import { ChevronRightIcon, ChevronUpIcon } from "../Icon";
 
 const meta = {
   title: "Components/Button",
@@ -52,18 +53,12 @@ export const Disabled: Story = {
   ),
 };
 
-const ArrowIcon = () => (
-  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" aria-hidden="true">
-    <path d="M5 12h14M13 6l6 6-6 6" strokeLinecap="round" strokeLinejoin="round" />
-  </svg>
-);
-
 export const WithIcon: Story = {
   render: (args) => (
     <Row>
-      <Button {...args} variant="primary" size="sm">Continue <ArrowIcon /></Button>
-      <Button {...args} variant="primary" size="md">Continue <ArrowIcon /></Button>
-      <Button {...args} variant="secondary" size="md"><ArrowIcon /> Leading</Button>
+      <Button {...args} variant="primary" size="sm">Continue <ChevronRightIcon /></Button>
+      <Button {...args} variant="primary" size="md">Continue <ChevronRightIcon /></Button>
+      <Button {...args} variant="secondary" size="md"><ChevronUpIcon /> Back to top</Button>
     </Row>
   ),
 };
