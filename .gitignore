@@ -12,6 +12,9 @@ storybook-static/
 .idea/
 .vscode/
 
+# Local Claude Code config, e.g. launch.json for the desktop app's preview.
+.claude/
+
 # Söhne is a licensed commercial typeface. A licence to *use* it is not a
 # licence to redistribute the files, and a public repo is redistribution.
 # See .storybook/public/fonts/README.md.
