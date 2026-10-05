@@ -48,3 +48,9 @@ export const ChevronUpIcon = createIcon(
   "ChevronUpIcon",
   "M8 7.16917L4.93334 10.2358L4.23083 9.53334L8 5.76417L11.7692 9.53334L11.0667 10.2358L8 7.16917Z",
 );
+
+/** Figma: `Icon / <checkmark>` */
+export const CheckmarkIcon = createIcon(
+  "CheckmarkIcon",
+  "M6.55633 11.5358L3 7.9795L3.71267 7.26667L6.55633 10.1103L12.6667 4L13.3793 4.71283L6.55633 11.5358Z",
+);

@@ -2,24 +2,12 @@ import { forwardRef } from "react";
 import type { ComponentPropsWithoutRef, ComponentRef } from "react";
 import * as Radix from "@radix-ui/react-dropdown-menu";
 import { cx } from "../../cx";
-import { ChevronRightIcon } from "../Icon";
+import { CheckmarkIcon, ChevronRightIcon } from "../Icon";
 import styles from "./DropdownMenu.module.css";
 
 /* Radix owns behaviour: focus trapping, roving highlight, type-ahead,
    collision-aware positioning, Escape and outside-press dismissal. This file is
    appearance only. */
-
-const CheckIcon = () => (
-  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" aria-hidden="true">
-    <path d="m5 13 4 4L19 7" strokeLinecap="round" strokeLinejoin="round" />
-  </svg>
-);
-
-const DotIcon = () => (
-  <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
-    <circle cx="12" cy="12" r="5" />
-  </svg>
-);
 
 export type DropdownMenuContentProps = ComponentPropsWithoutRef<typeof Radix.Content>;
 
@@ -65,7 +53,7 @@ export const DropdownMenuCheckboxItem = forwardRef<
           row is checked. */}
       <span className={styles.indicator}>
         <Radix.ItemIndicator>
-          <CheckIcon />
+          <CheckmarkIcon />
         </Radix.ItemIndicator>
       </span>
       {children}
@@ -83,7 +71,7 @@ export const DropdownMenuRadioItem = forwardRef<
     <Radix.RadioItem ref={ref} className={cx(styles.item, className)} {...props}>
       <span className={styles.indicator}>
         <Radix.ItemIndicator>
-          <DotIcon />
+          <CheckmarkIcon />
         </Radix.ItemIndicator>
       </span>
       {children}

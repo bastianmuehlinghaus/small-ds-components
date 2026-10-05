@@ -37,5 +37,5 @@ export type {
   DropdownMenuSubContentProps,
 } from "./components/DropdownMenu";
 
-export { ChevronRightIcon, ChevronDownIcon, ChevronUpIcon } from "./components/Icon";
+export { ChevronRightIcon, ChevronDownIcon, ChevronUpIcon, CheckmarkIcon } from "./components/Icon";
 export type { IconProps } from "./components/Icon";
