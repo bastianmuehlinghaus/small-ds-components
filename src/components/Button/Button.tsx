@@ -1,7 +1,17 @@
-import { forwardRef } from "react";
-import type { ButtonHTMLAttributes } from "react";
+import { Children, cloneElement, forwardRef, isValidElement } from "react";
+import type { ButtonHTMLAttributes, ReactElement, ReactNode } from "react";
 import { Slot } from "@radix-ui/react-slot";
 import styles from "./Button.module.css";
+
+/** Text runs go into the label container that carries the label inset; icons
+ *  and other elements stay direct children so they sit on the button's inset. */
+function wrapLabels(children: ReactNode): ReactNode {
+  return Children.map(children, (child) => {
+    if (typeof child !== "string" && typeof child !== "number") return child;
+    const text = String(child).trim();
+    return text ? <span className={styles.label}>{text}</span> : null;
+  });
+}
 
 export type ButtonVariant = "default" | "primary" | "secondary";
 export type ButtonSize = "sm" | "md";
@@ -20,10 +30,19 @@ export interface ButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
 }
 
 export const Button = forwardRef<HTMLButtonElement, ButtonProps>(function Button(
-  { variant = "default", size = "md", asChild = false, className, type, ...props },
+  { variant = "default", size = "md", asChild = false, className, type, children, ...props },
   ref,
 ) {
   const Comp = asChild ? Slot : "button";
+  // With asChild the label lives inside the slotted element (e.g. an <a>).
+  const content =
+    asChild && isValidElement(children)
+      ? cloneElement(
+          children as ReactElement<{ children?: ReactNode }>,
+          undefined,
+          wrapLabels((children as ReactElement<{ children?: ReactNode }>).props.children),
+        )
+      : wrapLabels(children);
   return (
     <Comp
       ref={ref}
@@ -32,6 +51,8 @@ export const Button = forwardRef<HTMLButtonElement, ButtonProps>(function Button
       // Only set it when actually rendering a <button>.
       {...(asChild ? {} : { type: type ?? "button" })}
       {...props}
-    />
+    >
+      {content}
+    </Comp>
   );
 });
