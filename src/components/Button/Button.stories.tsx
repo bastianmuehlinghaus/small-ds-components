@@ -64,7 +64,6 @@ export const WithIcon: Story = {
       <Button {...args} variant="primary" size="sm">Continue <ArrowIcon /></Button>
       <Button {...args} variant="primary" size="md">Continue <ArrowIcon /></Button>
       <Button {...args} variant="secondary" size="md"><ArrowIcon /> Leading</Button>
-      <Button {...args} variant="secondary" size="md" aria-label="Next"><ArrowIcon /></Button>
     </Row>
   ),
 };
