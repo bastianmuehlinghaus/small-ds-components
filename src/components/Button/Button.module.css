@@ -1,7 +1,7 @@
 /**
  * Button reads Tier 3 `--sds-button-*` exclusively for its own decisions.
- * Tier 2 appears only for things Tier 3 does not model (the focus ring width,
- * icon sizing), and `--sds-motion-*` from Tier 1 under the documented exception.
+ * Tier 2 appears only for things Tier 3 does not model (the focus ring width),
+ * and `--sds-motion-*` from Tier 1 under the documented exception.
  */
 
 .base {
@@ -10,7 +10,6 @@
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  gap: var(--sds-button-space-gap);
   box-sizing: border-box;
   border: none;
   border-radius: var(--sds-button-border-radius);
@@ -48,8 +47,8 @@
 /* Icons scale with the control. `:where()` keeps specificity at zero so a
    consumer's own icon styles still win. */
 .base :where(svg) {
-  width: var(--sds-size-icon-md);
-  height: var(--sds-size-icon-md);
+  width: var(--sds-button-size-icon-md);
+  height: var(--sds-button-size-icon-md);
   flex-shrink: 0;
 }
 
@@ -68,11 +67,12 @@
 
   min-height: var(--sds-button-size-height-sm);
   padding-inline: var(--sds-button-space-inset-x-sm);
+  gap: var(--sds-button-space-gap-sm);
 }
 
 .sm :where(svg) {
-  width: var(--sds-size-icon-sm);
-  height: var(--sds-size-icon-sm);
+  width: var(--sds-button-size-icon-sm);
+  height: var(--sds-button-size-icon-sm);
 }
 
 .md {
@@ -80,6 +80,7 @@
 
   min-height: var(--sds-button-size-height-md);
   padding-inline: var(--sds-button-space-inset-x-md);
+  gap: var(--sds-button-space-gap-md);
 }
 
 .lg {
@@ -87,12 +88,13 @@
 
   min-height: var(--sds-button-size-height-lg);
   padding-inline: var(--sds-button-space-inset-x-lg);
+  gap: var(--sds-button-space-gap-lg);
 }
 
 /* Icons follow the size ramp: sm 16, md 20 (the .base default), lg 24. */
 .lg :where(svg) {
-  width: var(--sds-size-icon-lg);
-  height: var(--sds-size-icon-lg);
+  width: var(--sds-button-size-icon-lg);
+  height: var(--sds-button-size-icon-lg);
 }
 
 /* --- variants ---------------------------------------------------------- */
