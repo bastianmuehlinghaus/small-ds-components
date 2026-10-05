@@ -1,5 +1,5 @@
 import type { Meta, StoryObj } from "@storybook/react-vite";
-import { ChevronDownIcon, ChevronRightIcon, ChevronUpIcon } from "./Icon";
+import { CheckmarkIcon, ChevronDownIcon, ChevronRightIcon, ChevronUpIcon } from "./Icon";
 
 const meta = {
   title: "Components/Icons",
@@ -9,12 +9,13 @@ const meta = {
 export default meta;
 type Story = StoryObj<typeof meta>;
 
-/* The same three Icon components as the Figma components file, under the
+/* The same Icon components as the Figma components file, under the
    same names. */
 const icons = [
   { name: "chevron-right", Icon: ChevronRightIcon },
   { name: "chevron-down", Icon: ChevronDownIcon },
   { name: "chevron-up", Icon: ChevronUpIcon },
+  { name: "checkmark", Icon: CheckmarkIcon },
 ];
 
 const Grid = ({ size }: { size?: string }) => (
