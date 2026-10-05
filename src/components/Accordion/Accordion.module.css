@@ -11,6 +11,8 @@
 }
 
 .item {
+  /* Figma insets the row 16px; the bottom rule still spans the full item. */
+  padding-inline: var(--sds-space-inline-lg);
   border-bottom: var(--sds-border-width-default) solid var(--sds-color-border-default);
 }
 
@@ -20,7 +22,7 @@
 }
 
 .trigger {
-  composes: sds-type-heading-xsmall from "@small-ds/tokens/typography.css";
+  composes: sds-type-label-large from "@small-ds/tokens/typography.css";
 
   display: flex;
   flex: 1;
@@ -48,8 +50,8 @@
 
 .chevron {
   flex-shrink: 0;
-  width: var(--sds-size-icon-md);
-  height: var(--sds-size-icon-md);
+  width: var(--sds-size-icon-lg);
+  height: var(--sds-size-icon-lg);
   color: var(--sds-color-content-subtle);
 
   transition-property: transform, color;

@@ -89,6 +89,12 @@
   padding-inline: var(--sds-button-space-inset-x-lg);
 }
 
+/* Icons follow the size ramp: sm 16, md 20 (the .base default), lg 24. */
+.lg :where(svg) {
+  width: var(--sds-size-icon-lg);
+  height: var(--sds-size-icon-lg);
+}
+
 /* --- variants ---------------------------------------------------------- */
 
 .default {
