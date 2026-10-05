@@ -14,6 +14,9 @@ const withTheme: Decorator = (Story, context) => {
 };
 
 const preview: Preview = {
+  // A Docs page per component: every story with "Show code", plus a props
+  // table generated from the TypeScript types and their comments.
+  tags: ["autodocs"],
   decorators: [withTheme],
   globalTypes: {
     theme: {
@@ -33,6 +36,8 @@ const preview: Preview = {
   parameters: {
     controls: { matchers: { color: /(background|color)$/i } },
     a11y: { test: "error" },
+    // A "Code" tab beside Controls: the JSX of the current story, live.
+    docs: { codePanel: true },
   },
 };
 
