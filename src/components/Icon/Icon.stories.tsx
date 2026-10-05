@@ -1,0 +1,56 @@
+import type { Meta, StoryObj } from "@storybook/react-vite";
+import { ChevronDownIcon, ChevronRightIcon, ChevronUpIcon } from "./Icon";
+
+const meta = {
+  title: "Components/Icons",
+  parameters: { layout: "padded" },
+} satisfies Meta;
+
+export default meta;
+type Story = StoryObj<typeof meta>;
+
+/* The same three Icon components as the Figma components file, under the
+   same names. */
+const icons = [
+  { name: "chevron-right", Icon: ChevronRightIcon },
+  { name: "chevron-down", Icon: ChevronDownIcon },
+  { name: "chevron-up", Icon: ChevronUpIcon },
+];
+
+const Grid = ({ size }: { size?: string }) => (
+  <div style={{ display: "flex", gap: "2rem", alignItems: "flex-end", flexWrap: "wrap" }}>
+    {icons.map(({ name, Icon }) => (
+      <figure key={name} style={{ margin: 0, display: "grid", justifyItems: "center", gap: "0.5rem" }}>
+        <Icon style={size ? { width: size, height: size } : undefined} />
+        <figcaption style={{ font: "inherit", fontSize: "0.75rem" }}>{name}</figcaption>
+      </figure>
+    ))}
+  </div>
+);
+
+/** Native size: 16px, `--sds-size-icon-sm`, as in Figma. */
+export const All: Story = {
+  render: () => <Grid />,
+};
+
+/** The sizes the components use them at: 16 (Menu Item, Button sm), 20 (Button md), 24 (Accordion). */
+export const Sizes: Story = {
+  render: () => (
+    <div style={{ display: "grid", gap: "1.5rem" }}>
+      <Grid size="var(--sds-size-icon-sm)" />
+      <Grid size="var(--sds-size-icon-md)" />
+      <Grid size="var(--sds-size-icon-lg)" />
+    </div>
+  ),
+};
+
+/** Colour comes from the surrounding text via currentColor. */
+export const Colour: Story = {
+  render: () => (
+    <div style={{ display: "flex", gap: "2rem" }}>
+      <span style={{ color: "var(--sds-color-content-default)" }}><ChevronRightIcon /></span>
+      <span style={{ color: "var(--sds-color-content-subtle)" }}><ChevronRightIcon /></span>
+      <span style={{ color: "var(--sds-color-content-disabled)" }}><ChevronRightIcon /></span>
+    </div>
+  ),
+};

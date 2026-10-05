@@ -1,0 +1,7 @@
+/* Native size of the Figma icons. `:where()` keeps specificity at zero, so the
+   component an icon sits in (Button, Accordion, DropdownMenu) sizes it. */
+:where(.icon) {
+  flex-shrink: 0;
+  width: var(--sds-size-icon-sm);
+  height: var(--sds-size-icon-sm);
+}

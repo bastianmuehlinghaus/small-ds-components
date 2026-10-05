@@ -36,3 +36,6 @@ export type {
   DropdownMenuSubTriggerProps,
   DropdownMenuSubContentProps,
 } from "./components/DropdownMenu";
+
+export { ChevronRightIcon, ChevronDownIcon, ChevronUpIcon } from "./components/Icon";
+export type { IconProps } from "./components/Icon";
