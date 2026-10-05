@@ -43,14 +43,3 @@ export const Sizes: Story = {
     </div>
   ),
 };
-
-/** Colour comes from the surrounding text via currentColor. */
-export const Colour: Story = {
-  render: () => (
-    <div style={{ display: "flex", gap: "2rem" }}>
-      <span style={{ color: "var(--sds-color-content-default)" }}><ChevronRightIcon /></span>
-      <span style={{ color: "var(--sds-color-content-subtle)" }}><ChevronRightIcon /></span>
-      <span style={{ color: "var(--sds-color-content-disabled)" }}><ChevronRightIcon /></span>
-    </div>
-  ),
-};

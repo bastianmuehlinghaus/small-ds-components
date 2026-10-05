@@ -62,30 +62,3 @@ export const WithIcon: Story = {
     </Row>
   ),
 };
-
-/** `asChild` renders the child element with Button's styling — a link that looks like a button. */
-export const AsLink: Story = {
-  render: (args) => (
-    <Row>
-      <Button {...args} asChild variant="secondary">
-        <a href="https://www.radix-ui.com" target="_blank" rel="noreferrer">Open Radix docs</a>
-      </Button>
-    </Row>
-  ),
-};
-
-/**
- * Reproduces the "Send" button from the Figma portfolio frame (node 196:66):
- * knockout background, pill radius, Label/Medium, 40px tall.
- *
- * This story is the tripwire for drift between Figma and code. If the Figma
- * binding changes, this is what should start looking wrong first.
- */
-export const FigmaParity: Story = {
-  name: "Figma parity — Send",
-  render: () => (
-    <div style={{ display: "flex", gap: "0", alignItems: "center" }}>
-      <Button variant="primary" size="md">Send</Button>
-    </div>
-  ),
-};
