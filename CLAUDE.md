@@ -8,9 +8,9 @@ Currently Button, Checkbox, RadioGroup, Accordion and DropdownMenu.
 Figma component sets, built from the token library. Button 30 variants
 (Variant × Size × State), Checkbox 10 and Radio 10 (Checked × State), Menu
 Item 14 (Type × State; the Checkbox and Radio types have no Selected state),
-Accordion Item 6 (State × Interaction), plus four icon components — chevron right, down, up and
-checkmark, exported here as `ChevronRightIcon`, `ChevronDownIcon`,
-`ChevronUpIcon`, `CheckmarkIcon`.
+Accordion Item 6 (State × Interaction), plus five icon components — chevron right, down, up,
+checkmark and dash, exported here as `ChevronRightIcon`, `ChevronDownIcon`,
+`ChevronUpIcon`, `CheckmarkIcon`, `DashIcon`.
 Tokens live in [Small DS: Design Tokens](https://www.figma.com/design/DABmspHvLwmzYjMrFBjVQW/Small-DS--Design-Tokens)
 (`DABmspHvLwmzYjMrFBjVQW`).
 

@@ -1,5 +1,5 @@
 import type { Meta, StoryObj } from "@storybook/react-vite";
-import { CheckmarkIcon, ChevronDownIcon, ChevronRightIcon, ChevronUpIcon } from "./Icon";
+import { CheckmarkIcon, ChevronDownIcon, ChevronRightIcon, ChevronUpIcon, DashIcon } from "./Icon";
 
 const meta = {
   title: "Components/Icons",
@@ -16,6 +16,7 @@ const icons = [
   { name: "chevron-down", Icon: ChevronDownIcon },
   { name: "chevron-up", Icon: ChevronUpIcon },
   { name: "checkmark", Icon: CheckmarkIcon },
+  { name: "dash", Icon: DashIcon },
 ];
 
 const Grid = ({ size }: { size?: string }) => (
