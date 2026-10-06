@@ -1,0 +1,76 @@
+name: CI
+
+on:
+  pull_request:
+  push:
+    branches: [main]
+
+permissions:
+  contents: read
+
+# A newer push to the same branch makes an older run pointless.
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      # The two repos must sit side by side: @small-ds/tokens resolves via
+      # file:../small-ds-tokens. Both are public, so no token is needed.
+      # Once tokens is published to npm, depend on ^0.1.0 and drop the second
+      # checkout and the "Build tokens" step.
+      - uses: actions/checkout@v7
+        with:
+          path: small-ds-components
+
+      - uses: actions/checkout@v7
+        with:
+          repository: bastianmuehlinghaus/small-ds-tokens
+          path: small-ds-tokens
+
+      - uses: actions/setup-node@v7
+        with:
+          node-version: 24
+          cache: npm
+          cache-dependency-path: |
+            small-ds-tokens/package-lock.json
+            small-ds-components/package-lock.json
+
+      # dist/ is gitignored there, and the components read it.
+      - name: Build tokens
+        working-directory: small-ds-tokens
+        run: |
+          npm ci
+          npm run build
+
+      - name: Install
+        working-directory: small-ds-components
+        run: |
+          npm ci
+          npx playwright install --with-deps chromium
+
+      # One step per check, so a red run names the check that failed. The
+      # licensed Söhne files are not here; Storybook falls back to a system
+      # sans with identical metrics, and no check depends on the typeface.
+      - name: Typecheck
+        working-directory: small-ds-components
+        run: npm run typecheck
+
+      - name: Lint
+        working-directory: small-ds-components
+        run: npm run lint
+
+      - name: Build
+        working-directory: small-ds-components
+        run: npm run build
+
+      - name: Verify build output
+        working-directory: small-ds-components
+        run: npm run verify
+
+      - name: Test stories
+        working-directory: small-ds-components
+        run: npm test
