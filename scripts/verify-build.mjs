@@ -37,7 +37,7 @@ check("react is externalised, not bundled", !/function\s+useState\s*\(/.test(js)
 check("radix is externalised, not bundled", /@radix-ui\//.test(js));
 
 const dts = fs.readFileSync("dist/index.d.ts", "utf8");
-for (const name of ["Button", "Accordion", "DropdownMenu"]) {
+for (const name of ["Button", "Checkbox", "RadioGroup", "Accordion", "DropdownMenu"]) {
   check(`${name} is exported with types`, js.includes(name) && dts.includes(name));
 }
 

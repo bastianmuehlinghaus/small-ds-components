@@ -3,6 +3,7 @@ import type { ComponentPropsWithoutRef, ComponentRef } from "react";
 import * as Radix from "@radix-ui/react-dropdown-menu";
 import { cx } from "../../cx";
 import { CheckmarkIcon, ChevronRightIcon } from "../Icon";
+import selection from "../SelectionControl/SelectionControl.module.css";
 import styles from "./DropdownMenu.module.css";
 
 /* Radix owns behaviour: focus trapping, roving highlight, type-ahead,
@@ -48,13 +49,20 @@ export const DropdownMenuCheckboxItem = forwardRef<
   DropdownMenuCheckboxItemProps
 >(function DropdownMenuCheckboxItem({ className, children, ...props }, ref) {
   return (
-    <Radix.CheckboxItem ref={ref} className={cx(styles.item, className)} {...props}>
-      {/* The slot is always rendered so labels stay aligned whether or not a
-          row is checked. */}
-      <span className={styles.indicator}>
-        <Radix.ItemIndicator>
-          <CheckmarkIcon />
-        </Radix.ItemIndicator>
+    <Radix.CheckboxItem
+      ref={ref}
+      className={cx(styles.item, styles.selectionItem, className)}
+      {...props}
+    >
+      {/* The Checkbox's box, not the Checkbox: the row is already the
+          menuitemcheckbox, and a second control inside it would be a nested
+          interactive element. The box reads the row's data-state. */}
+      <span className={cx(selection.control, selection.checkbox)} aria-hidden="true">
+        <span className={selection.box}>
+          <Radix.ItemIndicator className={selection.mark}>
+            <CheckmarkIcon />
+          </Radix.ItemIndicator>
+        </span>
       </span>
       {children}
     </Radix.CheckboxItem>
@@ -68,11 +76,15 @@ export const DropdownMenuRadioItem = forwardRef<
   DropdownMenuRadioItemProps
 >(function DropdownMenuRadioItem({ className, children, ...props }, ref) {
   return (
-    <Radix.RadioItem ref={ref} className={cx(styles.item, className)} {...props}>
-      <span className={styles.indicator}>
-        <Radix.ItemIndicator>
-          <CheckmarkIcon />
-        </Radix.ItemIndicator>
+    <Radix.RadioItem
+      ref={ref}
+      className={cx(styles.item, styles.selectionItem, className)}
+      {...props}
+    >
+      <span className={cx(selection.control, selection.radio)} aria-hidden="true">
+        <span className={selection.box}>
+          <Radix.ItemIndicator className={selection.dot} />
+        </span>
       </span>
       {children}
     </Radix.RadioItem>
