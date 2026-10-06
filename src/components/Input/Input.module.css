@@ -57,13 +57,15 @@
 }
 
 /* Focus wins over Invalid, as in Figma: it comes later at equal specificity.
-   The 1px border turns the focus colour, and an outline drawn just inside it
-   adds the difference to border-width-focus. That makes the Figma 2px inside
-   border without changing the box, so the text never shifts. */
+   One real border at border-width-focus, like Figma's 2px inside stroke, so
+   the ring has a single radius. An outline drawn inside a 1px border was two
+   curves, and their corners never quite met. The padding gives back the extra
+   width, so the text never shifts. Vertically the value is centred, and the
+   box is border-box, so neither the height nor the text moves. */
 .input:focus {
+  border-width: var(--sds-border-width-focus);
   border-color: var(--sds-input-color-border-focus);
-  outline: calc(var(--sds-border-width-focus) - var(--sds-border-width-default)) solid var(--sds-input-color-border-focus);
-  outline-offset: calc(var(--sds-border-width-focus) * -1);
+  padding-inline: calc(var(--sds-input-space-inset-x) - (var(--sds-border-width-focus) - var(--sds-border-width-default)));
 }
 
 /* Disabled comes last so it wins over everything above. */

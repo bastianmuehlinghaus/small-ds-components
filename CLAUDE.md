@@ -126,10 +126,12 @@ This is deliberate and **not** an inconsistency to tidy up:
 Input is a native `<input>`: Radix has no text-input primitive, and the
 browser already owns the behaviour. TextField adds `@radix-ui/react-label`, an
 `aria-describedby` message, and `error`, which implies `invalid`. Focus wins
-over Invalid, as in Figma. The 2px focus border is the 1px border in the focus
-colour plus an outline of `border-width-focus − border-width-default` drawn
-just inside it, so nothing shifts. `box-shadow: inset` would be simpler, but the
-strict-value lint rejects the `inset` keyword. Hover is a flat
+over Invalid, as in Figma. The 2px focus border is a real border at
+`border-width-focus`, with `padding-inline` reduced by the extra width so the
+text doesn't shift. Don't go back to the earlier approach, a 1px border plus an
+outline drawn inside it: those are two curves, and their corners visibly
+disagree. `box-shadow: inset` would also work, but the strict-value lint
+rejects the `inset` keyword. Hover is a flat
 `linear-gradient` of the overlay token, because an `<input>` can't carry
 `::after`.
 
