@@ -4,14 +4,22 @@ React components on Radix primitives, driven entirely by `@small-ds/tokens`.
 Currently Button, Checkbox, RadioGroup, Accordion and DropdownMenu.
 
 **Figma:** [Small DS: Components](https://www.figma.com/design/VBd0r5d1gcGPQSKrR8LzCp/Small-DS--Components)
-(`VBd0r5d1gcGPQSKrR8LzCp`, page `Components`) — the same components as
-Figma component sets, built from the token library. Button 30 variants
-(Variant × Size × State), Checkbox 15 (Checked × State, where Checked includes Indeterminate) and
-Radio 10 (Checked × State), Menu
-Item 14 (Type × State; the Checkbox and Radio types have no Selected state),
-Accordion Item 6 (State × Interaction), plus five icon components — chevron right, down, up,
-checkmark and dash, exported here as `ChevronRightIcon`, `ChevronDownIcon`,
-`ChevronUpIcon`, `CheckmarkIcon`, `DashIcon`.
+(`VBd0r5d1gcGPQSKrR8LzCp`) has one page per component. Each page has a `Header`
+(name in Heading/Large, a one-line description in Body/Small) at (64, 64), with the
+component set below it. Everything is built from the token library.
+
+| Page | Figma | Variants | Code |
+|---|---|---|---|
+| Button | `Button` set | 30: Variant × Size × State | `Button` |
+| Checkbox | `Checkbox` set | 15: Checked (False, True, Indeterminate) × State | `Checkbox` |
+| Accordion | `Accordion Item` set | 6: Variant (Closed, Open) × State | `Accordion` |
+| Radio | `Radio` set | 10: Checked × State | `RadioGroup.Item` |
+| Dropdown menu | `Menu Item` set | 14: Type × State. Checkbox and Radio have no Selected | `DropdownMenu` |
+| Icons | five `Icon / <name>` components | n/a | `ChevronRightIcon`, `ChevronDownIcon`, `ChevronUpIcon`, `CheckmarkIcon`, `DashIcon` |
+| Focus ring | `Focus Ring` set | 2: borderWidth | none. CSS uses `outline`. Used by the Button Focus variants |
+
+A new component gets its own page and Header in the same shape.
+
 Tokens live in [Small DS: Design Tokens](https://www.figma.com/design/DABmspHvLwmzYjMrFBjVQW/Small-DS--Design-Tokens)
 (`DABmspHvLwmzYjMrFBjVQW`).
 
@@ -136,6 +144,11 @@ every other check still looks green.
   swap files are dotfiles, so `git status --short` hides them while `git add .`
   stages them anyway — one reached `main` this way. Check
   `git diff --cached --name-only` before committing, or stage by path.
+- **Storybook can launch `vi` on a story file.** Its open-in-editor feature
+  runs `$EDITOR` from the dev server, and with no terminal attached the editor
+  hangs and leaves a `.swp` beside the story. `*.swp` is gitignored, but the
+  orphaned processes outlive Storybook. Check `ps` for `vi` children of the
+  `storybook dev` process if this happens.
 - The Söhne `.woff2` files are gitignored for licensing reasons, not by
   accident. Storybook degrades to a system sans without them, with identical
   metrics.
@@ -166,6 +179,7 @@ severely restricted:
 | `clone()`, reposition, rename | works |
 | bind a fill to a colour variable | works |
 | `appendChild` — into *any* frame, auto-layout or not | **fails** |
+| move to another page (`page.appendChild`) | **fails** |
 | `textAutoResize`, `characters`, `setTextStyleIdAsync` | **fails** |
 
 So the build order is forced: **create the structure first, style last.** Once
@@ -173,6 +187,11 @@ text is styled it can never be moved, which is why the Figma Button is a single
 frame rather than a component wrapping an inner surface — and therefore why its
 focus ring is an outside stroke that replaces Secondary's border, where CSS uses
 `outline` + `border` together.
+
+That last row covers whole component sets: anything with styled labels can
+only change page by hand (right-click → *Move to page*, which keeps instances
+linked). Sets without text, such as the icons and Focus Ring, move fine via the
+MCP.
 
 Two more consequences worth knowing before you debug them:
 
