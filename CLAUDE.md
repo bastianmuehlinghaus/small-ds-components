@@ -16,7 +16,8 @@ component the way Storybook does. From the top:
 4. An `Examples` heading (Heading/Small), then one `Example / <Story>` group per
    Storybook story, captioned with the story name (Label/Small). Stories that
    would look identical to the set, such as Controlled, Playground and
-   Checkbox States, are left out.
+   Checkbox States, are left out. So are behaviour tests: stories tagged
+   `test` (and `!autodocs`) that exist for their `play` function.
 
 Everything is built from the token library. Examples keep the components'
 placeholder copy ("Label", "Menu item"). Bastian chose not to retype the story
@@ -281,7 +282,9 @@ npm test             # every story as a test in headless Chromium, with axe
 ```
 
 `npm test` runs `@storybook/addon-vitest`: each story must render, pass its
-`play` function if it has one, and show no axe violations. The one exemption,
+`play` function if it has one, and show no axe violations. Behaviour that was
+once checked by hand gets a `test`-tagged story whose `play` function asserts
+it, and each was confirmed to fail when its fix is undone. The one exemption,
 contrast inside `[data-disabled]` (WCAG 1.4.3 inactive controls), and why it
 exists, is in `.storybook/preview.tsx`. The first run on a new machine needs
 `npx playwright install chromium`.

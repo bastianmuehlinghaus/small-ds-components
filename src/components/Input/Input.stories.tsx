@@ -1,4 +1,5 @@
 import type { Meta, StoryObj } from "@storybook/react-vite";
+import { expect } from "storybook/test";
 import { Input } from "./Input";
 
 const meta = {
@@ -38,4 +39,37 @@ export const States: Story = {
       <Input {...args} invalid defaultValue="color/border/focus" />
     </div>
   ),
+};
+
+/* --- behaviour tests ---------------------------------------------------------
+   Stories with a play function that `npm test` runs. Tagged !autodocs: in the
+   sidebar with an Interactions replay, but not on the Docs page, so they have
+   no Figma example. */
+
+/** Focus thickens the border to border-width-focus, and the padding gives the
+ *  difference back, so neither the text nor the height moves. */
+export const FocusKeepsTextInPlace: Story = {
+  tags: ["!autodocs", "test"],
+  play: async ({ canvas, userEvent }) => {
+    const input = canvas.getByRole("textbox");
+    const measure = () => {
+      const style = getComputedStyle(input);
+      return {
+        border: style.borderLeftWidth,
+        textStart: parseFloat(style.borderLeftWidth) + parseFloat(style.paddingLeft),
+        height: input.getBoundingClientRect().height,
+      };
+    };
+    const focusWidth = getComputedStyle(input).getPropertyValue("--sds-border-width-focus").trim();
+    const before = measure();
+
+    await userEvent.click(input);
+    await expect(input).toHaveFocus();
+    const after = measure();
+
+    await expect(after.border).toBe(focusWidth);
+    await expect(after.border).not.toBe(before.border);
+    await expect(after.textStart).toBe(before.textStart);
+    await expect(after.height).toBe(before.height);
+  },
 };
