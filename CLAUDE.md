@@ -1,7 +1,7 @@
 # Small DS — Components
 
 React components on Radix primitives, driven entirely by `@small-ds/tokens`.
-Currently Button, Checkbox, RadioGroup, Accordion and DropdownMenu.
+Currently Button, Checkbox, RadioGroup, Input, TextField, Accordion and DropdownMenu.
 
 **Figma:** [Small DS: Components](https://www.figma.com/design/VBd0r5d1gcGPQSKrR8LzCp/Small-DS--Components)
 (`VBd0r5d1gcGPQSKrR8LzCp`) has one page per component, and each page shows the
@@ -28,6 +28,7 @@ text.
 | Checkbox | `Checkbox` set | 15: Checked (False, True, Indeterminate) × State | `Checkbox` | Default, SelectAll, WithoutLabel |
 | Accordion | `Accordion Item` set; `Accordion` (3 exposed items) | 6: Variant (Closed, Open) × State | `Accordion.Item`; `Accordion.Root` | Single, Multiple, AllClosed |
 | Radio group | `Radio` set; `Radio Group` set (items are exposed Radios) | 10: Checked × State; 6: Orientation × State | `RadioGroup.Item`; `RadioGroup.Root` | Default, Horizontal, DisabledItem, DisabledGroup, Invalid |
+| Text field | `Input` set; `Text Field` set (label, exposed Input, message) | 20: Size (Small, Medium) × State × Value (Placeholder, Filled); 6: Size × State (Default, Disabled, Invalid) | `Input`; `TextField` | Input / Default, Input / Sizes, TextField / Default, WithDescription, Invalid, Disabled, Small |
 | Dropdown menu | `Menu Item` set; `Menu Label`; `Menu Separator`; `Dropdown Menu` surface | 14: Type × State (Checkbox and Radio have no Selected) | `.Item` and friends; `.Label`; `.Separator`; `.Content` | Basic, OpenByDefault, WithSelection, SelectAll, WithSubmenu |
 | Icons | five `Icon / <name>` components | n/a | `ChevronRightIcon`, `ChevronDownIcon`, `ChevronUpIcon`, `CheckmarkIcon`, `DashIcon` | Sizes (16 / 20 / 24, bound to `size/icon/*`) |
 | Focus ring | `Focus Ring` set | 2: borderWidth | none. CSS uses `outline`. Used by the Button Focus variants | n/a |
@@ -107,8 +108,20 @@ This is deliberate and **not** an inconsistency to tidy up:
 |---|---|---|
 | Button | Tier 3 `--sds-button-*` | Figma defines a full Tier 3 surface for it |
 | Accordion | Tier 2 semantics | Figma has no `accordion/*` tokens |
+| Input | Tier 3 `--sds-input-*`, plus Tier 2 border widths | Figma defines a full Tier 3 surface for it |
+| TextField | Input for the box, Tier 2 for the label and message | no `text-field/*` tokens |
 | Checkbox, RadioGroup | Tier 3 `--sds-selection-control-*` for the box, Tier 2 for the footprint and focus ring | Tier 3 models the box only |
 | DropdownMenu | Tier 2 semantics | Figma has no `menu/*` tokens |
+
+Input is a native `<input>`: Radix has no text-input primitive, and the
+browser already owns the behaviour. TextField adds `@radix-ui/react-label`, an
+`aria-describedby` message, and `error`, which implies `invalid`. Focus wins
+over Invalid, as in Figma. The 2px focus border is the 1px border in the focus
+colour plus an outline of `border-width-focus − border-width-default` drawn
+just inside it, so nothing shifts. `box-shadow: inset` would be simpler, but the
+strict-value lint rejects the `inset` keyword. Hover is a flat
+`linear-gradient` of the overlay token, because an `<input>` can't carry
+`::after`.
 
 Checkbox, RadioGroup and the DropdownMenu checkbox/radio rows share
 `SelectionControl.module.css`, which is internal. The control is sized like an
