@@ -49,7 +49,6 @@ export const WithSelection: Story = {
           <DropdownMenu.CheckboxItem checked={showDeprecated} onCheckedChange={setShowDeprecated}>
             Deprecated tokens
           </DropdownMenu.CheckboxItem>
-          <DropdownMenu.Separator />
           <DropdownMenu.Label>Mode</DropdownMenu.Label>
           <DropdownMenu.RadioGroup value={mode} onValueChange={setMode}>
             <DropdownMenu.RadioItem value="light">Light</DropdownMenu.RadioItem>

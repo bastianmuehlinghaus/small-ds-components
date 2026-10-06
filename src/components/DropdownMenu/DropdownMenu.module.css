@@ -97,11 +97,12 @@
      Menu Item binds it — including content/disabled on a disabled row. */
 }
 
+/* Group label. The larger top inset is what separates one group from the
+   next, as in the Figma Menu Group Label. */
 .label {
   composes: sds-type-label-small from "@small-ds/tokens/typography.css";
 
-  padding-block: var(--sds-space-inset-xs);
-  padding-inline: var(--sds-space-inset-md);
+  padding: var(--sds-space-inset-md) var(--sds-space-inset-md) var(--sds-space-inset-xs);
   color: var(--sds-color-content-subtle);
 }
 
@@ -110,6 +111,13 @@
   margin-block: var(--sds-space-inset-xs);
   margin-inline: 0;
   background-color: var(--sds-color-border-default);
+}
+
+/* A group label already divides the menu, so a separator right before one is
+   not drawn — whether the label stands alone or opens a Group. */
+.separator:has(+ .label),
+.separator:has(+ [role="group"] > .label:first-child) {
+  display: none;
 }
 
 @keyframes enter {
