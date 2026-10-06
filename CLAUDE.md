@@ -4,21 +4,41 @@ React components on Radix primitives, driven entirely by `@small-ds/tokens`.
 Currently Button, Checkbox, RadioGroup, Accordion and DropdownMenu.
 
 **Figma:** [Small DS: Components](https://www.figma.com/design/VBd0r5d1gcGPQSKrR8LzCp/Small-DS--Components)
-(`VBd0r5d1gcGPQSKrR8LzCp`) has one page per component. Each page has a `Header`
-(name in Heading/Large, a one-line description in Body/Small) at (64, 64), with the
-component set below it. Everything is built from the token library.
+(`VBd0r5d1gcGPQSKrR8LzCp`) has one page per component, and each page shows the
+component the way Storybook does. From the top:
 
-| Page | Figma | Variants | Code |
-|---|---|---|---|
-| Button | `Button` set | 30: Variant × Size × State | `Button` |
-| Checkbox | `Checkbox` set | 15: Checked (False, True, Indeterminate) × State | `Checkbox` |
-| Accordion | `Accordion Item` set | 6: Variant (Closed, Open) × State | `Accordion` |
-| Radio | `Radio` set | 10: Checked × State | `RadioGroup.Item` |
-| Dropdown menu | `Menu Item` set | 14: Type × State. Checkbox and Radio have no Selected | `DropdownMenu` |
-| Icons | five `Icon / <name>` components | n/a | `ChevronRightIcon`, `ChevronDownIcon`, `ChevronUpIcon`, `CheckmarkIcon`, `DashIcon` |
-| Focus ring | `Focus Ring` set | 2: borderWidth | none. CSS uses `outline`. Used by the Button Focus variants |
+1. A `Header` at (64, 64): the name in Heading/Large and a one-line description
+   in Body/Small.
+2. The building-block set: the variant matrix.
+3. Any composite component that mirrors a code root. For example, the Radio
+   group page has `Radio Group` as well as `Radio`, because the code is
+   `RadioGroup.Root` + `.Item`.
+4. An `Examples` heading (Heading/Small), then one `Example / <Story>` group per
+   Storybook story, captioned with the story name (Label/Small). Stories that
+   would look identical to the set, such as Controlled, Playground and
+   Checkbox States, are left out.
 
-A new component gets its own page and Header in the same shape.
+Everything is built from the token library. Examples keep the components'
+placeholder copy ("Label", "Menu item"). Bastian chose not to retype the story
+text.
+
+| Page | Components | Variants | Code | Examples (= stories) |
+|---|---|---|---|---|
+| Button | `Button` set | 30: Variant × Size × State | `Button` | Variants, Sizes, Disabled, WithIcon |
+| Checkbox | `Checkbox` set | 15: Checked (False, True, Indeterminate) × State | `Checkbox` | Default, SelectAll, WithoutLabel |
+| Accordion | `Accordion Item` set; `Accordion` (3 exposed items) | 6: Variant (Closed, Open) × State | `Accordion.Item`; `Accordion.Root` | Single, Multiple, AllClosed |
+| Radio group | `Radio` set; `Radio Group` set (items are exposed Radios) | 10: Checked × State; 6: Orientation × State | `RadioGroup.Item`; `RadioGroup.Root` | Default, Horizontal, DisabledItem, DisabledGroup, Invalid |
+| Dropdown menu | `Menu Item` set; `Menu Label`; `Menu Separator`; `Dropdown Menu` surface | 14: Type × State (Checkbox and Radio have no Selected) | `.Item` and friends; `.Label`; `.Separator`; `.Content` | Basic, OpenByDefault, WithSelection, SelectAll, WithSubmenu |
+| Icons | five `Icon / <name>` components | n/a | `ChevronRightIcon`, `ChevronDownIcon`, `ChevronUpIcon`, `CheckmarkIcon`, `DashIcon` | Sizes (16 / 20 / 24, bound to `size/icon/*`) |
+| Focus ring | `Focus Ring` set | 2: borderWidth | none. CSS uses `outline`. Used by the Button Focus variants | n/a |
+
+The `Dropdown Menu` surface mirrors `.content` exactly: `background/raised`, a
+1px `border/default` (inside, counted in layout, as CSS `border-box` does),
+`radius/surface`, `inset-xs` padding and the `shadow/overlay` effect style.
+Examples whose rows differ from it are detached frames with the same bindings.
+
+A new component gets its own page in the same shape, with an example for each
+of its stories.
 
 Tokens live in [Small DS: Design Tokens](https://www.figma.com/design/DABmspHvLwmzYjMrFBjVQW/Small-DS--Design-Tokens)
 (`DABmspHvLwmzYjMrFBjVQW`).
@@ -192,6 +212,21 @@ That last row covers whole component sets: anything with styled labels can
 only change page by hand (right-click → *Move to page*, which keeps instances
 linked). Sets without text, such as the icons and Focus Ring, move fine via the
 MCP.
+
+**Composing with Söhne instances.** The same restriction blocks putting an
+instance with a Söhne label into any frame, but this route works, and it's how
+every composite and example in the file was built:
+
+1. Create the instances loose on the page. Variant and boolean properties can be
+   set; TEXT properties cannot.
+2. `figma.group(instances, page)`, then `figma.createComponentFromNode(group)`.
+3. Set `layoutMode`, padding, fills and strokes on the new component, and bind
+   the tokens. `combineAsVariants` works on these components too.
+4. For a plain frame instead of a component, use
+   `comp.createInstance().detachInstance()`, then `comp.remove()`.
+
+Effect styles (`shadow/*`) come from the token library like variables. They
+could only be imported once they had been published there.
 
 Two more consequences worth knowing before you debug them:
 
