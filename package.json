@@ -30,7 +30,8 @@
     "lint:rules": "node test/stylelint/run.mjs",
     "lint": "npm run lint:css && npm run lint:rules",
     "verify": "node scripts/verify-build.mjs",
-    "prepublishOnly": "npm run build && npm run lint && npm run verify"
+    "prepublishOnly": "npm run build && npm run lint && npm run verify",
+    "test": "vitest run --project=storybook"
   },
   "peerDependencies": {
     "react": "^19.2.8",
@@ -53,19 +54,23 @@
     "@small-ds/tokens": "file:../small-ds-tokens"
   },
   "devDependencies": {
-    "@storybook/addon-a11y": "^10.5.10",
-    "@storybook/addon-docs": "^10.5.10",
-    "@storybook/react-vite": "^10.5.10",
+    "@storybook/addon-a11y": "^10.6.1",
+    "@storybook/addon-docs": "^10.6.1",
+    "@storybook/addon-vitest": "^10.6.1",
+    "@storybook/react-vite": "^10.6.1",
     "@types/react": "^19.2.18",
     "@types/react-dom": "^19.2.5",
     "@vitejs/plugin-react": "^6.1.1",
+    "@vitest/browser-playwright": "^5.0.3",
+    "playwright": "^1.63.0",
     "react": "^19.2.8",
     "react-dom": "^19.2.8",
-    "storybook": "^10.5.10",
+    "storybook": "^10.6.1",
     "stylelint": "^17.14.1",
     "stylelint-config-standard": "^40.0.0",
     "stylelint-declaration-strict-value": "^1.12.1",
     "typescript": "^7.0.2",
-    "vite": "^8.2.2"
+    "vite": "^8.2.2",
+    "vitest": "^5.0.3"
   }
 }

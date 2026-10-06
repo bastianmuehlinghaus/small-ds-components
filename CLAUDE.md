@@ -277,7 +277,14 @@ npm run lint:rules   # tests the stylelint config itself against fixtures
 npm run typecheck
 npm run build        # vite lib build + declarations
 npm run verify       # asserts the built artefact obeys the same rules
+npm test             # every story as a test in headless Chromium, with axe
 ```
+
+`npm test` runs `@storybook/addon-vitest`: each story must render, pass its
+`play` function if it has one, and show no axe violations. The one exemption,
+contrast inside `[data-disabled]` (WCAG 1.4.3 inactive controls), and why it
+exists, is in `.storybook/preview.tsx`. The first run on a new machine needs
+`npx playwright install chromium`.
 
 `npm run verify` checks `dist/`, not `src/` — `composes` pulls the tokens
 package's typography classes into the bundle and CSS Modules rewrites the class

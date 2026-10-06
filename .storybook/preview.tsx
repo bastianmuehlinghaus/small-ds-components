@@ -35,7 +35,19 @@ const preview: Preview = {
   initialGlobals: { theme: "light" },
   parameters: {
     controls: { matchers: { color: /(background|color)$/i } },
-    a11y: { test: "error" },
+    // Any axe violation fails `npm test`. One narrow exemption: WCAG 1.4.3
+    // exempts inactive controls from contrast, and axe already skips text
+    // inside natively disabled elements, but not text beside them, such as a
+    // disabled Checkbox's label or a disabled TextField's description. Those
+    // all sit inside a [data-disabled] element (Radix or TextField sets it),
+    // so the contrast rule skips exactly that. Every other rule still runs
+    // there.
+    a11y: {
+      test: "error",
+      config: {
+        rules: [{ id: "color-contrast", selector: "*:not([data-disabled], [data-disabled] *)" }],
+      },
+    },
     // A "Code" tab beside Controls: the JSX of the current story, live.
     docs: { codePanel: true },
   },
