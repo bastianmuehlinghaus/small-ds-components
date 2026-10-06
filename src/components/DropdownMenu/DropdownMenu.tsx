@@ -8,7 +8,19 @@ import styles from "./DropdownMenu.module.css";
 
 /* Radix owns behaviour: focus trapping, roving highlight, type-ahead,
    collision-aware positioning, Escape and outside-press dismissal. This file is
-   appearance only. */
+   appearance only, with one exception: choosing a checkbox or radio row keeps
+   the menu open (see keepOpen). */
+
+/* Radix closes the menu on every select. A checkbox or radio row is a setting,
+   not an action, so it stays open and several can be changed in one visit.
+   Radix still toggles the row: its checked handlers ignore defaultPrevented.
+   Escape, an outside press and the trigger still close the menu. */
+function keepOpen(onSelect?: (event: Event) => void) {
+  return (event: Event) => {
+    onSelect?.(event);
+    event.preventDefault();
+  };
+}
 
 export type DropdownMenuContentProps = ComponentPropsWithoutRef<typeof Radix.Content>;
 
@@ -47,11 +59,12 @@ export type DropdownMenuCheckboxItemProps = ComponentPropsWithoutRef<typeof Radi
 export const DropdownMenuCheckboxItem = forwardRef<
   ComponentRef<typeof Radix.CheckboxItem>,
   DropdownMenuCheckboxItemProps
->(function DropdownMenuCheckboxItem({ className, children, ...props }, ref) {
+>(function DropdownMenuCheckboxItem({ className, children, onSelect, ...props }, ref) {
   return (
     <Radix.CheckboxItem
       ref={ref}
       className={cx(styles.item, styles.selectionItem, className)}
+      onSelect={keepOpen(onSelect)}
       {...props}
     >
       {/* The Checkbox's box, not the Checkbox: the row is already the
@@ -76,11 +89,12 @@ export type DropdownMenuRadioItemProps = ComponentPropsWithoutRef<typeof Radix.R
 export const DropdownMenuRadioItem = forwardRef<
   ComponentRef<typeof Radix.RadioItem>,
   DropdownMenuRadioItemProps
->(function DropdownMenuRadioItem({ className, children, ...props }, ref) {
+>(function DropdownMenuRadioItem({ className, children, onSelect, ...props }, ref) {
   return (
     <Radix.RadioItem
       ref={ref}
       className={cx(styles.item, styles.selectionItem, className)}
+      onSelect={keepOpen(onSelect)}
       {...props}
     >
       <span className={cx(selection.control, selection.radio)} aria-hidden="true">

@@ -62,13 +62,12 @@ export const WithSelection: Story = {
 };
 
 /** A "select all" row goes indeterminate while only some rows are checked.
- *  The rows keep the menu open on select, so the parent can be watched. */
+ *  Checkbox rows keep the menu open, so the parent can be watched. */
 export const SelectAll: Story = {
   render: function SelectAllStory() {
     const [tiers, setTiers] = useState({ primitives: true, semantics: false, components: true });
     const values = Object.values(tiers);
     const all = values.every(Boolean) ? true : values.some(Boolean) ? "indeterminate" : false;
-    const keepOpen = (event: Event) => event.preventDefault();
 
     return (
       <DropdownMenu.Root>
@@ -78,7 +77,6 @@ export const SelectAll: Story = {
         <DropdownMenu.Content>
           <DropdownMenu.CheckboxItem
             checked={all}
-            onSelect={keepOpen}
             onCheckedChange={(next) =>
               setTiers({ primitives: next, semantics: next, components: next })
             }
@@ -90,8 +88,7 @@ export const SelectAll: Story = {
             <DropdownMenu.CheckboxItem
               key={key}
               checked={tiers[key]}
-              onSelect={keepOpen}
-              onCheckedChange={(next) => setTiers({ ...tiers, [key]: next })}
+                onCheckedChange={(next) => setTiers({ ...tiers, [key]: next })}
             >
               {key.charAt(0).toUpperCase() + key.slice(1)}
             </DropdownMenu.CheckboxItem>

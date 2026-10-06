@@ -54,6 +54,10 @@ Radix owns behaviour — focus management, keyboard navigation, ARIA, collision
 -aware positioning. This package owns appearance, and every value in it comes
 from a token.
 
+The one behaviour change: DropdownMenu checkbox and radio rows keep the menu
+open when chosen, because they are settings rather than actions. Plain items
+still close it, as do Escape, an outside press and the trigger.
+
 ## Rules
 
 **1. Never invent a token.** If a component seems to need a value the tokens
