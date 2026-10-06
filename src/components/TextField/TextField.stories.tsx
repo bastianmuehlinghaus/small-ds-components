@@ -5,7 +5,9 @@ const meta = {
   title: "Components/TextField",
   component: TextField,
   parameters: { layout: "padded" },
-  args: { label: "Token name", placeholder: "color/border/focus" },
+  // A token path is not personal data, so browser autofill has nothing to offer
+  // here. Without this, "Token name" makes browsers suggest people's names.
+  args: { label: "Token name", placeholder: "color/border/focus", autoComplete: "off" },
   decorators: [(Story) => <div style={{ maxWidth: "15rem" }}><Story /></div>],
 } satisfies Meta<typeof TextField>;
 

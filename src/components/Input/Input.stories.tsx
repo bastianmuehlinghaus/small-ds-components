@@ -5,7 +5,9 @@ const meta = {
   title: "Components/Input",
   component: Input,
   parameters: { layout: "padded" },
-  args: { placeholder: "Search tokens", "aria-label": "Search tokens" },
+  // A token search is not personal data, so browser autofill has nothing to
+  // offer here.
+  args: { placeholder: "Search tokens", "aria-label": "Search tokens", autoComplete: "off" },
   decorators: [(Story) => <div style={{ maxWidth: "15rem" }}><Story /></div>],
 } satisfies Meta<typeof Input>;
 
