@@ -2,25 +2,18 @@ import { forwardRef } from "react";
 import type { ComponentPropsWithoutRef, ComponentRef, ReactNode } from "react";
 import * as Radix from "@radix-ui/react-checkbox";
 import { cx } from "../../cx";
-import { CheckmarkIcon } from "../Icon";
+import { CheckmarkIcon, DashIcon } from "../Icon";
 import styles from "../SelectionControl/SelectionControl.module.css";
 
 /* Radix owns behaviour: the checkbox role, Space to toggle, controlled and
-   uncontrolled state, and a hidden native input so the value still submits
-   with a form. This file is appearance only. */
+   uncontrolled state, aria-checked="mixed" for indeterminate, and a hidden
+   native input so the value still submits with a form. This file is
+   appearance only. */
 
-type RadixRootProps = ComponentPropsWithoutRef<typeof Radix.Root>;
+export type CheckboxCheckedState = Radix.CheckedState;
 
 export interface CheckboxProps
-  extends Omit<RadixRootProps, "checked" | "defaultChecked" | "onCheckedChange" | "children"> {
-  /**
-   * Controlled state. Indeterminate is not supported yet: Figma has no design
-   * for it and there is no dash icon, so the type rules it out rather than
-   * rendering an empty checked box.
-   */
-  checked?: boolean;
-  defaultChecked?: boolean;
-  onCheckedChange?: (checked: boolean) => void;
+  extends Omit<ComponentPropsWithoutRef<typeof Radix.Root>, "children"> {
   /** Error state. Sets `aria-invalid`, which also draws the error border. */
   invalid?: boolean;
   /**
@@ -32,7 +25,7 @@ export interface CheckboxProps
 
 export const Checkbox = forwardRef<ComponentRef<typeof Radix.Root>, CheckboxProps>(
   function Checkbox(
-    { className, children, invalid, onCheckedChange, disabled, ...props },
+    { className, children, invalid, disabled, ...props },
     ref,
   ) {
     const control = (
@@ -40,13 +33,16 @@ export const Checkbox = forwardRef<ComponentRef<typeof Radix.Root>, CheckboxProp
         ref={ref}
         disabled={disabled}
         aria-invalid={invalid || undefined}
-        onCheckedChange={onCheckedChange && ((state) => onCheckedChange(state === true))}
         className={cx(styles.control, styles.checkbox, styles.interactive, !children && className)}
         {...props}
       >
         <span className={styles.box}>
+          {/* Both glyphs render; the Indicator's data-state picks one in CSS,
+              so it also works uncontrolled, where React never sees the state.
+              Indeterminate looks like checked, with the dash for the mark. */}
           <Radix.Indicator className={styles.mark}>
-            <CheckmarkIcon />
+            <CheckmarkIcon className={styles.checkGlyph} />
+            <DashIcon className={styles.dashGlyph} />
           </Radix.Indicator>
         </span>
       </Radix.Root>

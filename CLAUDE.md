@@ -6,7 +6,8 @@ Currently Button, Checkbox, RadioGroup, Accordion and DropdownMenu.
 **Figma:** [Small DS: Components](https://www.figma.com/design/VBd0r5d1gcGPQSKrR8LzCp/Small-DS--Components)
 (`VBd0r5d1gcGPQSKrR8LzCp`, page `Components`) — the same components as
 Figma component sets, built from the token library. Button 30 variants
-(Variant × Size × State), Checkbox 10 and Radio 10 (Checked × State), Menu
+(Variant × Size × State), Checkbox 15 (Checked × State, where Checked includes Indeterminate) and
+Radio 10 (Checked × State), Menu
 Item 14 (Type × State; the Checkbox and Radio types have no Selected state),
 Accordion Item 6 (State × Interaction), plus five icon components — chevron right, down, up,
 checkmark and dash, exported here as `ChevronRightIcon`, `ChevronDownIcon`,
@@ -87,8 +88,10 @@ icon, following Atlassian: a `size-icon-lg` (24) footprint with the box inset
 by `space-inset-xs`, so the box is 16px with no box-size token.
 `selection-control/size/sm|md` are deliberately unused. The menu draws the box
 only, never a second Radix control, because the row is already the
-`menuitemcheckbox`. Indeterminate is ruled out in the types until Figma has a
-design and a dash icon for it.
+`menuitemcheckbox`. Checkbox supports Radix's `"indeterminate"`, styled as
+checked with `DashIcon` for the mark. The Indicator renders both glyphs and
+its `data-state` picks one in CSS, so it works uncontrolled too. The menu rows
+do not draw indeterminate yet.
 
 If a component needs a Tier 3 token that doesn't exist, that is a conversation
 with Bastian, not a token to add. See rule 1.
