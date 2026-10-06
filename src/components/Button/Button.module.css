@@ -90,7 +90,10 @@
   padding-inline: var(--sds-button-space-inset-x-md);
 }
 
-/* --- variants ---------------------------------------------------------- */
+/* --- variants ----------------------------------------------------------
+   A button that controls an open popover (a menu trigger, via Radix's
+   aria-expanded) holds the pressed layer for as long as it is open. Hover
+   would read as stale once the pointer has moved into the menu. */
 
 .default {
   background-color: var(--sds-button-default-color-background-default);
@@ -107,7 +110,8 @@
   --sds-button-overlay: var(--sds-button-default-color-overlay-hover);
 }
 
-.default:active:not(:disabled) {
+.default:active:not(:disabled),
+.default[aria-expanded="true"]:not(:disabled) {
   --sds-button-overlay: var(--sds-button-default-color-overlay-pressed);
 }
 
@@ -126,7 +130,8 @@
   --sds-button-overlay: var(--sds-button-primary-color-overlay-hover);
 }
 
-.primary:active:not(:disabled) {
+.primary:active:not(:disabled),
+.primary[aria-expanded="true"]:not(:disabled) {
   --sds-button-overlay: var(--sds-button-primary-color-overlay-pressed);
 }
 
@@ -147,6 +152,7 @@
   --sds-button-overlay: var(--sds-button-secondary-color-overlay-hover);
 }
 
-.secondary:active:not(:disabled) {
+.secondary:active:not(:disabled),
+.secondary[aria-expanded="true"]:not(:disabled) {
   --sds-button-overlay: var(--sds-button-secondary-color-overlay-pressed);
 }
