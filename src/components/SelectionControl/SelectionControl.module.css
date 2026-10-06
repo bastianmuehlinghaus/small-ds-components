@@ -1,0 +1,189 @@
+/**
+ * The visual half of Checkbox, Radio and the DropdownMenu selection items.
+ * Internal: not exported, because the menu needs the box without a second
+ * interactive element inside its menuitemcheckbox.
+ *
+ * Reads Tier 3 `--sds-selection-control-*` for the box, Tier 2 for the
+ * footprint and focus ring (Tier 3 does not model them), and `--sds-motion-*`
+ * under the documented exception.
+ *
+ * Sizing follows Atlassian's approach, as in the Figma Checkbox and Radio sets:
+ * the control is an icon-sized footprint (`size-icon-lg`, 24) with the visible
+ * box inset by `space-inset-xs`, which gives a 16px box and no box-size token.
+ *
+ * State comes from Radix's data attributes. The footprint either *is* the
+ * Radix element carrying them (Checkbox.Root, RadioGroup.Item) or sits
+ * directly inside one (DropdownMenu CheckboxItem / RadioItem), so every state
+ * selector accepts both.
+ */
+
+/* --- footprint ------------------------------------------------------------ */
+
+.control {
+  display: inline-grid;
+  flex-shrink: 0;
+  box-sizing: border-box;
+  width: var(--sds-size-icon-lg);
+  height: var(--sds-size-icon-lg);
+  padding: var(--sds-space-inset-xs);
+  margin: 0;
+  border: none;
+  background-color: transparent;
+  color: inherit;
+  appearance: none;
+}
+
+.checkbox {
+  /* The focus ring follows the footprint, so it keeps radius-control (4)
+     while the box itself is radius-control-sm (2) — as in Figma. */
+  border-radius: var(--sds-radius-control);
+}
+
+.radio {
+  border-radius: var(--sds-selection-control-border-radius-radio);
+}
+
+/* Interactive footprints only — a menu row has its own highlight. */
+.interactive {
+  cursor: pointer;
+}
+
+/* An inside ring, like the 2px inside stroke on the Figma footprint: it sits
+   in the inset around the box rather than growing the control. */
+.interactive:focus-visible {
+  outline: var(--sds-border-width-focus) solid var(--sds-color-border-focus);
+  outline-offset: calc(var(--sds-border-width-focus) * -1);
+}
+
+/* --- box ------------------------------------------------------------------ */
+
+.box {
+  position: relative;
+  display: grid;
+  box-sizing: border-box;
+  width: 100%;
+  height: 100%;
+  border: var(--sds-border-width-default) solid var(--sds-selection-control-color-border-default);
+  background-color: var(--sds-selection-control-color-background-default);
+  transition-property: background-color, border-color;
+  transition-duration: var(--sds-motion-duration-fast);
+  transition-timing-function: var(--sds-motion-easing-standard);
+}
+
+.checkbox > .box {
+  border-radius: var(--sds-selection-control-border-radius-checkbox);
+}
+
+.radio > .box {
+  /* The dot is the box's content area: 16 − 2 × border − 2 × inset = 6px.
+     CSS border-box and the Figma auto-layout agree on this exactly. */
+  padding: var(--sds-space-inset-xs);
+  border-radius: var(--sds-selection-control-border-radius-radio);
+}
+
+/* Hover is a state layer, as on Button and Input: an alpha overlay on top of
+   the background rather than a swap. Unchecked only — on the knockout fill the
+   overlay would be invisible, and Figma leaves checked boxes unchanged. */
+.box::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  background-color: transparent;
+  pointer-events: none;
+}
+
+:is(.interactive:hover, .field:hover > .interactive)[data-state="unchecked"]:not([data-disabled]) > .box::after {
+  background-color: var(--sds-color-state-hover);
+}
+
+/* --- marks ---------------------------------------------------------------- */
+
+/* The checkmark is the 16px Figma icon over the whole 16px box, border
+   included — the same overlap as in the Figma component — so it is positioned
+   against the border edge rather than placed in the 14px content area. */
+.mark {
+  position: absolute;
+  inset: calc(var(--sds-border-width-default) * -1);
+  display: grid;
+  place-items: center;
+  color: var(--sds-selection-control-color-content-checked);
+
+  /* CheckmarkIcon is already 16px (size-icon-sm) by default. */
+}
+
+.dot {
+  border-radius: var(--sds-selection-control-border-radius-radio);
+  background-color: var(--sds-selection-control-color-content-checked);
+}
+
+/* --- states --------------------------------------------------------------- */
+
+:is(.control[data-state="checked"], [data-state="checked"] > .control) > .box {
+  border-color: var(--sds-selection-control-color-border-checked);
+  background-color: var(--sds-selection-control-color-background-checked);
+}
+
+/* Invalid keeps the checked fill and only changes the border, as in Figma.
+   The group half sits in :where() so disabled, below, still outranks it. */
+:is(.control[aria-invalid="true"], :where(.group[aria-invalid="true"]) .control) > .box {
+  border-color: var(--sds-selection-control-color-border-error);
+}
+
+/* Disabled comes last so it wins over checked and invalid. */
+:is(.control[data-disabled], [data-disabled] > .control) > .box {
+  border-color: var(--sds-selection-control-color-border-disabled);
+  background-color: var(--sds-selection-control-color-background-disabled);
+}
+
+:is(.control[data-disabled], [data-disabled] > .control) .mark {
+  color: var(--sds-color-content-disabled);
+}
+
+:is(.control[data-disabled], [data-disabled] > .control) .dot {
+  background-color: var(--sds-color-content-disabled);
+}
+
+.interactive[data-disabled] {
+  cursor: not-allowed;
+}
+
+/* --- labelled field ------------------------------------------------------- */
+
+.field {
+  /* Label, not Body: a control label, matching the menu items. */
+  composes: sds-type-label-medium from "@small-ds/tokens/typography.css";
+
+  display: inline-flex;
+  align-items: flex-start;
+  gap: var(--sds-space-inline-xs);
+  color: var(--sds-color-content-default);
+  cursor: pointer;
+}
+
+.field[data-disabled],
+.field:has(> .control[data-disabled]) {
+  color: var(--sds-color-content-disabled);
+  cursor: not-allowed;
+}
+
+/* Centres the first line of the label on the 24px footprint, so a wrapping
+   label hangs from the control instead of centring the box on the paragraph.
+   With Label/Medium's 20px line this is 2px — Atlassian's label padding —
+   without stating it. At large font sizes it clamps to 0. */
+.text {
+  padding-block: calc((var(--sds-size-icon-lg) - 1lh) / 2);
+}
+
+/* --- radio group ---------------------------------------------------------- */
+
+.group {
+  display: flex;
+  flex-direction: column;
+  gap: var(--sds-space-stack-xs);
+}
+
+.group[data-orientation="horizontal"] {
+  flex-flow: row wrap;
+  gap: var(--sds-space-inline-lg);
+}
