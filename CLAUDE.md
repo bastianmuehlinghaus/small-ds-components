@@ -90,8 +90,10 @@ by `space-inset-xs`, so the box is 16px with no box-size token.
 only, never a second Radix control, because the row is already the
 `menuitemcheckbox`. Checkbox supports Radix's `"indeterminate"`, styled as
 checked with `DashIcon` for the mark. The Indicator renders both glyphs and
-its `data-state` picks one in CSS, so it works uncontrolled too. The menu rows
-do not draw indeterminate yet.
+its `data-state` picks one in CSS, so it works uncontrolled too. DropdownMenu
+CheckboxItem does the same with Radix's ItemIndicator. In Figma, the Menu
+Item's nested Checkbox instance exposes `Checked`, so Indeterminate needs no
+Menu Item variants of its own.
 
 If a component needs a Tier 3 token that doesn't exist, that is a conversation
 with Bastian, not a token to add. See rule 1.

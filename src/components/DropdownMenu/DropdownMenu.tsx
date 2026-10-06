@@ -2,7 +2,7 @@ import { forwardRef } from "react";
 import type { ComponentPropsWithoutRef, ComponentRef } from "react";
 import * as Radix from "@radix-ui/react-dropdown-menu";
 import { cx } from "../../cx";
-import { CheckmarkIcon, ChevronRightIcon } from "../Icon";
+import { CheckmarkIcon, ChevronRightIcon, DashIcon } from "../Icon";
 import selection from "../SelectionControl/SelectionControl.module.css";
 import styles from "./DropdownMenu.module.css";
 
@@ -59,8 +59,10 @@ export const DropdownMenuCheckboxItem = forwardRef<
           interactive element. The box reads the row's data-state. */}
       <span className={cx(selection.control, selection.checkbox)} aria-hidden="true">
         <span className={selection.box}>
+          {/* As in Checkbox: both glyphs, and data-state picks one. */}
           <Radix.ItemIndicator className={selection.mark}>
-            <CheckmarkIcon />
+            <CheckmarkIcon className={selection.checkGlyph} />
+            <DashIcon className={selection.dashGlyph} />
           </Radix.ItemIndicator>
         </span>
       </span>
