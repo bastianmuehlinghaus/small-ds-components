@@ -1,0 +1,79 @@
+/**
+ * Input reads Tier 3 `--sds-input-*` for every decision Figma models, Tier 2
+ * for the border widths, and `--sds-motion-*` under the documented exception.
+ */
+
+.input {
+  /* Body, not Label: the value is the reader's content, not a control label. */
+  composes: sds-type-body-xsmall from "@small-ds/tokens/typography.css";
+
+  box-sizing: border-box;
+  width: 100%;
+  margin: 0;
+  padding-block: 0;
+  padding-inline: var(--sds-input-space-inset-x);
+  border: var(--sds-border-width-default) solid var(--sds-input-color-border-default);
+  border-radius: var(--sds-input-border-radius);
+  background-color: var(--sds-input-color-background-default);
+  color: var(--sds-input-color-content-default);
+  appearance: none;
+
+  /* Focus is drawn by the border and an inside outline below, not the
+     browser's ring. */
+  outline: none;
+
+  transition-property: border-color, background-color;
+  transition-duration: var(--sds-motion-duration-fast);
+  transition-timing-function: var(--sds-motion-easing-standard);
+}
+
+.input::placeholder {
+  color: var(--sds-input-color-content-placeholder);
+
+  /* Firefox fades placeholders by default; the token is already the colour. */
+  opacity: 1;
+}
+
+/* min-height, never height — see CLAUDE.md on the rem/px split. */
+.sm {
+  min-height: var(--sds-input-size-height-sm);
+}
+
+.md {
+  min-height: var(--sds-input-size-height-md);
+}
+
+/* A state layer over the background, as on Button and the selection controls.
+   An <input> cannot carry ::after, so the overlay is a flat gradient image
+   above the background colour rather than a pseudo-element. :where() keeps it
+   at the specificity of .input, so the focus and disabled rules below need no
+   help to win. */
+.input:where(:hover:not(:disabled, :focus)) {
+  background-image: linear-gradient(var(--sds-input-color-overlay-hover), var(--sds-input-color-overlay-hover));
+}
+
+.input[aria-invalid="true"] {
+  border-color: var(--sds-input-color-border-error);
+}
+
+/* Focus wins over Invalid, as in Figma: it comes later at equal specificity.
+   The 1px border turns the focus colour, and an outline drawn just inside it
+   adds the difference to border-width-focus. That makes the Figma 2px inside
+   border without changing the box, so the text never shifts. */
+.input:focus {
+  border-color: var(--sds-input-color-border-focus);
+  outline: calc(var(--sds-border-width-focus) - var(--sds-border-width-default)) solid var(--sds-input-color-border-focus);
+  outline-offset: calc(var(--sds-border-width-focus) * -1);
+}
+
+/* Disabled comes last so it wins over everything above. */
+.input:disabled {
+  border-color: var(--sds-input-color-border-disabled);
+  background-color: var(--sds-input-color-background-disabled);
+  color: var(--sds-input-color-content-disabled);
+  cursor: not-allowed;
+}
+
+.input:disabled::placeholder {
+  color: var(--sds-input-color-content-disabled);
+}

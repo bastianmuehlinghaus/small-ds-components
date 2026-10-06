@@ -4,6 +4,12 @@ export type { ButtonProps, ButtonVariant, ButtonSize } from "./components/Button
 export { Checkbox } from "./components/Checkbox";
 export type { CheckboxProps, CheckboxCheckedState } from "./components/Checkbox";
 
+export { Input } from "./components/Input";
+export type { InputProps, InputSize } from "./components/Input";
+
+export { TextField } from "./components/TextField";
+export type { TextFieldProps } from "./components/TextField";
+
 export { RadioGroup, RadioGroupRoot, RadioGroupItem } from "./components/RadioGroup";
 export type { RadioGroupRootProps, RadioGroupItemProps } from "./components/RadioGroup";
 

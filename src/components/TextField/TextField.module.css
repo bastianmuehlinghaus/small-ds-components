@@ -1,0 +1,33 @@
+/**
+ * TextField has no Tier 3 tokens of its own: the box is Input, which reads
+ * `--sds-input-*`, and the label and message read Tier 2, like Accordion and
+ * DropdownMenu. The 4px rhythm between the three parts follows Atlassian.
+ */
+
+.field {
+  display: flex;
+  flex-direction: column;
+  gap: var(--sds-space-stack-xs);
+}
+
+.label {
+  composes: sds-type-label-medium from "@small-ds/tokens/typography.css";
+
+  color: var(--sds-color-content-default);
+}
+
+.message {
+  composes: sds-type-body-xsmall from "@small-ds/tokens/typography.css";
+
+  margin: 0;
+  color: var(--sds-color-content-subtle);
+}
+
+.error {
+  color: var(--sds-color-content-utility-error);
+}
+
+/* Disabled comes last so it also greys an error message, as in Figma. */
+.field[data-disabled] :is(.label, .message) {
+  color: var(--sds-color-content-disabled);
+}
