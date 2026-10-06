@@ -2,7 +2,7 @@ export { Button } from "./components/Button";
 export type { ButtonProps, ButtonVariant, ButtonSize } from "./components/Button";
 
 export { Checkbox } from "./components/Checkbox";
-export type { CheckboxProps } from "./components/Checkbox";
+export type { CheckboxProps, CheckboxCheckedState } from "./components/Checkbox";
 
 export { RadioGroup, RadioGroupRoot, RadioGroupItem } from "./components/RadioGroup";
 export type { RadioGroupRootProps, RadioGroupItemProps } from "./components/RadioGroup";

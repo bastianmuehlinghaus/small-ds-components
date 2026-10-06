@@ -112,6 +112,11 @@
   /* CheckmarkIcon is already 16px (size-icon-sm) by default. */
 }
 
+.mark[data-state="checked"] > .dashGlyph,
+.mark[data-state="indeterminate"] > .checkGlyph {
+  display: none;
+}
+
 .dot {
   border-radius: var(--sds-selection-control-border-radius-radio);
   background-color: var(--sds-selection-control-color-content-checked);
@@ -119,7 +124,11 @@
 
 /* --- states --------------------------------------------------------------- */
 
-:is(.control[data-state="checked"], [data-state="checked"] > .control) > .box {
+/* Indeterminate is styled as checked, as in Figma; only the mark differs. */
+:is(
+  .control:is([data-state="checked"], [data-state="indeterminate"]),
+  :is([data-state="checked"], [data-state="indeterminate"]) > .control
+) > .box {
   border-color: var(--sds-selection-control-color-border-checked);
   background-color: var(--sds-selection-control-color-background-checked);
 }
