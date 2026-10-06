@@ -37,6 +37,8 @@ The `Dropdown Menu` surface mirrors `.content` exactly: `background/raised`, a
 1px `border/default` (inside, counted in layout, as CSS `border-box` does),
 `radius/surface`, `inset-xs` padding and the `shadow/overlay` effect style.
 Examples whose rows differ from it are detached frames with the same bindings.
+Their trigger Buttons are `State=Pressed`, because a Button holds the pressed
+overlay while `aria-expanded` is true.
 
 A new component gets its own page in the same shape, with an example for each
 of its stories.
