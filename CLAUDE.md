@@ -182,7 +182,8 @@ every other check still looks green.
 
 - **`@small-ds/tokens` is linked by `file:../small-ds-tokens`**, because
   `npm link` needs write access to the global node root. Both repos must sit
-  side by side. **Switch this to `^0.1.0` when the tokens package is published.**
+  side by side. **Switch this to `^0.1.0` when the tokens package is published,**
+  and drop the tokens checkout and build from `.github/workflows/ci.yml`.
 - **Changing a token means rebuilding the tokens package** — `npm run build`
   over there, since `dist/` is gitignored and this repo reads it through the
   symlink. Storybook will not pick up a token change until you do.
@@ -280,6 +281,12 @@ npm run build        # vite lib build + declarations
 npm run verify       # asserts the built artefact obeys the same rules
 npm test             # every story as a test in headless Chromium, with axe
 ```
+
+CI (`.github/workflows/ci.yml`) runs `typecheck`, `lint`, `build`, `verify` and
+`test` on every pull request and every push to `main`, one step each. It checks
+out and builds `small-ds-tokens` from its `main` beside this repo first, so a
+pull request that needs an unmerged token change fails until that change lands
+in tokens.
 
 `npm test` runs `@storybook/addon-vitest`: each story must render, pass its
 `play` function if it has one, and show no axe violations. Behaviour that was
