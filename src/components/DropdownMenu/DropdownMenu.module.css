@@ -72,29 +72,19 @@
   background-color: var(--sds-color-state-hover);
 }
 
-.item[data-state="checked"] {
-  background-color: var(--sds-color-state-selected);
-}
-
 .item[data-disabled],
 .subTrigger[data-disabled] {
   color: var(--sds-color-content-disabled);
   cursor: not-allowed;
 }
 
-/* A fixed slot so labels align whether or not a row is currently checked. */
-.indicator {
-  display: inline-flex;
-  flex-shrink: 0;
-  align-items: center;
-  justify-content: center;
-  width: var(--sds-size-icon-sm);
-  height: var(--sds-size-icon-sm);
-}
+/* Checkbox and radio rows lead with the 24px selection footprint. Its 4px
+   inset plus this 4px gap puts the label 8px from the visible box — the same
+   distance as a standalone Checkbox, and as the Figma Menu Item.
 
-.indicator :where(svg) {
-  width: var(--sds-size-icon-sm);
-  height: var(--sds-size-icon-sm);
+   Checked rows get no selected background: the box already says checked. */
+.selectionItem {
+  gap: var(--sds-space-inline-xs);
 }
 
 .subChevron {

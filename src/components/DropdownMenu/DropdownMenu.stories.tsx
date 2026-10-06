@@ -29,7 +29,7 @@ export const Basic: Story = {
   ),
 };
 
-/** Labels, checkboxes and radios share one indicator slot so the labels line up. */
+/** Checkbox and radio rows lead with the same box as Checkbox and RadioGroup; checked rows get no selected background. */
 export const WithSelection: Story = {
   render: function WithSelectionStory() {
     const [showPrimitives, setShowPrimitives] = useState(true);

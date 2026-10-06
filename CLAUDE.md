@@ -1,13 +1,14 @@
 # Small DS — Components
 
 React components on Radix primitives, driven entirely by `@small-ds/tokens`.
-Currently Button, Accordion and DropdownMenu.
+Currently Button, Checkbox, RadioGroup, Accordion and DropdownMenu.
 
 **Figma:** [Small DS: Components](https://www.figma.com/design/VBd0r5d1gcGPQSKrR8LzCp/Small-DS--Components)
-(`VBd0r5d1gcGPQSKrR8LzCp`, page `Components`) — the same three components as
+(`VBd0r5d1gcGPQSKrR8LzCp`, page `Components`) — the same components as
 Figma component sets, built from the token library. Button 30 variants
-(Variant × Size × State), Menu Item 16 (Type × State), Accordion Item 6
-(State × Interaction), plus four icon components — chevron right, down, up and
+(Variant × Size × State), Checkbox 10 and Radio 10 (Checked × State), Menu
+Item 14 (Type × State; the Checkbox and Radio types have no Selected state),
+Accordion Item 6 (State × Interaction), plus four icon components — chevron right, down, up and
 checkmark, exported here as `ChevronRightIcon`, `ChevronDownIcon`,
 `ChevronUpIcon`, `CheckmarkIcon`.
 Tokens live in [Small DS: Design Tokens](https://www.figma.com/design/DABmspHvLwmzYjMrFBjVQW/Small-DS--Design-Tokens)
@@ -77,7 +78,17 @@ This is deliberate and **not** an inconsistency to tidy up:
 |---|---|---|
 | Button | Tier 3 `--sds-button-*` | Figma defines a full Tier 3 surface for it |
 | Accordion | Tier 2 semantics | Figma has no `accordion/*` tokens |
+| Checkbox, RadioGroup | Tier 3 `--sds-selection-control-*` for the box, Tier 2 for the footprint and focus ring | Tier 3 models the box only |
 | DropdownMenu | Tier 2 semantics | Figma has no `menu/*` tokens |
+
+Checkbox, RadioGroup and the DropdownMenu checkbox/radio rows share
+`SelectionControl.module.css`, which is internal. The control is sized like an
+icon, following Atlassian: a `size-icon-lg` (24) footprint with the box inset
+by `space-inset-xs`, so the box is 16px with no box-size token.
+`selection-control/size/sm|md` are deliberately unused. The menu draws the box
+only, never a second Radix control, because the row is already the
+`menuitemcheckbox`. Indeterminate is ruled out in the types until Figma has a
+design and a dash icon for it.
 
 If a component needs a Tier 3 token that doesn't exist, that is a conversation
 with Bastian, not a token to add. See rule 1.
