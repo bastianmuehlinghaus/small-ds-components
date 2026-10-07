@@ -4,7 +4,16 @@
  * and `--sds-motion-*` from Tier 1 under the documented exception.
  */
 
+/* Type comes from the Figma text style, never from font properties here:
+   Label/Medium, the same 14px as an Input's value and a menu row, so a row of
+   controls lines up on text as well as height.
+
+   min-height, never height: type is in rem and these tokens are in px, so a
+   raised browser font size must be able to grow the control rather than clip
+   the label. */
 .base {
+  composes: sds-type-label-medium from "@small-ds/tokens/typography.css";
+
   position: relative;
   isolation: isolate;
   display: inline-flex;
@@ -16,11 +25,13 @@
   appearance: none;
   cursor: pointer;
   text-decoration: none;
+  min-height: var(--sds-button-size-height);
+  padding-inline: var(--sds-button-space-inset-x);
   white-space: nowrap;
   user-select: none;
 }
 
-/* Spacing lives on the label, not as a flex gap: the button's per-size inset is
+/* Spacing lives on the label, not as a flex gap: the button's own inset is
    the icon-side inset, and the label's inset adds to it on text-only sides and
    becomes the label-to-icon distance next to an icon. One structure gives the
    tighter icon side on either end without knowing where the icon is — the
@@ -53,41 +64,12 @@
   cursor: not-allowed;
 }
 
-/* Icons scale with the control. `:where()` keeps specificity at zero so a
-   consumer's own icon styles still win. */
+/* `:where()` keeps specificity at zero so a consumer's own icon styles still
+   win. */
 .base :where(svg) {
-  width: var(--sds-button-size-icon-md);
-  height: var(--sds-button-size-icon-md);
+  width: var(--sds-button-size-icon);
+  height: var(--sds-button-size-icon);
   flex-shrink: 0;
-}
-
-/* --- sizes ------------------------------------------------------------------
-   min-height, never height: type is in rem and these tokens are in px, so a
-   raised browser font size must be able to grow the control rather than clip
-   the label.
-
-   Type comes from the Figma text style, never from font properties here. The
-   label ramp tracks the size ramp one-to-one, matching the Figma binding —
-   node 196:66 (the "Send" button at md) binds Label/Medium. `composes` cannot
-   be conditional, so it lives on each size rather than on .base. */
-
-.sm {
-  composes: sds-type-label-small from "@small-ds/tokens/typography.css";
-
-  min-height: var(--sds-button-size-height-sm);
-  padding-inline: var(--sds-button-space-inset-x-sm);
-}
-
-.sm :where(svg) {
-  width: var(--sds-button-size-icon-sm);
-  height: var(--sds-button-size-icon-sm);
-}
-
-.md {
-  composes: sds-type-label-medium from "@small-ds/tokens/typography.css";
-
-  min-height: var(--sds-button-size-height-md);
-  padding-inline: var(--sds-button-space-inset-x-md);
 }
 
 /* --- variants ----------------------------------------------------------

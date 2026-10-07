@@ -9,7 +9,7 @@
  *
  * Written to distinguish Tier 1 from the Tier 2 names that shadow them:
  *   --sds-border-width-1   (Tier 1)  vs  --sds-border-width-default (Tier 2)
- *   --sds-size-control-40  (Tier 1)  vs  --sds-size-control-md      (Tier 2)
+ *   --sds-size-control-32  (Tier 1)  vs  --sds-size-control-default (Tier 2)
  *   --sds-border-radius-12 (Tier 1)  vs  --sds-radius-surface       (Tier 2)
  *   --sds-spacing-16       (Tier 1)  vs  --sds-space-inset-lg       (Tier 2)
  * Hence the trailing \d on the numeric families rather than a bare prefix.

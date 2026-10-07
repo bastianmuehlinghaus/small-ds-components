@@ -42,10 +42,6 @@ export const Disabled: Story = {
   args: { description: "Applies to every page in the file.", disabled: true, defaultValue: "light" },
 };
 
-export const Small: Story = {
-  args: { size: "sm", description: "Applies to every page in the file." },
-};
-
 export const Multiple: Story = {
   args: {
     multiple: true,

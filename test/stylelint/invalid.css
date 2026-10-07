@@ -10,7 +10,7 @@
   gap: var(--sds-spacing-16);                            /* 5 */
   font-size: var(--sds-typography-font-size-16);         /* 6 */
   border-width: var(--sds-border-width-1);               /* 7 */
-  min-height: var(--sds-size-control-40);                /* 8 */
+  min-height: var(--sds-size-control-32);                /* 8 */
   border-radius: var(--sds-border-radius-12);            /* 9 */
 }
 
