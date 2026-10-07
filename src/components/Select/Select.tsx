@@ -2,6 +2,7 @@ import { forwardRef, useCallback, useId, useRef, useState } from "react";
 import type { ButtonHTMLAttributes, ReactNode, Ref } from "react";
 import { Select as Base } from "@base-ui/react/select";
 import { cx } from "../../cx";
+import { tokenPx } from "../../tokenPx";
 import { Chip } from "../Chip";
 import { CheckmarkIcon, ChevronDownIcon } from "../Icon";
 import selection from "../SelectionControl/SelectionControl.module.css";
@@ -72,6 +73,10 @@ interface SelectMultipleProps {
 }
 
 export type SelectProps = SelectBaseProps & (SelectSingleProps | SelectMultipleProps);
+
+/* The gap between the field and its list, the same as a menu's from its trigger.
+   Base UI takes it as a number, so it is read from the token, not from CSS. */
+const LIST_OFFSET = tokenPx("sds-space-inline-xs");
 
 const toArray = (value: string | string[] | undefined): string[] =>
   value === undefined ? [] : Array.isArray(value) ? value : [value];
@@ -150,7 +155,7 @@ export const Select = forwardRef<HTMLButtonElement, SelectProps>(function Select
     <Base.Portal container={portalContainer}>
       {/* Base UI aligns the list over the trigger, like a native select, unless
           told not to. The list sits below the field, as the menu does. */}
-      <Base.Positioner alignItemWithTrigger={false} align="start" sideOffset={4} className={styles.positioner}>
+      <Base.Positioner alignItemWithTrigger={false} align="start" sideOffset={LIST_OFFSET} className={styles.positioner}>
         <Base.Popup className={styles.popup}>
           <Base.List className={styles.list}>
             {options.map((option) => (
