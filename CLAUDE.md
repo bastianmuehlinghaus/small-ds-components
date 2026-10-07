@@ -1,7 +1,7 @@
 # Small DS — Components
 
 React components on Radix primitives, driven entirely by `@small-ds/tokens`.
-Currently Button, Checkbox, RadioGroup, Input, TextField, Accordion and DropdownMenu.
+Currently Button, Checkbox, RadioGroup, Input, TextField, Chip, Select, SelectField, Accordion and DropdownMenu.
 
 **Figma:** [Small DS: Components](https://www.figma.com/design/VBd0r5d1gcGPQSKrR8LzCp/Small-DS--Components)
 (`VBd0r5d1gcGPQSKrR8LzCp`) has one page per component, and each page shows the
@@ -31,8 +31,19 @@ text.
 | Radio group | `Radio` set; `Radio Group` set (items are exposed Radios) | 10: Checked × State; 6: Orientation × State | `RadioGroup.Item`; `RadioGroup.Root` | Default, Horizontal, DisabledItem, DisabledGroup, Invalid |
 | Text field | `Input` set; `Text Field` set (label, exposed Input, message) | 20: Size (Small, Medium) × State × Value (Placeholder, Filled); 6: Size × State (Default, Disabled, Invalid) | `Input`; `TextField` | Input / Default, Input / Sizes, TextField / Default, WithDescription, Invalid, Disabled, Small |
 | Dropdown menu | `Menu Item` set; `Menu Group Label`; `Menu Separator`; `Dropdown Menu` surface | 14: Type × State (Checkbox and Radio have no Selected) | `.Item` and friends; `.Label`; `.Separator`; `.Content` | Basic, OpenByDefault, WithSelection, SelectAll, WithSubmenu |
-| Icons | five `Icon / <name>` components | n/a | `ChevronRightIcon`, `ChevronDownIcon`, `ChevronUpIcon`, `CheckmarkIcon`, `DashIcon` | Sizes (16 / 20 / 24, bound to `size/icon/*`) |
+| Chip | `Chip` set | 7: Removable × State (Default, Hover, Pressed, Focus, Disabled; a chip without a remove button has only Default and Disabled) | `Chip` | Default, Removable, Disabled, LongLabel |
+| Select | `Select` set; `Select Field` set (label, Select instance, message) | 30: Size × State × Value (Placeholder, Filled, Chips); 6: Size × State (Default, Disabled, Invalid) | `Select`; `SelectField` | Select: Single, SingleWithValue, Multiple, MultipleEmpty, MultipleWrapping, Small, Invalid, Disabled, DisabledMultiple. SelectField: Default, WithDescription, Invalid, Disabled, Small, Multiple |
+| Icons | six `Icon / <name>` components | n/a | `ChevronRightIcon`, `ChevronDownIcon`, `ChevronUpIcon`, `CheckmarkIcon`, `DashIcon`, `CloseIcon` | Sizes (16 / 20 / 24, bound to `size/icon/*`) |
 | Focus ring | `Focus Ring` set | 2: borderWidth | none. CSS uses `outline`. Used by the Button Focus variants | n/a |
+
+The Chip and Select pages were built with Inter placeholder text, since Söhne
+is unavailable to the MCP (see below), so their text styles are applied by hand:
+Header title Heading/Large, Header description Body/Small, `Examples` Heading/Small,
+example captions and the Chip label Label/Small, the Select value and
+placeholder Body/XSmall, and the Select Field label and message Label/Medium.
+Apply a style to the main components' text and instances follow. The Select set
+is drawn closed, as the stories are; its open list is the `Dropdown Menu`
+surface with checkbox or radio items, which is what the code reuses.
 
 The `Dropdown Menu` surface mirrors `.content` exactly: `background/raised`, a
 1px `border/default` (inside, counted in layout, as CSS `border-box` does),
@@ -52,7 +63,7 @@ Tokens live in [Small DS: Design Tokens](https://www.figma.com/design/DABmspHvLw
 (`DABmspHvLwmzYjMrFBjVQW`).
 
 Radix owns behaviour — focus management, keyboard navigation, ARIA, collision
--aware positioning. This package owns appearance, and every value in it comes
+-aware positioning (Select is the exception: Base UI, see below). This package owns appearance, and every value in it comes
 from a token.
 
 The one behaviour change: DropdownMenu checkbox and radio rows keep the menu
@@ -120,6 +131,8 @@ This is deliberate and **not** an inconsistency to tidy up:
 | Button | Tier 3 `--sds-button-*` | Figma defines a full Tier 3 surface for it |
 | Accordion | Tier 2 semantics | Figma has no `accordion/*` tokens |
 | Input | Tier 3 `--sds-input-*`, plus Tier 2 border widths | Figma defines a full Tier 3 surface for it |
+| Select | Tier 3 `--sds-input-*` and `--sds-select-*`, plus Tier 2 for the list | the box is Input's; Figma defines two `select/*` tokens (placeholder, indicator) |
+| Chip | Tier 3 `--sds-chip-size-height`, plus Tier 2 | Figma defines one `chip/*` token, its height; `space/inline/xxs` (2) is Tier 2 |
 | TextField | Input for the box, Tier 2 for the label and message | no `text-field/*` tokens |
 | Checkbox, RadioGroup | Tier 3 `--sds-selection-control-*` for the box, Tier 2 for the footprint and focus ring | Tier 3 models the box only |
 | DropdownMenu | Tier 2 semantics | Figma has no `menu/*` tokens |
@@ -135,6 +148,60 @@ disagree. `box-shadow: inset` would also work, but the strict-value lint
 rejects the `inset` keyword. Hover is a flat
 `linear-gradient` of the overlay token, because an `<input>` can't carry
 `::after`.
+
+Select is the one component on **Base UI** rather than Radix, deliberately.
+A select field is a listbox by convention: the trigger is a combobox, the rows
+are options, `multiple` adds `aria-multiselectable`. Radix has no multiple
+Select, and building one from DropdownMenu would announce as a button that
+opens a menu of settings, which is wrong for a form field. Everything else
+stays on Radix; do not mix the two inside one component. The rows reuse the
+DropdownMenu's (`composes` of its `.item`, which keys on `data-highlighted` and
+`data-disabled`, as Base UI does too) and the Checkbox/Radio box, so a Select
+and a menu with selection rows look the same. Single shows radio rows and
+closes on choice; `multiple` shows checkbox rows, stays open, and puts a Chip
+per choice in the field. The list is positioned below the field
+(`alignItemWithTrigger={false}`); Base UI's default overlays the trigger.
+
+Single: the trigger button is the box and holds the value. Multiple: a button
+cannot hold the chips' buttons, so the trigger is an absolutely positioned layer
+under the content, and the chips sit above it with `pointer-events: none`,
+except each chip's remove button. The trigger still holds the chosen labels as
+text, hidden by colour, so a screen reader reads the value from the combobox.
+Removing a chip moves focus to the trigger, since the chip unmounts with it. The
+trigger's states repeat Input's, because an `<input>` and a `<button>` cannot
+share a rule set; change them together. SelectField shares TextField's
+stylesheet for the label and message.
+
+**Inside a Radix Dialog** (tested, and kept as the `InsideRadixDialog` story, a
+regression test confirmed to fail without either fix) a Select needs two things
+from the Dialog's side. First, `portalContainer`: pass the Dialog content
+element. A Radix modal sets `pointer-events: none` on `<body>`, and the list
+portals there, so by default its options cannot be clicked. Second, the Dialog
+must veto its own Escape while the Select is open, or one Escape closes both:
+`onEscapeKeyDown={(e) => { if (e.target.closest('[role="listbox"],
+[role="combobox"][aria-expanded="true"]')) e.preventDefault(); }}`. Base UI keeps
+the focus on the trigger while the list is open, so the target is the trigger,
+not the list. A future Dialog component should do both itself, with a context
+for the container.
+
+Chip is static. Its only interactive part is the optional remove button, named
+"Remove" + the label. Its height is `chip/size/height` (20, aliasing
+`size/icon/md`), added with Bastian's approval so that a Select's field is as
+tall as an Input: a row of 20px chips plus the field's padding fits inside the
+32px (`sm`) and 40px (`md`) minimums, so the height changes only when chips wrap
+onto a second row. This follows Atlassian, whose multi-value tag is 20px for the
+same reason. A 24px chip made `sm` grow to 34. The `SameHeightAsInput` story
+holds it.
+
+The remove button is the × itself: 16 square (`size-icon-sm`) with
+`radius-control-sm`, so its hover and pressed fill is a small rounded square
+inset from the chip's edges, not a strip. It sits 2 from the top, bottom and end
+(`space-inline-xxs`, added for this, with Bastian's approval), 4 from the label,
+and the label starts 4 from the start. A chip without a button pads 4 at both
+ends, so both kinds share the same start inset. The button is a 16px target;
+WCAG 2.2's 24px minimum (2.5.8) is met only through its spacing exception, which
+the Select's field-wide trigger underneath arguably defeats. Worth a look before
+anyone relies on a claim of AA conformance.
 
 Checkbox, RadioGroup and the DropdownMenu checkbox/radio rows share
 `SelectionControl.module.css`, which is internal. The control is sized like an

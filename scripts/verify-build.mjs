@@ -35,9 +35,11 @@ check(`Tier 1 appears only in the ${referencing.length} composed typography clas
 const js = fs.readFileSync("dist/index.js", "utf8");
 check("react is externalised, not bundled", !/function\s+useState\s*\(/.test(js));
 check("radix is externalised, not bundled", /@radix-ui\//.test(js));
+check("base ui is imported, not bundled", /from\s*["']@base-ui\/react\/select["']/.test(js) && js.length < 100_000,
+  `index.js is ${(js.length / 1024).toFixed(0)} kB`);
 
 const dts = fs.readFileSync("dist/index.d.ts", "utf8");
-for (const name of ["Button", "Checkbox", "RadioGroup", "Input", "TextField", "Accordion", "DropdownMenu"]) {
+for (const name of ["Button", "Checkbox", "RadioGroup", "Input", "TextField", "Accordion", "DropdownMenu", "Chip", "Select", "SelectField"]) {
   check(`${name} is exported with types`, js.includes(name) && dts.includes(name));
 }
 

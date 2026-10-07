@@ -1,0 +1,239 @@
+/**
+ * Select reads Tier 3 `--sds-input-*` for the box, as Input does, plus the two
+ * `--sds-select-*` tokens Figma defines for it. The list reuses the
+ * DropdownMenu's rows and mirrors its surface, in Tier 2. `--sds-motion-*`
+ * comes from Tier 1 under the documented exception.
+ *
+ * The trigger's states repeat Input's, for a <button>: an <input> and a
+ * <button> cannot share one rule set. Keep the two together.
+ */
+
+.field {
+  position: relative;
+  box-sizing: border-box;
+  width: 100%;
+}
+
+/* --- the box -------------------------------------------------------------- */
+
+.trigger {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+  border: var(--sds-border-width-default) solid var(--sds-input-color-border-default);
+  border-radius: var(--sds-input-border-radius);
+  background-color: var(--sds-input-color-background-default);
+  color: var(--sds-input-color-content-default);
+  cursor: pointer;
+  appearance: none;
+  outline: none;
+
+  transition-property: border-color, background-color;
+  transition-duration: var(--sds-motion-duration-fast);
+  transition-timing-function: var(--sds-motion-easing-standard);
+}
+
+/* Single: the trigger is the box, and holds the value. */
+.single {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--sds-space-inline-sm);
+  width: 100%;
+  padding-inline: var(--sds-input-space-inset-x);
+  text-align: start;
+}
+
+/* min-height, never height — see CLAUDE.md on the rem/px split. */
+.sm {
+  min-height: var(--sds-input-size-height-sm);
+}
+
+.md {
+  min-height: var(--sds-input-size-height-md);
+}
+
+.trigger:where(:hover:not(:disabled, [data-disabled], :focus, [data-popup-open])) {
+  background-image: linear-gradient(var(--sds-input-color-overlay-hover), var(--sds-input-color-overlay-hover));
+}
+
+.trigger[aria-invalid="true"] {
+  border-color: var(--sds-input-color-border-error);
+}
+
+/* Open counts as focused, as it does on the trigger itself: Base UI keeps the
+   focus on the trigger while the list is open, and this stays for a mouse
+   click that closes it. Focus wins over Invalid, as on Input. The padding
+   gives back the extra width, so the value never shifts. */
+.trigger:focus,
+.trigger[data-popup-open] {
+  border-width: var(--sds-border-width-focus);
+  border-color: var(--sds-input-color-border-focus);
+}
+
+.single:focus,
+.single[data-popup-open] {
+  padding-inline: calc(var(--sds-input-space-inset-x) - (var(--sds-border-width-focus) - var(--sds-border-width-default)));
+}
+
+.trigger:is(:disabled, [data-disabled]) {
+  border-color: var(--sds-input-color-border-disabled);
+  background-color: var(--sds-input-color-background-disabled);
+  color: var(--sds-input-color-content-disabled);
+  cursor: not-allowed;
+}
+
+.value {
+  composes: sds-type-body-xsmall from "@small-ds/tokens/typography.css";
+
+  min-width: 0;
+  overflow: hidden;
+  color: var(--sds-input-color-content-default);
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.value[data-placeholder] {
+  color: var(--sds-select-color-content-placeholder);
+}
+
+.trigger:is(:disabled, [data-disabled]) .value {
+  color: var(--sds-input-color-content-disabled);
+}
+
+/* Positioned, so in a multiple Select it paints over the trigger layer; and
+   decorative, so it never takes the click. */
+.chevron {
+  position: relative;
+  display: inline-flex;
+  flex-shrink: 0;
+  color: var(--sds-select-color-icon-indicator);
+  pointer-events: none;
+}
+
+.trigger:is(:disabled, [data-disabled]) .chevron,
+.field[data-disabled] .chevron {
+  color: var(--sds-input-color-content-disabled);
+}
+
+/* --- multiple ------------------------------------------------------------- */
+
+/* The trigger is a layer under the content and fills the field; its border
+   is drawn on top of the content's padding, as an Input's is. */
+.multiple {
+  display: flex;
+  align-items: center;
+  gap: var(--sds-space-inline-sm);
+
+  /* Chips sit closer to the edge than text does: they have a surface of their
+     own. The placeholder gives the difference back, so it still lines up
+     with a single Select's value. */
+  padding-block: calc(var(--sds-space-inset-xs) + var(--sds-border-width-default));
+  padding-inline: calc(var(--sds-space-inset-xs) + var(--sds-border-width-default))
+    calc(var(--sds-input-space-inset-x) + var(--sds-border-width-default));
+}
+
+.multiple > .trigger {
+  position: absolute;
+  inset: 0;
+  width: auto;
+  padding-inline: 0;
+  overflow: hidden;
+}
+
+.multiple > .trigger.single {
+  display: block;
+}
+
+/* Hidden by colour, not removed, so it is still the combobox's text. */
+.hiddenValue {
+  display: block;
+  padding-inline: var(--sds-input-space-inset-x);
+  overflow: hidden;
+  color: transparent;
+  white-space: nowrap;
+}
+
+/* Positioned and later in the DOM, so it paints over the trigger. It lets the
+   pointer through to the trigger; only a chip's remove button takes it back. */
+.content {
+  position: relative;
+  display: flex;
+  flex: 1;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--sds-space-inline-xs);
+  min-width: 0;
+  pointer-events: none;
+}
+
+.content button {
+  pointer-events: auto;
+}
+
+.placeholder {
+  composes: sds-type-body-xsmall from "@small-ds/tokens/typography.css";
+
+  padding-inline-start: calc(var(--sds-input-space-inset-x) - var(--sds-space-inset-xs));
+  color: var(--sds-select-color-content-placeholder);
+}
+
+.field[data-disabled] .placeholder {
+  color: var(--sds-input-color-content-disabled);
+}
+
+/* --- the list ------------------------------------------------------------- */
+
+.positioner {
+  outline: none;
+}
+
+/* The same surface as DropdownMenu.content: raised, a 1px default border,
+   surface radius, inset-xs padding, the overlay shadow. It is at least as wide
+   as the field: a measurement Base UI takes from the trigger, not a width of
+   our own, so it needs no token. */
+.popup {
+  box-sizing: border-box;
+  min-width: var(--anchor-width);
+  max-height: var(--available-height);
+  padding: var(--sds-space-inset-xs);
+  overflow-y: auto;
+  border: var(--sds-border-width-default) solid var(--sds-color-border-default);
+  border-radius: var(--sds-radius-surface);
+  background-color: var(--sds-color-background-raised);
+  box-shadow: var(--sds-shadow-overlay);
+  outline: none;
+
+  /* Grow from the edge nearest the field, as the menu does. */
+  transform-origin: var(--transform-origin);
+  transition-property: opacity, transform;
+  transition-duration: var(--sds-motion-duration-fast);
+  transition-timing-function: var(--sds-motion-easing-entrance);
+}
+
+.popup[data-ending-style] {
+  transition-timing-function: var(--sds-motion-easing-exit);
+}
+
+.popup[data-starting-style],
+.popup[data-ending-style] {
+  opacity: 0;
+  transform: scale(0.96);
+}
+
+.list {
+  outline: none;
+}
+
+/* The menu's row, whole: type, height, highlight, disabled, and the gap that
+   follows the selection box. Base UI sets the same data-highlighted and
+   data-disabled, so the menu's selectors apply unchanged. */
+.item {
+  composes: item selectionItem from "../DropdownMenu/DropdownMenu.module.css";
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .popup {
+    transition: none;
+  }
+}

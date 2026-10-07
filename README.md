@@ -18,7 +18,7 @@ import "@small-ds/tokens/css";
 import "@small-ds/tokens/typography.css";
 import "@small-ds/components/styles.css";
 
-import { Button, Checkbox, RadioGroup, Input, TextField, Accordion, DropdownMenu } from "@small-ds/components";
+import { Button, Checkbox, RadioGroup, Input, TextField, Select, SelectField, Chip, Accordion, DropdownMenu } from "@small-ds/components";
 ```
 
 ## Theming
