@@ -35,7 +35,7 @@ text.
 | Select | `Select` set; `Select Field` set (label, Select instance, message) | 15: State × Value (Placeholder, Filled, Chips); 3: State (Default, Disabled, Invalid) | `Select`; `SelectField` | Select: Single, SingleWithValue, Multiple, MultipleEmpty, MultipleWrapping, Invalid, Disabled, DisabledMultiple. SelectField: Default, WithDescription, Invalid, Disabled, Multiple |
 | Listbox | `Option` set; `Listbox` set (a surface of Option instances) | 12: Type (Single, Multiple) × State (Default, Highlighted, Disabled) × Checked; 2: Selection (Single, Multiple) | none of its own: the list inside `Select` | none. `Select`'s `SingleOpen` and `MultipleOpen` use it |
 | Icons | six `Icon / <name>` components | n/a | `ChevronRightIcon`, `ChevronDownIcon`, `ChevronUpIcon`, `CheckmarkIcon`, `DashIcon`, `CloseIcon` | Sizes (16 / 20 / 24, bound to `size/icon/*`) |
-| Focus ring | `Focus Ring` set | 2: borderWidth | none. CSS uses `outline`. Used by the Button Focus variants | n/a |
+| Focus ring | `Focus Ring` set | 2: borderWidth | none. CSS uses `outline`. Used by the Button Focus variants, with the colour overridden to `button/color/border/focus` | n/a |
 
 ### Why there is a Listbox page, and not just the Dropdown Menu
 
@@ -393,9 +393,14 @@ it and may no longer need to be that way. Do not assume they are wrong, but
 check before copying the pattern:
 
 - The Button is one frame, not a component wrapping an inner surface, because
-  styled text could never be moved into a new parent. Its focus ring is
-  therefore an outside stroke replacing Secondary's border, where CSS uses
-  `outline` + `border` together.
+  styled text could never be moved into a new parent. Its focus ring is not a
+  stroke on that frame: each Focus variant holds a `Focus Ring` instance,
+  absolutely positioned at -2 (the `outline-offset`, which Figma cannot bind)
+  and stretched with the button, so its 2px outside stroke sits 2px out, as
+  CSS's `outline` does. Secondary keeps its 1px border, as in CSS. The
+  instances override the ring colour to `button/color/border/focus`, the token
+  the CSS reads; the `Focus Ring` component itself stays on Tier 2
+  `color/border/focus`.
 - Composites and examples (Radio Group, Dropdown Menu, Accordion, every Example)
   were composed by grouping loose instances and calling
   `createComponentFromNode`, because `appendChild` of a Söhne instance failed.
