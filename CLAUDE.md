@@ -29,10 +29,10 @@ text.
 | Checkbox | `Checkbox` set | 15: Checked (False, True, Indeterminate) × State | `Checkbox` | Default, SelectAll, WithoutLabel |
 | Accordion | `Accordion Item` set; `Accordion` (3 exposed items) | 6: Variant (Closed, Open) × State | `Accordion.Item`; `Accordion.Root` | Single, Multiple, AllClosed |
 | Radio group | `Radio` set; `Radio Group` set (items are exposed Radios) | 10: Checked × State; 6: Orientation × State | `RadioGroup.Item`; `RadioGroup.Root` | Default, Horizontal, DisabledItem, DisabledGroup, Invalid |
-| Text field | `Input` set; `Text Field` set (label, exposed Input, message) | 10: State × Value (Placeholder, Filled); 3: State (Default, Disabled, Invalid) | `Input`; `TextField` | Input / Default, TextField / Default, WithDescription, Invalid, Disabled |
+| Text field | `Input` set; `Text Field` set (label, Input, message) | 10: State × Value (Placeholder, Filled), on both sets | `Input`; `TextField` | Input / Default, TextField / Default, WithDescription, Invalid, Disabled |
 | Dropdown menu | `Menu Item` set; `Menu Group Label`; `Menu Separator`; `Dropdown Menu` surface | 12: Type (Item, Submenu, Checkbox, Radio) × State (Default, Hover, Disabled) | `.Item` and friends; `.Label`; `.Separator`; `.Content` | Basic, OpenByDefault, WithSelection, SelectAll, WithSubmenu |
 | Chip | `Chip` set | 7: Removable × State (Default, Hover, Pressed, Focus, Disabled; a chip without a remove button has only Default and Disabled) | `Chip` | Default, Removable, Disabled, LongLabel |
-| Select | `Select` set; `Select Field` set (label, Select instance, message) | 15: State × Value (Placeholder, Filled, Chips); 3: State (Default, Disabled, Invalid) | `Select`; `SelectField` | Select: Single, SingleWithValue, Multiple, MultipleEmpty, MultipleWrapping, Invalid, Disabled, DisabledMultiple. SelectField: Default, WithDescription, Invalid, Disabled, Multiple |
+| Select | `Select` set; `Select Field` set (label, Select, message) | 15: State × Value (Placeholder, Filled, Chips), on both sets | `Select`; `SelectField` | Select: Single, SingleWithValue, Multiple, MultipleEmpty, MultipleWrapping, Invalid, Disabled, DisabledMultiple. SelectField: Default, WithDescription, Invalid, Disabled, Multiple |
 | Listbox | `Option` set; `Listbox` set (a surface of Option instances) | 12: Type (Single, Multiple) × State (Default, Highlighted, Disabled) × Checked; 2: Selection (Single, Multiple) | none of its own: the list inside `Select` | none. `Select`'s `SingleOpen` and `MultipleOpen` use it |
 | Icons | six `Icon / <name>` components | n/a | `ChevronRightIcon`, `ChevronDownIcon`, `ChevronUpIcon`, `CheckmarkIcon`, `DashIcon`, `CloseIcon` | Sizes (16 / 20 / 24, bound to `size/icon/*`) |
 | Focus ring | `Focus Ring` set | 2: borderWidth | none. CSS uses `outline`. Used by the Button Focus variants, with the colour overridden to `button/color/border/focus` | n/a |
@@ -262,6 +262,21 @@ Removing a chip moves focus to the trigger, since the chip unmounts with it. The
 trigger's states repeat Input's, because an `<input>` and a `<button>` cannot
 share a rule set; change them together. SelectField shares TextField's
 stylesheet for the label and message.
+
+In Figma, `Text Field` and `Select Field` carry their own `State` (Default,
+Hover, Focus, Disabled, Invalid) and `Value`, the same matrix as `Input` and
+`Select`; each variant sets its nested instance to match. The nested instance
+is deliberately **not exposed**. Exposing shows all of its properties, its
+`State` included, so a field could be Disabled with a focused box inside it,
+and Figma cannot expose some properties and not others. A field-level property
+cannot reach into a nested instance either ("Cannot set component property
+references on instance sublayer"), so the value and placeholder text are edited
+on the canvas, by double-clicking them, not in the properties panel. This is how
+Figma's Simple Design System and Carbon build fields: one component whose own
+`State` sets the label, the box and the message together (issue #87). In code
+nothing changes: hover and focus are browser states, not `TextField` or
+`SelectField` props. On their pages the building-block set comes first and the
+field set below it.
 
 **Inside a Radix Dialog** (tested, and kept as the `InsideRadixDialog` story, a
 regression test confirmed to fail without either fix) a Select needs two things
