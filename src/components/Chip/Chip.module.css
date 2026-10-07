@@ -42,23 +42,42 @@
   white-space: nowrap;
 }
 
-/* The icon is the button: 16 square, not a strip. Its hover and pressed fill
-   is therefore a small rounded square too. */
+/* Two squares. The glyph is the design: 16 square, with a small rounded hover
+   and pressed fill, 2 from the chip's edges. The button around it is the
+   target: 24 square, the WCAG 2.2 minimum (2.5.8), and invisible. The
+   negative margin cancels the extra size, so the chip's layout and its 20 high
+   are as if the button were 16, as Material extends a chip's touch target
+   without changing how it looks. The 4 either side of the glyph reaches over
+   the gap before it and 2 past the chip's end, so a click just after the label
+   removes the chip.
+
+   An undersized target would fail inside a Select, where the field-wide
+   trigger lies underneath and takes away the spacing exception. */
 .remove {
   display: inline-grid;
   flex-shrink: 0;
   place-items: center;
   box-sizing: border-box;
-  width: var(--sds-size-icon-sm);
-  height: var(--sds-size-icon-sm);
-  margin: 0;
+  width: var(--sds-size-icon-lg);
+  height: var(--sds-size-icon-lg);
+  margin: calc((var(--sds-size-icon-sm) - var(--sds-size-icon-lg)) / 2);
   padding: 0;
   border: none;
-  border-radius: var(--sds-radius-control-sm);
   background-color: transparent;
   color: inherit;
   cursor: pointer;
   appearance: none;
+
+  /* The focus ring is drawn on the glyph, below. */
+  outline: none;
+}
+
+.glyph {
+  display: grid;
+  place-items: center;
+  width: var(--sds-size-icon-sm);
+  height: var(--sds-size-icon-sm);
+  border-radius: var(--sds-radius-control-sm);
 
   transition-property: background-color;
   transition-duration: var(--sds-motion-duration-fast);
@@ -67,7 +86,7 @@
 
 /* An inside ring, like the selection controls: the chip is small enough that
    an outside outline would collide with its neighbours. */
-.remove:focus-visible {
+.remove:focus-visible .glyph {
   outline: var(--sds-border-width-focus) solid var(--sds-color-border-focus);
   outline-offset: calc(var(--sds-border-width-focus) * -1);
 }
@@ -82,10 +101,10 @@
   cursor: not-allowed;
 }
 
-.remove:hover:not(:disabled) {
+.remove:hover:not(:disabled) .glyph {
   background-color: var(--sds-color-state-hover);
 }
 
-.remove:active:not(:disabled) {
+.remove:active:not(:disabled) .glyph {
   background-color: var(--sds-color-state-pressed);
 }
