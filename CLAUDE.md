@@ -31,8 +31,19 @@ text.
 | Radio group | `Radio` set; `Radio Group` set (items are exposed Radios) | 10: Checked × State; 6: Orientation × State | `RadioGroup.Item`; `RadioGroup.Root` | Default, Horizontal, DisabledItem, DisabledGroup, Invalid |
 | Text field | `Input` set; `Text Field` set (label, exposed Input, message) | 20: Size (Small, Medium) × State × Value (Placeholder, Filled); 6: Size × State (Default, Disabled, Invalid) | `Input`; `TextField` | Input / Default, Input / Sizes, TextField / Default, WithDescription, Invalid, Disabled, Small |
 | Dropdown menu | `Menu Item` set; `Menu Group Label`; `Menu Separator`; `Dropdown Menu` surface | 14: Type × State (Checkbox and Radio have no Selected) | `.Item` and friends; `.Label`; `.Separator`; `.Content` | Basic, OpenByDefault, WithSelection, SelectAll, WithSubmenu |
-| Icons | five `Icon / <name>` components | n/a | `ChevronRightIcon`, `ChevronDownIcon`, `ChevronUpIcon`, `CheckmarkIcon`, `DashIcon` | Sizes (16 / 20 / 24, bound to `size/icon/*`) |
+| Chip | `Chip` set | 7: Removable × State (Default, Hover, Pressed, Focus, Disabled; a chip without a remove button has only Default and Disabled) | `Chip` | Default, Removable, Disabled, LongLabel |
+| Select | `Select` set; `Select Field` set (label, Select instance, message) | 30: Size × State × Value (Placeholder, Filled, Chips); 6: Size × State (Default, Disabled, Invalid) | `Select`; `SelectField` | Select: Single, SingleWithValue, Multiple, MultipleEmpty, MultipleWrapping, Small, Invalid, Disabled, DisabledMultiple. SelectField: Default, WithDescription, Invalid, Disabled, Small, Multiple |
+| Icons | six `Icon / <name>` components | n/a | `ChevronRightIcon`, `ChevronDownIcon`, `ChevronUpIcon`, `CheckmarkIcon`, `DashIcon`, `CloseIcon` | Sizes (16 / 20 / 24, bound to `size/icon/*`) |
 | Focus ring | `Focus Ring` set | 2: borderWidth | none. CSS uses `outline`. Used by the Button Focus variants | n/a |
+
+The Chip and Select pages were built with Inter placeholder text, since Söhne
+is unavailable to the MCP (see below), so their text styles are applied by hand:
+Header title Heading/Large, Header description Body/Small, `Examples` Heading/Small,
+example captions and the Chip label Label/Small, the Select value and
+placeholder Body/XSmall, and the Select Field label and message Label/Medium.
+Apply a style to the main components' text and instances follow. The Select set
+is drawn closed, as the stories are; its open list is the `Dropdown Menu`
+surface with checkbox or radio items, which is what the code reuses.
 
 The `Dropdown Menu` surface mirrors `.content` exactly: `background/raised`, a
 1px `border/default` (inside, counted in layout, as CSS `border-box` does),
