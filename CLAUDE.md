@@ -440,6 +440,15 @@ out and builds `small-ds-tokens` from its `main` beside this repo first, so a
 pull request that needs an unmerged token change fails until that change lands
 in tokens.
 
+**`main` only takes commits that have passed CI.** The ruleset "main: CI must
+pass" requires the `check` job, reported by GitHub Actions, with no bypass,
+admins included. So every change, however small, goes through a branch and a
+pull request; a direct push to `main` is rejected. Branches need not be up to
+date with `main` to merge. Auto-merge is allowed in the repository settings, and
+because `check` is required it waits for CI: turn it on for a PR (merge commit,
+as the history uses) and GitHub merges once `check` is green. The ruleset is
+under *Settings → Rules → Rulesets*.
+
 `npm test` runs `@storybook/addon-vitest`: each story must render, pass its
 `play` function if it has one, and show no axe violations. Behaviour that was
 once checked by hand gets a `test`-tagged story whose `play` function asserts
