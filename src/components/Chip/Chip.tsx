@@ -47,7 +47,11 @@ export const Chip = forwardRef<HTMLSpanElement, ChipProps>(function Chip(
           aria-label={removeLabel}
           aria-labelledby={`${buttonId} ${labelId}`}
         >
-          <CloseIcon />
+          {/* The glyph is the 16px square you see; the button around it is the
+              24px square you hit. See .remove. */}
+          <span className={styles.glyph}>
+            <CloseIcon />
+          </span>
         </button>
       )}
     </span>

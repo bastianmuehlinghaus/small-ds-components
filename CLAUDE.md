@@ -235,15 +235,26 @@ onto a second row. This follows Atlassian, whose multi-value tag is 20px for the
 same reason. A 24px chip made `sm` grow to 34. The `SameHeightAsInput` story
 holds it.
 
-The remove button is the × itself: 16 square (`size-icon-sm`) with
-`radius-control-sm`, so its hover and pressed fill is a small rounded square
-inset from the chip's edges, not a strip. It sits 2 from the top, bottom and end
+The remove button is two squares. The glyph is the design: the × itself, 16
+square (`size-icon-sm`) with `radius-control-sm`, so its hover and pressed fill
+is a small rounded square inset from the chip's edges, not a strip. The button
+around it is the target: 24 square (`size-icon-lg`), invisible, with a negative
+margin that cancels the extra size, so the chip's layout and its 20 high are as
+if the button were 16. It sits 2 from the top, bottom and end
 (`space-inline-xxs`, added for this, with Bastian's approval), 4 from the label,
 and the label starts 4 from the start. A chip without a button pads 4 at both
-ends, so both kinds share the same start inset. The button is a 16px target;
-WCAG 2.2's 24px minimum (2.5.8) is met only through its spacing exception, which
-the Select's field-wide trigger underneath arguably defeats. Worth a look before
-anyone relies on a claim of AA conformance.
+ends, so both kinds share the same start inset.
+
+Why 24 and not the 16 you see: WCAG 2.2's minimum target size (2.5.8) is 24 by
+24, unless a 24px circle round the undersized target touches no other target.
+A 16px button passed that on its own, and failed inside a Select, because the
+field-wide trigger lies underneath and is another target. Material does the same
+as this: its close icon is 18dp, but its chip's minimum touch target is 48dp,
+extended without changing how it looks. (MUI's 22px, and 16px when small, delete
+icon is the click target itself, and below the minimum.) The cost is that a
+click just after the label, in the 4px before the glyph, removes the chip.
+Axe's `target-size` rule is on in `.storybook/preview.tsx`, off by default in
+axe, and the `RemoveButtonHitArea` story holds the two sizes.
 
 Checkbox, RadioGroup and the DropdownMenu checkbox/radio rows share
 `SelectionControl.module.css`, which is internal. The control is sized like an
@@ -388,7 +399,7 @@ npm run lint:rules   # tests the stylelint config itself against fixtures
 npm run typecheck
 npm run build        # vite lib build + declarations
 npm run verify       # asserts the built artefact obeys the same rules
-npm test             # every story as a test in headless Chromium, with axe
+npm test             # every story as a test in headless Chromium, with axe (incl. target-size)
 ```
 
 CI (`.github/workflows/ci.yml`) runs `typecheck`, `lint`, `build`, `verify` and

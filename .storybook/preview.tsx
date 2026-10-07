@@ -35,7 +35,11 @@ const preview: Preview = {
   initialGlobals: { theme: "light" },
   parameters: {
     controls: { matchers: { color: /(background|color)$/i } },
-    // Any axe violation fails `npm test`. One narrow exemption: WCAG 1.4.3
+    // Any axe violation fails `npm test`, including target-size (WCAG 2.2
+    // 2.5.8, 24px), which axe leaves off by default: a chip's remove button was
+    // 16px and passed only while nothing was underneath it, then failed inside a
+    // Select, whose field-wide trigger removes the spacing exception. One narrow
+    // exemption: WCAG 1.4.3
     // exempts inactive controls from contrast, and axe already skips text
     // inside natively disabled elements, but not text beside them, such as a
     // disabled Checkbox's label or a disabled TextField's description. Those
@@ -45,7 +49,10 @@ const preview: Preview = {
     a11y: {
       test: "error",
       config: {
-        rules: [{ id: "color-contrast", selector: "*:not([data-disabled], [data-disabled] *)" }],
+        rules: [
+          { id: "color-contrast", selector: "*:not([data-disabled], [data-disabled] *)" },
+          { id: "target-size", enabled: true },
+        ],
       },
     },
     // A "Code" tab beside Controls: the JSX of the current story, live.
