@@ -17,15 +17,6 @@ type Story = StoryObj<typeof meta>;
 
 export const Default: Story = {};
 
-export const Sizes: Story = {
-  render: (args) => (
-    <div style={{ display: "grid", gap: "var(--sds-space-stack-md)" }}>
-      <Input {...args} size="sm" />
-      <Input {...args} size="md" />
-    </div>
-  ),
-};
-
 /** The Figma matrix: Value (Placeholder, Filled) × State. Hover and Focus are
  *  live — point at or Tab to any input. Focus wins over Invalid. */
 export const States: Story = {

@@ -31,8 +31,8 @@
   gap: var(--sds-space-inline-md);
   box-sizing: border-box;
 
-  /* min-height, never height — see CLAUDE.md on the rem/px split. */
-  min-height: var(--sds-size-control-lg);
+  /* No min-height: the padding and Label/Large's 24px line make it 48, and a
+     raised base font size grows it. */
   padding-block: var(--sds-space-inset-md);
   padding-inline: 0;
   border: none;

@@ -14,13 +14,10 @@ function wrapLabels(children: ReactNode): ReactNode {
 }
 
 export type ButtonVariant = "default" | "primary" | "secondary";
-export type ButtonSize = "sm" | "md";
 
 export interface ButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
   /** Visual weight. Mirrors the three variants defined in the Figma tokens. */
   variant?: ButtonVariant;
-  /** Control height, from `--sds-button-size-height-*`. */
-  size?: ButtonSize;
   /**
    * Render the child element instead of a `<button>`, keeping these styles.
    * Use for links that should look like buttons:
@@ -30,7 +27,7 @@ export interface ButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
 }
 
 export const Button = forwardRef<HTMLButtonElement, ButtonProps>(function Button(
-  { variant = "default", size = "md", asChild = false, className, type, children, ...props },
+  { variant = "default", asChild = false, className, type, children, ...props },
   ref,
 ) {
   const Comp = asChild ? Slot : "button";
@@ -46,7 +43,7 @@ export const Button = forwardRef<HTMLButtonElement, ButtonProps>(function Button
   return (
     <Comp
       ref={ref}
-      className={[styles.base, styles[variant], styles[size], className].filter(Boolean).join(" ")}
+      className={[styles.base, styles[variant], className].filter(Boolean).join(" ")}
       // Buttons inside a form default to type="submit", which surprises people.
       // Only set it when actually rendering a <button>.
       {...(asChild ? {} : { type: type ?? "button" })}

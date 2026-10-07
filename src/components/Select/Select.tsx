@@ -22,8 +22,6 @@ import styles from "./Select.module.css";
    chosen labels as text, which the layer hides by colour only, so a screen
    reader reads the value there and the chips are a second route to it. */
 
-export type SelectSize = "sm" | "md";
-
 export interface SelectOption {
   value: string;
   /** Shown in the list, in the trigger, and in the chip. */
@@ -39,8 +37,6 @@ interface SelectBaseProps
   options: SelectOption[];
   /** Shown while nothing is chosen, in `--sds-select-color-content-placeholder`. */
   placeholder?: string;
-  /** Control height, from `--sds-input-size-height-*`, as on Input. */
-  size?: SelectSize;
   /** Error state. Sets `aria-invalid`, which also draws the error border. */
   invalid?: boolean;
   /** Submits with a form, one hidden input per chosen value. */
@@ -90,7 +86,6 @@ export const Select = forwardRef<HTMLButtonElement, SelectProps>(function Select
   const {
     options,
     placeholder,
-    size = "md",
     invalid,
     name,
     removeLabel,
@@ -143,7 +138,7 @@ export const Select = forwardRef<HTMLButtonElement, SelectProps>(function Select
         triggerRef.current = node;
         setRef(ref, node);
       }}
-      className={cx(styles.trigger, !multiple && styles.single, !multiple && styles[size])}
+      className={cx(styles.trigger, !multiple && styles.single)}
       aria-invalid={invalid || undefined}
       {...buttonProps}
     >
@@ -234,7 +229,7 @@ export const Select = forwardRef<HTMLButtonElement, SelectProps>(function Select
 
   return (
     <div
-      className={cx(styles.field, styles.multiple, styles[size], className)}
+      className={cx(styles.field, styles.multiple, className)}
       data-disabled={disabled ? "" : undefined}
     >
       {root(

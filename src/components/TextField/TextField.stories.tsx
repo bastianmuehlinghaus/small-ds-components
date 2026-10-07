@@ -34,7 +34,3 @@ export const Invalid: Story = {
 export const Disabled: Story = {
   args: { description: "Use the full path, slash-separated.", disabled: true },
 };
-
-export const Small: Story = {
-  args: { size: "sm", description: "Use the full path, slash-separated." },
-};

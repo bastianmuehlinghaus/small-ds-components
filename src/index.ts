@@ -1,11 +1,11 @@
 export { Button } from "./components/Button";
-export type { ButtonProps, ButtonVariant, ButtonSize } from "./components/Button";
+export type { ButtonProps, ButtonVariant } from "./components/Button";
 
 export { Checkbox } from "./components/Checkbox";
 export type { CheckboxProps, CheckboxCheckedState } from "./components/Checkbox";
 
 export { Input } from "./components/Input";
-export type { InputProps, InputSize } from "./components/Input";
+export type { InputProps } from "./components/Input";
 
 export { TextField } from "./components/TextField";
 export type { TextFieldProps } from "./components/TextField";
@@ -14,7 +14,7 @@ export { Chip } from "./components/Chip";
 export type { ChipProps } from "./components/Chip";
 
 export { Select } from "./components/Select";
-export type { SelectProps, SelectOption, SelectSize } from "./components/Select";
+export type { SelectProps, SelectOption } from "./components/Select";
 
 export { SelectField } from "./components/SelectField";
 export type { SelectFieldProps } from "./components/SelectField";

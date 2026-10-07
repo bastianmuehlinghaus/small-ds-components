@@ -40,17 +40,11 @@
   justify-content: space-between;
   gap: var(--sds-space-inline-sm);
   width: 100%;
+
+  /* min-height, never height — see CLAUDE.md on the rem/px split. */
+  min-height: var(--sds-input-size-height);
   padding-inline: var(--sds-input-space-inset-x);
   text-align: start;
-}
-
-/* min-height, never height — see CLAUDE.md on the rem/px split. */
-.sm {
-  min-height: var(--sds-input-size-height-sm);
-}
-
-.md {
-  min-height: var(--sds-input-size-height-md);
 }
 
 .trigger:where(:hover:not(:disabled, [data-disabled], :focus, [data-popup-open])) {
@@ -124,6 +118,7 @@
   display: flex;
   align-items: center;
   gap: var(--sds-space-inline-sm);
+  min-height: var(--sds-input-size-height);
 
   /* Chips sit closer to the edge than text does: they have a surface of their
      own. The placeholder gives the difference back, so it still lines up

@@ -25,14 +25,14 @@ text.
 
 | Page | Components | Variants | Code | Examples (= stories) |
 |---|---|---|---|---|
-| Button | `Button` set | 30: Variant × Size × State | `Button` | Variants, Sizes, Disabled, WithIcon |
+| Button | `Button` set | 15: Variant × State | `Button` | Variants, Disabled, WithIcon |
 | Checkbox | `Checkbox` set | 15: Checked (False, True, Indeterminate) × State | `Checkbox` | Default, SelectAll, WithoutLabel |
 | Accordion | `Accordion Item` set; `Accordion` (3 exposed items) | 6: Variant (Closed, Open) × State | `Accordion.Item`; `Accordion.Root` | Single, Multiple, AllClosed |
 | Radio group | `Radio` set; `Radio Group` set (items are exposed Radios) | 10: Checked × State; 6: Orientation × State | `RadioGroup.Item`; `RadioGroup.Root` | Default, Horizontal, DisabledItem, DisabledGroup, Invalid |
-| Text field | `Input` set; `Text Field` set (label, exposed Input, message) | 20: Size (Small, Medium) × State × Value (Placeholder, Filled); 6: Size × State (Default, Disabled, Invalid) | `Input`; `TextField` | Input / Default, Input / Sizes, TextField / Default, WithDescription, Invalid, Disabled, Small |
+| Text field | `Input` set; `Text Field` set (label, exposed Input, message) | 10: State × Value (Placeholder, Filled); 3: State (Default, Disabled, Invalid) | `Input`; `TextField` | Input / Default, TextField / Default, WithDescription, Invalid, Disabled |
 | Dropdown menu | `Menu Item` set; `Menu Group Label`; `Menu Separator`; `Dropdown Menu` surface | 14: Type × State (Checkbox and Radio have no Selected) | `.Item` and friends; `.Label`; `.Separator`; `.Content` | Basic, OpenByDefault, WithSelection, SelectAll, WithSubmenu |
 | Chip | `Chip` set | 7: Removable × State (Default, Hover, Pressed, Focus, Disabled; a chip without a remove button has only Default and Disabled) | `Chip` | Default, Removable, Disabled, LongLabel |
-| Select | `Select` set; `Select Field` set (label, Select instance, message) | 30: Size × State × Value (Placeholder, Filled, Chips); 6: Size × State (Default, Disabled, Invalid) | `Select`; `SelectField` | Select: Single, SingleWithValue, Multiple, MultipleEmpty, MultipleWrapping, Small, Invalid, Disabled, DisabledMultiple. SelectField: Default, WithDescription, Invalid, Disabled, Small, Multiple |
+| Select | `Select` set; `Select Field` set (label, Select instance, message) | 15: State × Value (Placeholder, Filled, Chips); 3: State (Default, Disabled, Invalid) | `Select`; `SelectField` | Select: Single, SingleWithValue, Multiple, MultipleEmpty, MultipleWrapping, Invalid, Disabled, DisabledMultiple. SelectField: Default, WithDescription, Invalid, Disabled, Multiple |
 | Listbox | `Option` set; `Listbox` set (a surface of Option instances) | 12: Type (Single, Multiple) × State (Default, Highlighted, Disabled) × Checked; 2: Selection (Single, Multiple) | none of its own: the list inside `Select` | none. `Select`'s `SingleOpen` and `MultipleOpen` use it |
 | Icons | six `Icon / <name>` components | n/a | `ChevronRightIcon`, `ChevronDownIcon`, `ChevronUpIcon`, `CheckmarkIcon`, `DashIcon`, `CloseIcon` | Sizes (16 / 20 / 24, bound to `size/icon/*`) |
 | Focus ring | `Focus Ring` set | 2: borderWidth | none. CSS uses `outline`. Used by the Button Focus variants | n/a |
@@ -128,7 +128,7 @@ in TSX. See *What lint does and does not cover* below for the honest limits.
 (`--sds-color-background-raised`, `--sds-space-inset-lg`) and Tier 3
 (`--sds-button-*`). Never Tier 1 — `--sds-color-neutral-*`,
 `--sds-color-utility-*`, `--sds-spacing-*`, `--sds-typography-*`,
-`--sds-border-radius-*`, and the numeric `--sds-size-control-40` /
+`--sds-border-radius-*`, and the numeric `--sds-size-control-32` /
 `--sds-border-width-1` families.
 
 Watch the near-collisions. These pairs differ by one layer:
@@ -136,7 +136,7 @@ Watch the near-collisions. These pairs differ by one layer:
 | Tier 1 (banned) | Tier 2 (use this) |
 |---|---|
 | `--sds-spacing-16` | `--sds-space-inset-lg` |
-| `--sds-size-control-40` | `--sds-size-control-md` |
+| `--sds-size-control-32` | `--sds-size-control-default` |
 | `--sds-border-width-1` | `--sds-border-width-default` |
 | `--sds-border-radius-8` | `--sds-radius-surface` |
 
@@ -156,14 +156,22 @@ type without touching Tier 1:
 ```
 
 `composes` must be the **first declaration** in a rule and works only on a
-simple class selector, so it cannot be conditional. Button needs different type
-per size, which is why its `composes` sits on `.sm` / `.md` rather than
-on `.base`. Copy that shape if another component needs per-variant type.
+simple class selector, so it cannot be conditional. A component that needs
+different type per variant puts `composes` on each variant's class rather than
+on its base class. Button did that while it had two sizes.
 
 **5. Controls use `min-height`, never `height`.** Type is in `rem` and layout in
 `px`, so a reader who raises their browser font size grows the label but not the
-box. A fixed height clips it. Verified behaviour: a `md` Button holds at 40px
-through a 24px base font and grows to 52px at 32px, never clipping.
+box. A fixed height clips it. Verified behaviour: a Button holds at 32px
+through a 24px base font and grows to 42px at 32px, never clipping.
+
+**6. One control size, 32px.** Button, Input, Select and the menu rows all
+read `size/control/default`, so a row of them aligns, and Button, Input and
+the menu share 14px type (Label/Medium, Body/XSmall). There are no `size`
+props. Larger sizes may come back later; that is a token decision for Bastian,
+not a prop to add. The Accordion is not a control in this sense: its 48px
+comes from its padding and Label/Large. The `ControlsShareOneHeight` story
+holds the alignment.
 
 ## Which tier each component reads
 
@@ -234,10 +242,10 @@ Chip is static. Its only interactive part is the optional remove button, named
 "Remove" + the label. Its height is `chip/size/height` (20, aliasing
 `size/icon/md`), added with Bastian's approval so that a Select's field is as
 tall as an Input: a row of 20px chips plus the field's padding fits inside the
-32px (`sm`) and 40px (`md`) minimums, so the height changes only when chips wrap
-onto a second row. This follows Atlassian, whose multi-value tag is 20px for the
-same reason. A 24px chip made `sm` grow to 34. The `SameHeightAsInput` story
-holds it.
+32px minimum, so the height changes only when chips wrap onto a second row.
+This follows Atlassian, whose multi-value tag is 20px for the same reason. A
+24px chip made the field grow to 34. The `ControlsShareOneHeight` story holds
+it.
 
 The remove button is two squares. The glyph is the design: the × itself, 16
 square (`size-icon-sm`) with `radius-control-sm`, so its hover and pressed fill
@@ -263,8 +271,7 @@ axe, and the `RemoveButtonHitArea` story holds the two sizes.
 Checkbox, RadioGroup and the DropdownMenu checkbox/radio rows share
 `SelectionControl.module.css`, which is internal. The control is sized like an
 icon, following Atlassian: a `size-icon-lg` (24) footprint with the box inset
-by `space-inset-xs`, so the box is 16px with no box-size token.
-`selection-control/size/sm|md` are deliberately unused. The menu draws the box
+by `space-inset-xs`, so the box is 16px with no box-size token. The menu draws the box
 only, never a second Radix control, because the row is already the
 `menuitemcheckbox`. Checkbox supports Radix's `"indeterminate"`, styled as
 checked with `DashIcon` for the mark. The Indicator renders both glyphs and

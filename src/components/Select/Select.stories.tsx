@@ -4,6 +4,7 @@ import { expect, waitFor, within } from "storybook/test";
 import * as Dialog from "@radix-ui/react-dialog";
 import { Select } from "./Select";
 import { Input } from "../Input";
+import { Button } from "../Button";
 
 const modes = [
   { value: "light", label: "Light" },
@@ -73,10 +74,6 @@ export const MultipleWrapping: Story = {
     defaultValue: ["primitives", "semantics", "components", "motion"],
   },
   decorators: [(Story) => <div style={{ maxWidth: "15rem" }}><Story /></div>],
-};
-
-export const Small: Story = {
-  args: { size: "sm", defaultValue: "light" },
 };
 
 export const Invalid: Story = {
@@ -316,38 +313,31 @@ export const InsideRadixDialog: Story = {
   },
 };
 
-/** Next to a text input, a Select is the same height, with or without chips.
- *  It grows only when the chips wrap onto a second row. A chip is 20 high
- *  (`chip/size/height`) so that a row of them fits the field's minimum height
- *  at both sizes; a 24px chip made `sm` 34. */
-export const SameHeightAsInput: Story = {
+/** Every control is one height, `size/control/default`, so a row of them
+ *  aligns: Input, Button and Select, with or without chips. A Select grows
+ *  only when its chips wrap onto a second row. A chip is 20 high
+ *  (`chip/size/height`) so that a row of them fits; a 24px chip made it 34. */
+export const ControlsShareOneHeight: Story = {
   tags: ["!autodocs", "test"],
   render: () => (
-    <div style={{ display: "grid", gap: "1rem", width: "max-content" }}>
-      {(["sm", "md"] as const).map((size) => (
-        <div
-          key={size}
-          data-size={size}
-          style={{ display: "grid", gridTemplateColumns: "repeat(4, 15rem)", gap: "0.5rem", alignItems: "start" }}
-        >
-          <Input size={size} aria-label="Input" placeholder="Input" />
-          <Select size={size} aria-label="Single" options={modes} defaultValue="dark" />
-          <Select size={size} aria-label="Empty" multiple options={tiers} placeholder="Empty" />
-          <Select size={size} aria-label="Chips" multiple options={tiers} defaultValue={["primitives", "semantics"]} />
-        </div>
-      ))}
+    <div style={{ display: "grid", gridTemplateColumns: "repeat(3, 15rem) max-content", gap: "0.5rem", alignItems: "start" }}>
+      <Input aria-label="Input" placeholder="Input" />
+      <Select aria-label="Single" options={modes} defaultValue="dark" />
+      <Select aria-label="Chips" multiple options={tiers} defaultValue={["primitives", "semantics"]} />
+      <Button variant="primary">Apply</Button>
     </div>
   ),
   play: async ({ canvasElement }) => {
-    for (const row of canvasElement.querySelectorAll<HTMLElement>("[data-size]")) {
-      const input = row.querySelector("input")!;
-      const fields = [...row.querySelectorAll<HTMLElement>('[role="combobox"]')].map((trigger) => {
-        // A multiple Select's trigger is a layer inside its field.
-        return trigger.parentElement!.hasAttribute("data-multiple") ? trigger.parentElement! : trigger;
-      });
-      for (const field of fields) {
-        await expect(field.getBoundingClientRect().height).toBe(input.getBoundingClientRect().height);
-      }
-    }
+    const control = parseFloat(
+      getComputedStyle(document.documentElement).getPropertyValue("--sds-size-control-default"),
+    );
+    const fields = [...canvasElement.querySelectorAll<HTMLElement>('[role="combobox"]')].map((trigger) =>
+      // A multiple Select's trigger is a layer inside its field.
+      trigger.parentElement!.hasAttribute("data-multiple") ? trigger.parentElement! : trigger,
+    );
+    const button = [...canvasElement.querySelectorAll("button")].find((b) => b.textContent === "Apply")!;
+    const controls = [canvasElement.querySelector("input")!, ...fields, button];
+    await expect(controls).toHaveLength(4);
+    for (const el of controls) await expect(el.getBoundingClientRect().height).toBe(control);
   },
 };

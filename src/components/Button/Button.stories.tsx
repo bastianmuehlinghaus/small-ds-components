@@ -7,10 +7,9 @@ const meta = {
   component: Button,
   argTypes: {
     variant: { control: "inline-radio", options: ["default", "primary", "secondary"] },
-    size: { control: "inline-radio", options: ["sm", "md"] },
     disabled: { control: "boolean" },
   },
-  args: { children: "Send", variant: "default", size: "md" },
+  args: { children: "Send", variant: "default" },
 } satisfies Meta<typeof Button>;
 
 export default meta;
@@ -34,15 +33,6 @@ export const Variants: Story = {
   ),
 };
 
-export const Sizes: Story = {
-  render: (args) => (
-    <Row>
-      <Button {...args} variant="primary" size="sm">Small</Button>
-      <Button {...args} variant="primary" size="md">Medium</Button>
-    </Row>
-  ),
-};
-
 export const Disabled: Story = {
   render: (args) => (
     <Row>
@@ -56,9 +46,8 @@ export const Disabled: Story = {
 export const WithIcon: Story = {
   render: (args) => (
     <Row>
-      <Button {...args} variant="primary" size="sm">Continue <ChevronRightIcon /></Button>
-      <Button {...args} variant="primary" size="md">Continue <ChevronRightIcon /></Button>
-      <Button {...args} variant="secondary" size="md"><ChevronUpIcon /> Back to top</Button>
+      <Button {...args} variant="primary">Continue <ChevronRightIcon /></Button>
+      <Button {...args} variant="secondary"><ChevronUpIcon /> Back to top</Button>
     </Row>
   ),
 };

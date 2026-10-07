@@ -43,14 +43,14 @@
 .item,
 .subTrigger {
   /* Label, not Body: a menu item is a control label rather than running prose.
-     Also matches the trigger — a md Button is Label/Medium since #6. */
+     Also matches the trigger: a Button is Label/Medium. */
   composes: sds-type-label-medium from "@small-ds/tokens/typography.css";
 
   display: flex;
   align-items: center;
   gap: var(--sds-space-inline-sm);
   box-sizing: border-box;
-  min-height: var(--sds-size-control-sm);
+  min-height: var(--sds-size-control-default);
   padding-block: var(--sds-space-inset-xs);
   padding-inline: var(--sds-space-inset-md);
   border-radius: var(--sds-radius-control);
