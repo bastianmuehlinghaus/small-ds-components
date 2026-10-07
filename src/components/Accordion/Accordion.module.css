@@ -63,10 +63,12 @@
   }
 }
 
+/* 20, not 24: icon weight scales with size, and at 24 the 1.3px line becomes
+   1.95, heavier than the title beside it. 20 gives 1.625. */
 .chevron {
   flex-shrink: 0;
-  width: var(--sds-size-icon-lg);
-  height: var(--sds-size-icon-lg);
+  width: var(--sds-size-icon-md);
+  height: var(--sds-size-icon-md);
   color: var(--sds-color-content-subtle);
 
   transition-property: transform, color;
