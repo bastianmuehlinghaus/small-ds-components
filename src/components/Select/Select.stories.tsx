@@ -21,7 +21,19 @@ const tiers = [
 const meta: Meta<typeof Select> = {
   title: "Components/Select",
   component: Select,
-  parameters: { layout: "padded" },
+  parameters: {
+    layout: "padded",
+    docs: {
+      description: {
+        component:
+          "A select field. The list it opens is a **listbox** (`role=\"listbox\"` with `option`s), not a menu: " +
+          "its rows are values you choose, not actions you run, which is what screen readers, type-ahead and " +
+          "forms expect of a select. It looks like DropdownMenu with checkbox or radio rows because it reuses their " +
+          "row styles, and it is a different pattern. A single choice closes the list; `multiple` keeps it open and " +
+          "shows the choices as chips. In Figma it is specified by the Listbox page.",
+      },
+    },
+  },
   args: { options: modes, "aria-label": "Mode", placeholder: "Choose a mode" },
   decorators: [(Story) => <div style={{ maxWidth: "15rem" }}><Story /></div>],
 };
@@ -83,6 +95,40 @@ export const DisabledMultiple: Story = {
     "aria-label": "Tiers",
     defaultValue: ["primitives", "semantics"],
   },
+};
+
+/* --- open ----------------------------------------------------------------
+   The list rendered at rest, so its surface and rows can be seen without
+   interacting, as DropdownMenu's OpenByDefault does. Tagged !autodocs: an open
+   Select is modal and locks the page, and a Docs page can show only one, so
+   these stay in the sidebar. The decorator reserves room, because the list
+   renders in a portal and would otherwise cover the page's own content. */
+
+const room = (Story: () => React.ReactElement) => (
+  <div style={{ maxWidth: "15rem", minHeight: "14rem" }}>
+    <Story />
+  </div>
+);
+
+/** Single choice: radio rows, with one chosen. */
+export const SingleOpen: Story = {
+  tags: ["!autodocs"],
+  args: { defaultOpen: true, defaultValue: "dark" },
+  decorators: [room],
+};
+
+/** Several choices: checkbox rows, with the chosen ones shown as chips. */
+export const MultipleOpen: Story = {
+  tags: ["!autodocs"],
+  args: {
+    multiple: true,
+    defaultOpen: true,
+    options: tiers,
+    "aria-label": "Tiers",
+    placeholder: "Choose tiers",
+    defaultValue: ["primitives", "semantics"],
+  },
+  decorators: [room],
 };
 
 /* --- behaviour tests ---------------------------------------------------------

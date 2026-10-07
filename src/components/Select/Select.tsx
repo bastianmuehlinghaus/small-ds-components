@@ -46,6 +46,9 @@ interface SelectBaseProps
   name?: string;
   /** Prefix of each chip's remove button name ("Remove Light"). Multiple only. */
   removeLabel?: string;
+  /** Opens the list on first render. For stories and screenshots; the list is
+   *  uncontrolled otherwise. */
+  defaultOpen?: boolean;
   /** Where the list renders. Defaults to `document.body`. Inside a modal
    *  layer such as a Radix Dialog, pass that layer's content element: the
    *  Dialog makes everything outside it unclickable. */
@@ -87,6 +90,7 @@ export const Select = forwardRef<HTMLButtonElement, SelectProps>(function Select
     name,
     removeLabel,
     portalContainer,
+    defaultOpen,
     multiple,
     value: valueProp,
     defaultValue,
@@ -179,6 +183,7 @@ export const Select = forwardRef<HTMLButtonElement, SelectProps>(function Select
     multiple ? (
       <Base.Root<string, true>
         multiple
+        defaultOpen={defaultOpen}
         items={options}
         id={triggerId}
         name={name}
@@ -190,6 +195,7 @@ export const Select = forwardRef<HTMLButtonElement, SelectProps>(function Select
       </Base.Root>
     ) : (
       <Base.Root<string>
+        defaultOpen={defaultOpen}
         items={options}
         id={triggerId}
         name={name}

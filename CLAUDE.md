@@ -33,15 +33,54 @@ text.
 | Dropdown menu | `Menu Item` set; `Menu Group Label`; `Menu Separator`; `Dropdown Menu` surface | 14: Type × State (Checkbox and Radio have no Selected) | `.Item` and friends; `.Label`; `.Separator`; `.Content` | Basic, OpenByDefault, WithSelection, SelectAll, WithSubmenu |
 | Chip | `Chip` set | 7: Removable × State (Default, Hover, Pressed, Focus, Disabled; a chip without a remove button has only Default and Disabled) | `Chip` | Default, Removable, Disabled, LongLabel |
 | Select | `Select` set; `Select Field` set (label, Select instance, message) | 30: Size × State × Value (Placeholder, Filled, Chips); 6: Size × State (Default, Disabled, Invalid) | `Select`; `SelectField` | Select: Single, SingleWithValue, Multiple, MultipleEmpty, MultipleWrapping, Small, Invalid, Disabled, DisabledMultiple. SelectField: Default, WithDescription, Invalid, Disabled, Small, Multiple |
+| Listbox | `Option` set; `Listbox` set (a surface of Option instances) | 12: Type (Single, Multiple) × State (Default, Highlighted, Disabled) × Checked; 2: Selection (Single, Multiple) | none of its own: the list inside `Select` | none. `Select`'s `SingleOpen` and `MultipleOpen` use it |
 | Icons | six `Icon / <name>` components | n/a | `ChevronRightIcon`, `ChevronDownIcon`, `ChevronUpIcon`, `CheckmarkIcon`, `DashIcon`, `CloseIcon` | Sizes (16 / 20 / 24, bound to `size/icon/*`) |
 | Focus ring | `Focus Ring` set | 2: borderWidth | none. CSS uses `outline`. Used by the Button Focus variants | n/a |
+
+### Why there is a Listbox page, and not just the Dropdown Menu
+
+The Listbox looks like the Dropdown Menu's surface with checkbox or radio rows,
+and it is built from them. It exists anyway, because it is a different pattern,
+and Figma is where that difference has to be visible before anyone codes:
+
+- **A menu runs actions, a listbox chooses a value.** The Dropdown Menu is
+  `role="menu"` with `menuitem`s: commands and view settings. The Listbox is
+  what a `Select` opens: `role="listbox"` with `option`s that are `aria-selected`,
+  the value of a form field. Screen readers, type-ahead and form behaviour all
+  follow from that role, so a designer who draws a select with a Menu has
+  specified the wrong thing, however similar the pixels are. A separate,
+  differently named component (`Option`, not `Menu Item`; `Listbox`, not
+  `Dropdown Menu`) puts the choice in the layer panel.
+- **It is narrower on purpose.** An Option is only ever a radio (single) or a
+  checkbox (multiple) row. There are no plain actions, submenus, group labels or
+  separators in it, which the menu has. If one is needed, that is a decision to
+  take with Bastian, not a variant to add.
+- **Its states have a different vocabulary.** An Option is *Highlighted* (by
+  pointer or keyboard), *Disabled*, and *Checked*. The Menu Item's `Hover` and
+  `Selected` do not map one to one, and a checked row has no selected fill in
+  either, because the box already says it.
+- **Its behaviour differs.** A single Select closes on choice, where the menu's
+  radio rows stay open. Its surface is at least as wide as the field and opens
+  below it, with a 4px offset.
+- **One source for the rows.** `Option` wraps a `Menu Item` instance, so a change
+  to the menu's row reaches the Listbox with no second copy to keep in step, as
+  `Select`'s CSS does by composing the menu's `.item`. Before this page the open
+  Select was drawn as a detached copy of the menu, and a detached copy is the
+  one that drifts.
+
+In code there is no standalone `Listbox`: the list is internal to `Select`
+(`defaultOpen` renders it, for the `SingleOpen` and `MultipleOpen` stories). The
+Figma page is its specification. Extracting a public component, for a future
+Combobox or a standalone list, is an open decision; it needs a use case first.
 
 The Chip and Select pages were built with Inter placeholder text, since Söhne
 is unavailable to the MCP (see below), so their text styles are applied by hand:
 Header title Heading/Large, Header description Body/Small, `Examples` Heading/Small,
 example captions and the Chip label Label/Small, the Select value and
 placeholder Body/XSmall, and the Select Field label and message Label/Medium.
-Apply a style to the main components' text and instances follow. The Select set
+Apply a style to the main components' text and instances follow. The Listbox
+page is the exception: its rows are Menu Item instances with Söhne text already,
+so only its Header needs styles, in the same way. The Select set
 is drawn closed, as the stories are; its open list is the `Dropdown Menu`
 surface with checkbox or radio items, which is what the code reuses.
 
@@ -161,6 +200,9 @@ and a menu with selection rows look the same. Single shows radio rows and
 closes on choice; `multiple` shows checkbox rows, stays open, and puts a Chip
 per choice in the field. The list is positioned below the field
 (`alignItemWithTrigger={false}`); Base UI's default overlays the trigger.
+`defaultOpen` renders it open, for the `SingleOpen` and `MultipleOpen` stories,
+which are `!autodocs`: an open Select is modal, so a Docs page can show only one
+and it would lock the page.
 
 Single: the trigger button is the box and holds the value. Multiple: a button
 cannot hold the chips' buttons, so the trigger is an absolutely positioned layer
