@@ -161,6 +161,9 @@ and a menu with selection rows look the same. Single shows radio rows and
 closes on choice; `multiple` shows checkbox rows, stays open, and puts a Chip
 per choice in the field. The list is positioned below the field
 (`alignItemWithTrigger={false}`); Base UI's default overlays the trigger.
+`defaultOpen` renders it open, for the `SingleOpen` and `MultipleOpen` stories,
+which are `!autodocs`: an open Select is modal, so a Docs page can show only one
+and it would lock the page.
 
 Single: the trigger button is the box and holds the value. Multiple: a button
 cannot hold the chips' buttons, so the trigger is an absolutely positioned layer

@@ -85,6 +85,40 @@ export const DisabledMultiple: Story = {
   },
 };
 
+/* --- open ----------------------------------------------------------------
+   The list rendered at rest, so its surface and rows can be seen without
+   interacting, as DropdownMenu's OpenByDefault does. Tagged !autodocs: an open
+   Select is modal and locks the page, and a Docs page can show only one, so
+   these stay in the sidebar. The decorator reserves room, because the list
+   renders in a portal and would otherwise cover the page's own content. */
+
+const room = (Story: () => React.ReactElement) => (
+  <div style={{ maxWidth: "15rem", minHeight: "14rem" }}>
+    <Story />
+  </div>
+);
+
+/** Single choice: radio rows, with one chosen. */
+export const SingleOpen: Story = {
+  tags: ["!autodocs"],
+  args: { defaultOpen: true, defaultValue: "dark" },
+  decorators: [room],
+};
+
+/** Several choices: checkbox rows, with the chosen ones shown as chips. */
+export const MultipleOpen: Story = {
+  tags: ["!autodocs"],
+  args: {
+    multiple: true,
+    defaultOpen: true,
+    options: tiers,
+    "aria-label": "Tiers",
+    placeholder: "Choose tiers",
+    defaultValue: ["primitives", "semantics"],
+  },
+  decorators: [room],
+};
+
 /* --- behaviour tests ---------------------------------------------------------
    Stories with a play function that `npm test` runs, tagged !autodocs: they
    stay in the sidebar, where the Interactions tab replays them, but not on the
