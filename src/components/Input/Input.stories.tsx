@@ -8,7 +8,7 @@ const meta = {
   parameters: { layout: "padded" },
   // A token search is not personal data, so browser autofill has nothing to
   // offer here.
-  args: { placeholder: "Search tokens", "aria-label": "Search tokens", autoComplete: "off" },
+  args: { placeholder: "Search tokens", "aria-label": "Search tokens" },
   decorators: [(Story) => <div style={{ maxWidth: "15rem" }}><Story /></div>],
 } satisfies Meta<typeof Input>;
 
