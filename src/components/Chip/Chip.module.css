@@ -3,9 +3,9 @@
  * semantics for the rest. `--sds-motion-*` comes from Tier 1 under the
  * documented exception.
  *
- * The height is 20, so a row of chips fits inside a Select's minimum height
- * at both sizes and the field is exactly as tall as an Input until the chips
- * wrap. A taller chip would push a small Select past its 32.
+ * The height is 20, so a row of chips fits inside a Select's 32 minimum and
+ * the field is exactly as tall as an Input until the chips wrap. A 24 chip
+ * would push the field to 34.
  */
 
 .chip {
