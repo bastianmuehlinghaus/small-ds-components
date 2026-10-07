@@ -21,7 +21,19 @@ const tiers = [
 const meta: Meta<typeof Select> = {
   title: "Components/Select",
   component: Select,
-  parameters: { layout: "padded" },
+  parameters: {
+    layout: "padded",
+    docs: {
+      description: {
+        component:
+          "A select field. The list it opens is a **listbox** (`role=\"listbox\"` with `option`s), not a menu: " +
+          "its rows are values you choose, not actions you run, which is what screen readers, type-ahead and " +
+          "forms expect of a select. It looks like DropdownMenu with checkbox or radio rows because it reuses their " +
+          "row styles, and it is a different pattern. A single choice closes the list; `multiple` keeps it open and " +
+          "shows the choices as chips. In Figma it is specified by the Listbox page.",
+      },
+    },
+  },
   args: { options: modes, "aria-label": "Mode", placeholder: "Choose a mode" },
   decorators: [(Story) => <div style={{ maxWidth: "15rem" }}><Story /></div>],
 };
