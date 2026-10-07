@@ -271,7 +271,11 @@ is deliberately **not exposed**. Exposing shows all of its properties, its
 and Figma cannot expose some properties and not others. A field-level property
 cannot reach into a nested instance either ("Cannot set component property
 references on instance sublayer"), so the value and placeholder text are edited
-on the canvas, by double-clicking them, not in the properties panel. This is how
+on the canvas, by double-clicking them, not in the properties panel. The
+field's own layers are another matter: both fields have `Label text`, `Label`
+and `Message` (show/hide), linked in every variant. Message text has no
+property, because Invalid's "Error message" differs from the others' "Helper
+text" and one text property has one default. This is how
 Figma's Simple Design System and Carbon build fields: one component whose own
 `State` sets the label, the box and the message together (issue #87). In code
 nothing changes: hover and focus are browser states, not `TextField` or
@@ -457,7 +461,15 @@ check before copying the pattern:
 Effect styles (`shadow/*`) come from the token library like variables. They
 could only be imported once they had been published there.
 
-Two more things worth knowing before you debug them:
+Three more things worth knowing before you debug them:
+
+- **`clone()` drops a layer's links to component properties.** A cloned variant
+  keeps its text, styles and variable bindings, but its `Label text`, `Label`
+  and `Message` links are gone, silently: the property still shows in the
+  panel and does nothing on that variant. Building the field matrices by
+  cloning broke `Label text` on every new Text Field variant until it was
+  re-linked. After cloning variants, compare each layer's
+  `componentPropertyReferences` with the original's.
 
 - **Auto-layout could not hug unmeasurable text** under the old restriction. The
   Open accordion variants reported 48px while visibly overflowing, so they
