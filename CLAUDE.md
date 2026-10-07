@@ -165,6 +165,21 @@ on its base class. Button did that while it had two sizes.
 box. A fixed height clips it. Verified behaviour: a Button holds at 32px
 through a 24px base font and grows to 42px at 32px, never clipping.
 
+Figma mirrors this. Button, Input, Menu Item, Select and Chip hug vertically,
+with the size token bound to `minHeight`, not `height`: `button/size/height`,
+`input/size/height` (Input and Select), `size/control/default` and
+`chip/size/height`. Figma has no rem, so on the canvas a fixed 32 and hug-min-32
+look the same; the point is that the component grows the way the code does.
+The Select's `Chips` row wraps, with its row gap bound to `space/inline/xs` as
+`gap` is in CSS, so a narrow multiple Select grows to 54 (two rows of chips) in
+both. Until 2026-10-07 Button, Input and Menu Item had fixed heights while
+Select and Chip already hugged; do not go back to fixed.
+
+This is the majority practice among large systems: Material, Spectrum,
+Polaris and Carbon's buttons use a minimum height; Primer switches to one
+when a label may wrap. Radix Themes and shadcn/ui use fixed heights, shadcn's
+in rem, which scales with the font for the same reason.
+
 **6. One control size, 32px.** Button, Input, Select and the menu rows all
 read `size/control/default`, so a row of them aligns, and Button, Input and
 the menu share 14px type (Label/Medium, Body/XSmall). There are no `size`
