@@ -73,11 +73,15 @@ In code there is no standalone `Listbox`: the list is internal to `Select`
 Figma page is its specification. Extracting a public component, for a future
 Combobox or a standalone list, is an open decision; it needs a use case first.
 
-The Chip and Select pages were built with Inter placeholder text, since Söhne
-is unavailable to the MCP (see below), so their text styles are applied by hand:
-Header title Heading/Large, Header description Body/Small, `Examples` Heading/Small,
-example captions and the Chip label Label/Small, the Select value and
-placeholder Body/XSmall, and the Select Field label and message Label/Medium.
+The Chip and Select pages were built with Inter placeholder text, back when
+Söhne was unavailable to the official Figma MCP (see below). All of it now
+carries its text style (checked 2026-10-07: no Inter or unstyled text left on
+either page): Header title Heading/Large, Header description Body/Small,
+`Examples` Heading/Small, example captions and the Chip label Label/Small, the
+Select value and placeholder Body/XSmall, and the Select Field label and
+message Label/Medium. The one detached frame, the `SelectField / Default`
+example, needs the style applied to its own Label; it does not follow the main
+component.
 Apply a style to the main components' text and instances follow. The Listbox
 page is the exception: its rows are Menu Item instances with Söhne text already,
 so only its Header needs styles, in the same way. The Select set
@@ -342,56 +346,56 @@ stops matching, every other check still looks green.
 
 ## Working in the Figma components file
 
-**Söhne is not available to the Figma MCP environment.** The font is installed
-locally, but the MCP runs against Figma's cloud font set —
-`listAvailableFontsAsync` returns ~1,900 families and none of them is Söhne, and
-`loadFontAsync` fails with *"The font family Söhne does not exist"*. Enabling
-Figma's third-party agent integration does not change this; it points at the
-same cloud endpoint.
+**Use Figma Console MCP (`figma-console`), not the official Figma MCP, for this
+file.** Söhne is installed locally but the official MCP runs against Figma's
+cloud font set, where `listAvailableFontsAsync` returns ~1,900 families and none
+is Söhne. Figma Console MCP runs a plugin (Desktop Bridge) inside Figma Desktop,
+so it sees the same fonts you do: `Söhne / Buch` and `Söhne / Halbfett` load,
+text styles apply and stay linked, and styled text can be edited, resized,
+cloned, moved into frames and moved between pages. Verified 2026-10-07.
 
-Everything downstream follows from that. **Text styles have to be applied by
-hand in the desktop app**, and a text node whose font cannot be loaded is
-severely restricted:
+Setup, once per machine: the server is registered as `figma-console` (user
+scope, needs a personal access token), and the plugin is imported from
+`~/.figma-console-mcp/plugin/manifest.json` via *Plugins → Development → Import
+plugin from manifest…*. Per session, run *Plugins → Development → Figma Desktop
+Bridge* **in the file you are working on**. Running it in a second file keeps
+both connected, so pass `fileKey` to `figma_execute` rather than relying on the
+active file. Check with `figma_get_status` (`probe: true`).
 
-| Operation on a styled text node | |
-|---|---|
-| `clone()`, reposition, rename | works |
-| bind a fill to a colour variable | works |
-| `appendChild` — into *any* frame, auto-layout or not | **fails** |
-| move to another page (`page.appendChild`) | **fails** |
-| `textAutoResize`, `characters`, `setTextStyleIdAsync` | **fails** |
+**Text styles live in the tokens library, not in this file**, which has none
+local. Import one by key with `figma.importStyleByKeyAsync(key)`, then
+`loadFontAsync(style.fontName)` and `node.setTextStyleIdAsync(style.id)`. Read
+the keys from the Tokens file (`getLocalTextStylesAsync()`, `DABmspHvLwmzYjMrFBjVQW`).
+Only published styles import.
 
-So the build order is forced: **create the structure first, style last.** Once
-text is styled it can never be moved, which is why the Figma Button is a single
-frame rather than a component wrapping an inner surface — and therefore why its
-focus ring is an outside stroke that replaces Secondary's border, where CSS uses
-`outline` + `border` together.
+The official MCP is still fine for what does not involve Söhne text. If it
+is used, the old limits apply to any styled node: no `appendChild`, no page
+move, no `characters`, `textAutoResize` or `setTextStyleIdAsync`.
 
-That last row covers whole component sets: anything with styled labels can
-only change page by hand (right-click → *Move to page*, which keeps instances
-linked). Sets without text, such as the icons and Focus Ring, move fine via the
-MCP.
+**Legacy of the old restriction.** Several things in the file were built around
+it and may no longer need to be that way. Do not assume they are wrong, but
+check before copying the pattern:
 
-**Composing with Söhne instances.** The same restriction blocks putting an
-instance with a Söhne label into any frame, but this route works, and it's how
-every composite and example in the file was built:
-
-1. Create the instances loose on the page. Variant and boolean properties can be
-   set; TEXT properties cannot.
-2. `figma.group(instances, page)`, then `figma.createComponentFromNode(group)`.
-3. Set `layoutMode`, padding, fills and strokes on the new component, and bind
-   the tokens. `combineAsVariants` works on these components too.
-4. For a plain frame instead of a component, use
-   `comp.createInstance().detachInstance()`, then `comp.remove()`.
+- The Button is one frame, not a component wrapping an inner surface, because
+  styled text could never be moved into a new parent. Its focus ring is
+  therefore an outside stroke replacing Secondary's border, where CSS uses
+  `outline` + `border` together.
+- Composites and examples (Radio Group, Dropdown Menu, Accordion, every Example)
+  were composed by grouping loose instances and calling
+  `createComponentFromNode`, because `appendChild` of a Söhne instance failed.
+  Plain `appendChild` into a frame should work now. The old route still works.
+- Label text on composite instances could not be overridden, and was retyped by
+  hand. Setting TEXT properties on instances should work now, but has not been
+  tested.
 
 Effect styles (`shadow/*`) come from the token library like variables. They
 could only be imported once they had been published there.
 
-Two more consequences worth knowing before you debug them:
+Two more things worth knowing before you debug them:
 
-- **Auto-layout cannot hug unmeasurable text.** The Open accordion variants
-  reported 48px while visibly overflowing, because the frame could not measure
-  its own content. They carry an explicit height instead.
+- **Auto-layout could not hug unmeasurable text** under the old restriction. The
+  Open accordion variants reported 48px while visibly overflowing, so they carry
+  an explicit height. Text now measures, so this may be removable. Untested.
 - **`setBoundVariableForPaint` keeps the paint's original colour as a fallback,
   and Figma does not always resolve it.** Half the Button variants rendered
   black with invisible labels while their bindings were correct. Always resolve
