@@ -190,11 +190,11 @@
 
 /* The same surface as DropdownMenu.content: raised, a 1px default border,
    surface radius, inset-xs padding, the overlay shadow. It is at least as wide
-   as the field: a measurement Base UI takes from the trigger, not a width of
-   our own, so it needs no token. */
+   as the field (a measurement Base UI takes from the trigger) and at least the
+   overlay minimum, so a narrow field does not give a narrow list. */
 .popup {
   box-sizing: border-box;
-  min-width: var(--anchor-width);
+  min-width: max(var(--anchor-width), var(--sds-size-overlay-min-width));
   max-height: var(--available-height);
   padding: var(--sds-space-inset-xs);
   overflow-y: auto;
