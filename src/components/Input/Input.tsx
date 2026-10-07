@@ -15,16 +15,22 @@ export interface InputProps extends Omit<InputHTMLAttributes<HTMLInputElement>, 
   size?: InputSize;
   /** Error state. Sets `aria-invalid`, which also draws the error border. */
   invalid?: boolean;
+  /** Browser autofill and suggestions. Defaults to `"off"`, since a
+   *  suggestion list nobody asked for reads as part of the field. Pass a
+   *  token such as `"email"` or `"current-password"` where autofill is the
+   *  point of the field. */
+  autoComplete?: InputHTMLAttributes<HTMLInputElement>["autoComplete"];
 }
 
 export const Input = forwardRef<HTMLInputElement, InputProps>(function Input(
-  { size = "md", invalid, className, type = "text", ...props },
+  { size = "md", invalid, className, type = "text", autoComplete = "off", ...props },
   ref,
 ) {
   return (
     <input
       ref={ref}
       type={type}
+      autoComplete={autoComplete}
       aria-invalid={invalid || undefined}
       className={cx(styles.input, styles[size], className)}
       {...props}

@@ -6,8 +6,10 @@ const meta = {
   component: TextField,
   parameters: { layout: "padded" },
   // A token path is not personal data, so browser autofill has nothing to offer
-  // here. Without this, "Token name" makes browsers suggest people's names.
-  args: { label: "Token name", placeholder: "color/border/focus", autoComplete: "off" },
+  // here. Input defaults to autocomplete="off", but Safari ignores that for a
+  // field whose label reads as a person's name and offers the user's contact
+  // card. That is why this says "Token path" and not "Token name".
+  args: { label: "Token path", placeholder: "color/border/focus" },
   decorators: [(Story) => <div style={{ maxWidth: "15rem" }}><Story /></div>],
 } satisfies Meta<typeof TextField>;
 
