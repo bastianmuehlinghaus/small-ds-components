@@ -2,14 +2,15 @@
  * DropdownMenu has no Tier 3 tokens in Figma, so it composes from Tier 2
  * semantics. `--sds-motion-*` comes from Tier 1 under the documented exception.
  *
- * Deliberately no min-width: there is no token for menu width, and inventing
- * one would be a hardcoded value under a nicer name. The surface hugs its
- * content instead.
+ * The surface has a minimum width (`size/overlay/min-width`) and otherwise
+ * hugs its content. Without it the menu resized as rows were toggled, which
+ * showed in Safari.
  */
 
 .content,
 .subContent {
   box-sizing: border-box;
+  min-width: var(--sds-size-overlay-min-width);
   padding: var(--sds-space-inset-xs);
   border: var(--sds-border-width-default) solid var(--sds-color-border-default);
   border-radius: var(--sds-radius-surface);
