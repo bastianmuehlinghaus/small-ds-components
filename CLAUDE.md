@@ -191,12 +191,19 @@ This is deliberate and **not** an inconsistency to tidy up:
 Input is a native `<input>`: Radix has no text-input primitive, and the
 browser already owns the behaviour. TextField adds `@radix-ui/react-label`, an
 `aria-describedby` message, and `error`, which implies `invalid`. Focus wins
-over Invalid, as in Figma. The 2px focus border is a real border at
-`border-width-focus`, with `padding-inline` reduced by the extra width so the
-text doesn't shift. Don't go back to the earlier approach, a 1px border plus an
-outline drawn inside it: those are two curves, and their corners visibly
-disagree. `box-shadow: inset` would also work, but the strict-value lint
-rejects the `inset` keyword. Hover is a flat
+over Invalid, as in Figma. Focus keeps the border at `border-width-default`,
+turns it the focus colour, and adds `box-shadow: inset 0 0 0
+var(--sds-border-width-default)` in the same colour, so it reads as 2px and
+nothing in the layout moves (issue #75). This is Atlassian's construction, and
+GOV.UK's. In Figma it is the same: the stroke bound to `border/width/default` in
+every state, and on Focus an inner shadow with its spread bound to
+`border/width/default` and its colour to `input/color/border/focus`, so every
+padding stays on a token. Two earlier approaches, not to go back to: a 2px
+border with the padding reduced by a `calc()`, which left Figma with a raw 11
+(and the Select's Chips variant moving 1px); and a 1px border with an outline
+inside it, whose two curves never met at the corners. The inset ring sits on
+the border's own inner curve, so it doesn't have that problem. Select's trigger
+repeats the rule. Hover is a flat
 `linear-gradient` of the overlay token, because an `<input>` can't carry
 `::after`.
 
@@ -296,6 +303,8 @@ isn't a variable), and raw colours or dimensions assigned to local custom
 properties — that last one exists because `stylelint-declaration-strict-value`
 does not inspect `--*` declarations at all, so `--overlay-hover: #00000014`
 would otherwise pass while the same value on `background-color` was rejected.
+The one keyword allowed on a single property is `inset` on `box-shadow`, for
+the focus ring above; its width and colour are still checked.
 
 **ESLint covers** `src/**/*.{ts,tsx}`, for one thing only: a numeric literal on
 a positioning prop that takes a dimension — `sideOffset`, `alignOffset`,

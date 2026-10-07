@@ -1,5 +1,5 @@
 import type { Meta, StoryObj } from "@storybook/react-vite";
-import { expect } from "storybook/test";
+import { expect, waitFor } from "storybook/test";
 import { Input } from "./Input";
 
 const meta = {
@@ -37,8 +37,8 @@ export const States: Story = {
    sidebar with an Interactions replay, but not on the Docs page, so they have
    no Figma example. */
 
-/** Focus thickens the border to border-width-focus, and the padding gives the
- *  difference back, so neither the text nor the height moves. */
+/** Focus keeps the border's width and adds an inset ring of the same width in
+ *  the focus colour, so neither the text nor the height moves. */
 export const FocusKeepsTextInPlace: Story = {
   tags: ["!autodocs", "test"],
   play: async ({ canvas, userEvent }) => {
@@ -47,19 +47,24 @@ export const FocusKeepsTextInPlace: Story = {
       const style = getComputedStyle(input);
       return {
         border: style.borderLeftWidth,
+        ring: style.boxShadow,
         textStart: parseFloat(style.borderLeftWidth) + parseFloat(style.paddingLeft),
         height: input.getBoundingClientRect().height,
       };
     };
-    const focusWidth = getComputedStyle(input).getPropertyValue("--sds-border-width-focus").trim();
     const before = measure();
 
     await userEvent.click(input);
     await expect(input).toHaveFocus();
     const after = measure();
 
-    await expect(after.border).toBe(focusWidth);
-    await expect(after.border).not.toBe(before.border);
+    // The ring is the border's colour and width, once the transition ends.
+    await expect(before.ring).toBe("none");
+    await waitFor(() => {
+      const style = getComputedStyle(input);
+      expect(style.boxShadow).toBe(`${style.borderLeftColor} 0px 0px 0px ${style.borderLeftWidth} inset`);
+    });
+    await expect(after.border).toBe(before.border);
     await expect(after.textStart).toBe(before.textStart);
     await expect(after.height).toBe(before.height);
   },

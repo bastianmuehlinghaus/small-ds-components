@@ -1,4 +1,4 @@
-/* Every declaration here must be rejected. 10 violations expected. */
+/* Every declaration here must be rejected. 13 violations expected. */
 .hardcoded {
   padding: 12px;          /* 1 */
   color: #141414;         /* 2 */
@@ -20,4 +20,14 @@
 
 .laundered-through-a-custom-property {
   --overlay-hover: #00000014;                            /* 11 */
+}
+
+/* `inset` makes a box-shadow a ring, but the ring's width is still a value. */
+.inset-ring-with-a-raw-width {
+  box-shadow: inset 0 0 0 2px var(--sds-input-color-border-focus); /* 12 */
+}
+
+/* The keyword is allowed on box-shadow only. */
+.inset-elsewhere {
+  border-style: inset;                                   /* 13 */
 }

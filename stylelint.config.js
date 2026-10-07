@@ -64,6 +64,14 @@ const STRUCTURAL_VALUES = [
   "max-content", "min-content", "1", "1px", "center", "cover", "contain",
 ];
 
+/* `inset` turns a box-shadow into a ring drawn inside the border box, which is
+   how Input and Select thicken their border on focus without changing its
+   width. A keyword, not a value; the ring's width and colour are still tokens. */
+const STRUCTURAL_VALUES_BY_PROPERTY = {
+  "": STRUCTURAL_VALUES,
+  "box-shadow": [...STRUCTURAL_VALUES, "inset"],
+};
+
 export default {
   extends: ["stylelint-config-standard"],
   plugins: ["stylelint-declaration-strict-value"],
@@ -71,7 +79,7 @@ export default {
     /* 1. No hardcoded values. Every visual decision resolves to a token. */
     "scale-unlimited/declaration-strict-value": [
       TOKENISED_PROPERTIES,
-      { ignoreValues: STRUCTURAL_VALUES, disableFix: true },
+      { ignoreValues: STRUCTURAL_VALUES_BY_PROPERTY, disableFix: true },
     ],
 
     /* 2. No component reaches past the semantic layer.

@@ -217,6 +217,50 @@ export const MultipleChipsAndRemove: Story = {
   },
 };
 
+/** Focus keeps the border's width and adds Input's inset ring, so neither a
+ *  single Select's value nor a multiple Select's chips move. Before the ring,
+ *  the chips moved 1px in the Figma Focus variant. */
+export const FocusKeepsContentInPlace: Story = {
+  tags: ["!autodocs", "test"],
+  render: () => (
+    <div style={{ display: "grid", gap: "var(--sds-space-stack-md)" }}>
+      <Select aria-label="Mode" options={modes} defaultValue="dark" />
+      <Select multiple aria-label="Tiers" options={tiers} defaultValue={["primitives", "semantics"]} />
+    </div>
+  ),
+  play: async ({ canvas }) => {
+    const check = async (trigger: HTMLElement, content: HTMLElement) => {
+      const measure = () => ({
+        border: getComputedStyle(trigger).borderLeftWidth,
+        ring: getComputedStyle(trigger).boxShadow,
+        content: content.getBoundingClientRect(),
+        field: trigger.getBoundingClientRect(),
+      });
+      const before = measure();
+      trigger.focus();
+      await expect(trigger).toHaveFocus();
+      const after = measure();
+
+      await expect(before.ring).toBe("none");
+      await waitFor(() => {
+        const style = getComputedStyle(trigger);
+        expect(style.boxShadow).toBe(`${style.borderLeftColor} 0px 0px 0px ${style.borderLeftWidth} inset`);
+      });
+      await expect(after.border).toBe(before.border);
+      await expect(after.content.x).toBe(before.content.x);
+      await expect(after.content.y).toBe(before.content.y);
+      await expect(after.field.height).toBe(before.field.height);
+      trigger.blur();
+    };
+
+    const single = canvas.getByRole("combobox", { name: "Mode" });
+    await check(single, within(single).getByText("Dark"));
+
+    const multiple = canvas.getByRole("combobox", { name: "Tiers" });
+    await check(multiple, canvas.getByRole("button", { name: "Remove Primitives" }));
+  },
+};
+
 /** A Select submits with its form: one hidden input per chosen value. */
 export const SubmitsWithForm: Story = {
   tags: ["!autodocs", "test"],

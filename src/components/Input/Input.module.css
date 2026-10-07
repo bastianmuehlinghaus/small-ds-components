@@ -21,11 +21,11 @@
   color: var(--sds-input-color-content-default);
   appearance: none;
 
-  /* Focus is drawn by the border and an inside outline below, not the
-     browser's ring. */
+  /* Focus is drawn by the border and an inset ring below, not the browser's
+     ring. */
   outline: none;
 
-  transition-property: border-color, background-color;
+  transition-property: border-color, background-color, box-shadow;
   transition-duration: var(--sds-motion-duration-fast);
   transition-timing-function: var(--sds-motion-easing-standard);
 }
@@ -51,15 +51,16 @@
 }
 
 /* Focus wins over Invalid, as in Figma: it comes later at equal specificity.
-   One real border at border-width-focus, like Figma's 2px inside stroke, so
-   the ring has a single radius. An outline drawn inside a 1px border was two
-   curves, and their corners never quite met. The padding gives back the extra
-   width, so the text never shifts. Vertically the value is centred, and the
-   box is border-box, so neither the height nor the text moves. */
+   The border keeps its width and turns the focus colour, and an inset ring of
+   the same width inside it makes it read as 2px. Nothing in the layout
+   changes, so the text and the height stay put with no padding to give back.
+   The ring is painted at the border's inner edge, on the same curve, so the
+   two meet at the corners; an outline inside the border did not.
+   This is Atlassian's construction. Figma draws it the same way: a stroke at
+   border/width/default and an inner shadow of that spread. */
 .input:focus {
-  border-width: var(--sds-border-width-focus);
   border-color: var(--sds-input-color-border-focus);
-  padding-inline: calc(var(--sds-input-space-inset-x) - (var(--sds-border-width-focus) - var(--sds-border-width-default)));
+  box-shadow: inset 0 0 0 var(--sds-border-width-default) var(--sds-input-color-border-focus);
 }
 
 /* Disabled comes last so it wins over everything above. */
