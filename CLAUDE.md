@@ -30,7 +30,7 @@ text.
 | Accordion | `Accordion Item` set; `Accordion` (3 exposed items) | 6: Variant (Closed, Open) × State | `Accordion.Item`; `Accordion.Root` | Single, Multiple, AllClosed |
 | Radio group | `Radio` set; `Radio Group` set (items are exposed Radios) | 10: Checked × State; 6: Orientation × State | `RadioGroup.Item`; `RadioGroup.Root` | Default, Horizontal, DisabledItem, DisabledGroup, Invalid |
 | Text field | `Input` set; `Text Field` set (label, exposed Input, message) | 10: State × Value (Placeholder, Filled); 3: State (Default, Disabled, Invalid) | `Input`; `TextField` | Input / Default, TextField / Default, WithDescription, Invalid, Disabled |
-| Dropdown menu | `Menu Item` set; `Menu Group Label`; `Menu Separator`; `Dropdown Menu` surface | 14: Type × State (Checkbox and Radio have no Selected) | `.Item` and friends; `.Label`; `.Separator`; `.Content` | Basic, OpenByDefault, WithSelection, SelectAll, WithSubmenu |
+| Dropdown menu | `Menu Item` set; `Menu Group Label`; `Menu Separator`; `Dropdown Menu` surface | 12: Type (Item, Submenu, Checkbox, Radio) × State (Default, Hover, Disabled) | `.Item` and friends; `.Label`; `.Separator`; `.Content` | Basic, OpenByDefault, WithSelection, SelectAll, WithSubmenu |
 | Chip | `Chip` set | 7: Removable × State (Default, Hover, Pressed, Focus, Disabled; a chip without a remove button has only Default and Disabled) | `Chip` | Default, Removable, Disabled, LongLabel |
 | Select | `Select` set; `Select Field` set (label, Select instance, message) | 15: State × Value (Placeholder, Filled, Chips); 3: State (Default, Disabled, Invalid) | `Select`; `SelectField` | Select: Single, SingleWithValue, Multiple, MultipleEmpty, MultipleWrapping, Invalid, Disabled, DisabledMultiple. SelectField: Default, WithDescription, Invalid, Disabled, Multiple |
 | Listbox | `Option` set; `Listbox` set (a surface of Option instances) | 12: Type (Single, Multiple) × State (Default, Highlighted, Disabled) × Checked; 2: Selection (Single, Multiple) | none of its own: the list inside `Select` | none. `Select`'s `SingleOpen` and `MultipleOpen` use it |
@@ -56,9 +56,9 @@ and Figma is where that difference has to be visible before anyone codes:
   separators in it, which the menu has. If one is needed, that is a decision to
   take with Bastian, not a variant to add.
 - **Its states have a different vocabulary.** An Option is *Highlighted* (by
-  pointer or keyboard), *Disabled*, and *Checked*. The Menu Item's `Hover` and
-  `Selected` do not map one to one, and a checked row has no selected fill in
-  either, because the box already says it.
+  pointer or keyboard), *Disabled*, and *Checked*. The Menu Item calls its
+  highlight `Hover`, though the keyboard moves it too, and a checked row has no
+  selected fill in either, because the box already says it.
 - **Its behaviour differs.** A single Select closes on choice, where the menu's
   radio rows stay open. Its surface is at least as wide as the field and opens
   below it, with a 4px offset.
@@ -94,6 +94,14 @@ The `Dropdown Menu` surface mirrors `.content` exactly: `background/raised`, a
 Examples whose rows differ from it are detached frames with the same bindings.
 Their trigger Buttons are `State=Pressed`, because a Button holds the pressed
 overlay while `aria-expanded` is true.
+
+A Menu Item has no Focus and no Selected state. Radix moves one highlight with
+the pointer and the keyboard, so keyboard focus on a row is the `Hover` variant
+(`color/state/hover`), with no ring. A submenu trigger whose submenu is open
+keeps that same highlight, as `.subTrigger[data-state="open"]` does. The set
+used to have `Item` and `Submenu` `Selected` variants in `color/state/selected`;
+no state in the code reached them and nothing in the file used them, so they
+were removed (issue #85).
 
 A `Menu Group Label` (`.Label` in code, Radix's name) divides groups on its
 own: its `inset-md` top padding is the gap. A separator directly before one
