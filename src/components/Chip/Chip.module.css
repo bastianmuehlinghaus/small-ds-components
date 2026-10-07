@@ -1,0 +1,89 @@
+/**
+ * Chip reads Tier 3 `--sds-chip-size-height` for its height and Tier 2
+ * semantics for the rest. `--sds-motion-*` comes from Tier 1 under the
+ * documented exception.
+ *
+ * The height is 20, so a row of chips fits inside a Select's minimum height
+ * at both sizes and the field is exactly as tall as an Input until the chips
+ * wrap. A taller chip would push a small Select past its 32.
+ */
+
+.chip {
+  display: inline-flex;
+  align-items: center;
+  box-sizing: border-box;
+  max-width: 100%;
+
+  /* min-height, never height — see CLAUDE.md on the rem/px split. The label
+     is 16 high, so at the default size this is the height; a larger base
+     font grows it. */
+  min-height: var(--sds-chip-size-height);
+  border-radius: var(--sds-radius-control);
+  background-color: var(--sds-color-background-subtle);
+  color: var(--sds-color-content-default);
+}
+
+.label {
+  composes: sds-type-label-small from "@small-ds/tokens/typography.css";
+
+  /* Long labels truncate rather than stretch the field. */
+  min-width: 0;
+  overflow: hidden;
+  padding-inline: var(--sds-space-inset-sm);
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+/* With a remove button the label gives its trailing inset to the button, so
+   the pair is balanced: 8 | label | 4 + 16 icon + 4. The button takes the
+   chip's full height, so its hover fill reaches the top and bottom edges. */
+.label:has(+ .remove) {
+  padding-inline-end: 0;
+}
+
+.remove {
+  display: inline-grid;
+  flex-shrink: 0;
+  place-items: center;
+  box-sizing: border-box;
+  align-self: stretch;
+  margin: 0;
+  padding-block: 0;
+  padding-inline: var(--sds-space-inset-xs);
+  border: none;
+  border-start-end-radius: var(--sds-radius-control);
+  border-end-end-radius: var(--sds-radius-control);
+  background-color: transparent;
+  color: inherit;
+  cursor: pointer;
+  appearance: none;
+
+  transition-property: background-color;
+  transition-duration: var(--sds-motion-duration-fast);
+  transition-timing-function: var(--sds-motion-easing-standard);
+}
+
+/* An inside ring, like the selection controls: the chip is small enough that
+   an outside outline would collide with its neighbours. */
+.remove:focus-visible {
+  outline: var(--sds-border-width-focus) solid var(--sds-color-border-focus);
+  outline-offset: calc(var(--sds-border-width-focus) * -1);
+}
+
+/* Disabled greys the content only: background/subtle still reads against the
+   disabled field's own background, in both modes. */
+.chip[data-disabled] {
+  color: var(--sds-color-content-disabled);
+}
+
+.remove:disabled {
+  cursor: not-allowed;
+}
+
+.remove:hover:not(:disabled) {
+  background-color: var(--sds-color-state-hover);
+}
+
+.remove:active:not(:disabled) {
+  background-color: var(--sds-color-state-pressed);
+}

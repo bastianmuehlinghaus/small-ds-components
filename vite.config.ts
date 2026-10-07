@@ -15,9 +15,9 @@ export default defineConfig({
       cssFileName: "styles",
     },
     rollupOptions: {
-      // Consumers bring their own React and Radix; bundling them would risk
-      // two copies of React and break Radix's context-based composition.
-      external: [/^react/, /^react-dom/, /^@radix-ui\//],
+      // Consumers bring their own React, Radix and Base UI; bundling them would
+      // risk two copies of React and break their context-based composition.
+      external: [/^react/, /^react-dom/, /^@radix-ui\//, /^@base-ui\//],
     },
     cssCodeSplit: false,
   },

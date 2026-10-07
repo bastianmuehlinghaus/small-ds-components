@@ -58,3 +58,10 @@ export const CheckmarkIcon = createIcon(
 /** Figma: `Icon / <dash>` — the same 1px weight as the checkmark, centred on
  *  the grid and on whole pixel rows. */
 export const DashIcon = createIcon("DashIcon", "M3.5 7.5H12.5V8.5H3.5V7.5Z");
+
+/** Figma: `Icon / <close>` — two 1px diagonals centred on the grid, the same
+ *  weight as the checkmark and dash. */
+export const CloseIcon = createIcon(
+  "CloseIcon",
+  "M4.35355 3.64645L8 7.29289L11.6464 3.64645L12.3536 4.35355L8.70711 8L12.3536 11.6464L11.6464 12.3536L8 8.70711L4.35355 12.3536L3.64645 11.6464L7.29289 8L3.64645 4.35355L4.35355 3.64645Z",
+);

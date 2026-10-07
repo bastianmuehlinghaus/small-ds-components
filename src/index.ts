@@ -10,6 +10,15 @@ export type { InputProps, InputSize } from "./components/Input";
 export { TextField } from "./components/TextField";
 export type { TextFieldProps } from "./components/TextField";
 
+export { Chip } from "./components/Chip";
+export type { ChipProps } from "./components/Chip";
+
+export { Select } from "./components/Select";
+export type { SelectProps, SelectOption, SelectSize } from "./components/Select";
+
+export { SelectField } from "./components/SelectField";
+export type { SelectFieldProps } from "./components/SelectField";
+
 export { RadioGroup, RadioGroupRoot, RadioGroupItem } from "./components/RadioGroup";
 export type { RadioGroupRootProps, RadioGroupItemProps } from "./components/RadioGroup";
 
@@ -49,5 +58,5 @@ export type {
   DropdownMenuSubContentProps,
 } from "./components/DropdownMenu";
 
-export { ChevronRightIcon, ChevronDownIcon, ChevronUpIcon, CheckmarkIcon, DashIcon } from "./components/Icon";
+export { ChevronRightIcon, ChevronDownIcon, ChevronUpIcon, CheckmarkIcon, DashIcon, CloseIcon } from "./components/Icon";
 export type { IconProps } from "./components/Icon";
