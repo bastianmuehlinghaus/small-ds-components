@@ -170,8 +170,15 @@ read `size/control/default`, so a row of them aligns, and Button, Input and
 the menu share 14px type (Label/Medium, Body/XSmall). There are no `size`
 props. Larger sizes may come back later; that is a token decision for Bastian,
 not a prop to add. The Accordion is not a control in this sense: its 48px
-comes from its padding and Label/Large. The `ControlsShareOneHeight` story
-holds the alignment.
+trigger comes from its padding and Label/Large, and each item is 49 with its
+1px bottom rule below the trigger, as a CSS border has to be. In Figma the
+item counts its stroke in layout for the same 49 (it used to draw the rule
+over the trigger and stay 48). Its Focus variants keep that rule and add a
+`Focus ring` layer outside auto layout, stretched to the item, with a 2px
+inside stroke (`border/width/focus`, `color/border/focus`) that covers the
+rule, as the CSS outline covers the border. Not an inner shadow, as on Input:
+the item has no fill, and Figma draws an inner shadow only inside one. The
+`ControlsShareOneHeight` story holds the alignment.
 
 ## Which tier each component reads
 
@@ -415,8 +422,9 @@ could only be imported once they had been published there.
 Two more things worth knowing before you debug them:
 
 - **Auto-layout could not hug unmeasurable text** under the old restriction. The
-  Open accordion variants reported 48px while visibly overflowing, so they carry
-  an explicit height. Text now measures, so this may be removable. Untested.
+  Open accordion variants reported 48px while visibly overflowing, so they
+  carried an explicit height. They hug now (checked 2026-10-07: 113 with the
+  rule, as in Storybook), so nothing in the file depends on this any more.
 - **`setBoundVariableForPaint` keeps the paint's original colour as a fallback,
   and Figma does not always resolve it.** Half the Button variants rendered
   black with invisible labels while their bindings were correct. Always resolve
