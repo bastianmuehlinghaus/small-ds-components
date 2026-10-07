@@ -132,7 +132,7 @@ This is deliberate and **not** an inconsistency to tidy up:
 | Accordion | Tier 2 semantics | Figma has no `accordion/*` tokens |
 | Input | Tier 3 `--sds-input-*`, plus Tier 2 border widths | Figma defines a full Tier 3 surface for it |
 | Select | Tier 3 `--sds-input-*` and `--sds-select-*`, plus Tier 2 for the list | the box is Input's; Figma defines two `select/*` tokens (placeholder, indicator) |
-| Chip | Tier 3 `--sds-chip-size-height`, plus Tier 2 | Figma defines one `chip/*` token, its height |
+| Chip | Tier 3 `--sds-chip-size-height`, plus Tier 2 | Figma defines one `chip/*` token, its height; `space/inline/xxs` (2) is Tier 2 |
 | TextField | Input for the box, Tier 2 for the label and message | no `text-field/*` tokens |
 | Checkbox, RadioGroup | Tier 3 `--sds-selection-control-*` for the box, Tier 2 for the footprint and focus ring | Tier 3 models the box only |
 | DropdownMenu | Tier 2 semantics | Figma has no `menu/*` tokens |
@@ -192,6 +192,16 @@ tall as an Input: a row of 20px chips plus the field's padding fits inside the
 onto a second row. This follows Atlassian, whose multi-value tag is 20px for the
 same reason. A 24px chip made `sm` grow to 34. The `SameHeightAsInput` story
 holds it.
+
+The remove button is the × itself: 16 square (`size-icon-sm`) with
+`radius-control-sm`, so its hover and pressed fill is a small rounded square
+inset from the chip's edges, not a strip. It sits 2 from the top, bottom and end
+(`space-inline-xxs`, added for this, with Bastian's approval), 4 from the label,
+and the label starts 4 from the start. A chip without a button pads 4 at both
+ends, so both kinds share the same start inset. The button is a 16px target;
+WCAG 2.2's 24px minimum (2.5.8) is met only through its spacing exception, which
+the Select's field-wide trigger underneath arguably defeats. Worth a look before
+anyone relies on a claim of AA conformance.
 
 Checkbox, RadioGroup and the DropdownMenu checkbox/radio rows share
 `SelectionControl.module.css`, which is internal. The control is sized like an

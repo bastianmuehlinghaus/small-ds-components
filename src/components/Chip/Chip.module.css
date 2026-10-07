@@ -18,9 +18,18 @@
      is 16 high, so at the default size this is the height; a larger base
      font grows it. */
   min-height: var(--sds-chip-size-height);
+  padding-inline: var(--sds-space-inline-xs);
   border-radius: var(--sds-radius-control);
   background-color: var(--sds-color-background-subtle);
   color: var(--sds-color-content-default);
+}
+
+/* With a remove button the row ends in the button, which sits closer to the
+   edge than text does: 2 from the end, and from the top and bottom, since it
+   is 16 in a chip of 20. */
+.chip:has(.remove) {
+  gap: var(--sds-space-inline-xs);
+  padding-inline-end: var(--sds-space-inline-xxs);
 }
 
 .label {
@@ -29,30 +38,23 @@
   /* Long labels truncate rather than stretch the field. */
   min-width: 0;
   overflow: hidden;
-  padding-inline: var(--sds-space-inset-sm);
   text-overflow: ellipsis;
   white-space: nowrap;
 }
 
-/* With a remove button the label gives its trailing inset to the button, so
-   the pair is balanced: 8 | label | 4 + 16 icon + 4. The button takes the
-   chip's full height, so its hover fill reaches the top and bottom edges. */
-.label:has(+ .remove) {
-  padding-inline-end: 0;
-}
-
+/* The icon is the button: 16 square, not a strip. Its hover and pressed fill
+   is therefore a small rounded square too. */
 .remove {
   display: inline-grid;
   flex-shrink: 0;
   place-items: center;
   box-sizing: border-box;
-  align-self: stretch;
+  width: var(--sds-size-icon-sm);
+  height: var(--sds-size-icon-sm);
   margin: 0;
-  padding-block: 0;
-  padding-inline: var(--sds-space-inset-xs);
+  padding: 0;
   border: none;
-  border-start-end-radius: var(--sds-radius-control);
-  border-end-end-radius: var(--sds-radius-control);
+  border-radius: var(--sds-radius-control-sm);
   background-color: transparent;
   color: inherit;
   cursor: pointer;
