@@ -28,7 +28,7 @@
   appearance: none;
   outline: none;
 
-  transition-property: border-color, background-color;
+  transition-property: border-color, background-color, box-shadow;
   transition-duration: var(--sds-motion-duration-fast);
   transition-timing-function: var(--sds-motion-easing-standard);
 }
@@ -57,17 +57,13 @@
 
 /* Open counts as focused, as it does on the trigger itself: Base UI keeps the
    focus on the trigger while the list is open, and this stays for a mouse
-   click that closes it. Focus wins over Invalid, as on Input. The padding
-   gives back the extra width, so the value never shifts. */
+   click that closes it. Focus wins over Invalid, as on Input. The ring is
+   Input's: the border keeps its width and an inset ring of the same width
+   makes it read as 2px, so neither the value nor the chips move. */
 .trigger:focus,
 .trigger[data-popup-open] {
-  border-width: var(--sds-border-width-focus);
   border-color: var(--sds-input-color-border-focus);
-}
-
-.single:focus,
-.single[data-popup-open] {
-  padding-inline: calc(var(--sds-input-space-inset-x) - (var(--sds-border-width-focus) - var(--sds-border-width-default)));
+  box-shadow: inset 0 0 0 var(--sds-border-width-default) var(--sds-input-color-border-focus);
 }
 
 .trigger:is(:disabled, [data-disabled]) {
