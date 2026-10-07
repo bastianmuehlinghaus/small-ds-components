@@ -27,8 +27,9 @@
     "build-storybook": "storybook build",
     "lint:css": "stylelint \"src/**/*.css\"",
     "typecheck": "tsc --noEmit",
-    "lint:rules": "node test/stylelint/run.mjs",
-    "lint": "npm run lint:css && npm run lint:rules",
+    "lint:tsx": "eslint src",
+    "lint:rules": "node test/stylelint/run.mjs && node test/eslint/run.mjs",
+    "lint": "npm run lint:css && npm run lint:tsx && npm run lint:rules",
     "verify": "node scripts/verify-build.mjs",
     "prepublishOnly": "npm run build && npm run lint && npm run verify",
     "test": "vitest run --project=storybook"
@@ -55,6 +56,10 @@
     "@small-ds/tokens": "file:../small-ds-tokens"
   },
   "devDependencies": {
+    "@babel/core": "^8.0.7",
+    "@babel/eslint-parser": "^8.0.7",
+    "@babel/preset-react": "^8.0.1",
+    "@babel/preset-typescript": "^8.0.7",
     "@radix-ui/react-dialog": "^1.2.0",
     "@storybook/addon-a11y": "^10.6.1",
     "@storybook/addon-docs": "^10.6.1",
@@ -64,6 +69,7 @@
     "@types/react-dom": "^19.2.5",
     "@vitejs/plugin-react": "^6.1.1",
     "@vitest/browser-playwright": "^5.0.3",
+    "eslint": "^10.12.0",
     "playwright": "^1.63.0",
     "react": "^19.2.8",
     "react-dom": "^19.2.8",

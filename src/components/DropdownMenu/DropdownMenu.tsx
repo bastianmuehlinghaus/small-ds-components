@@ -2,6 +2,7 @@ import { forwardRef } from "react";
 import type { ComponentPropsWithoutRef, ComponentRef } from "react";
 import * as Radix from "@radix-ui/react-dropdown-menu";
 import { cx } from "../../cx";
+import { tokenPx } from "../../tokenPx";
 import { CheckmarkIcon, ChevronRightIcon, DashIcon } from "../Icon";
 import selection from "../SelectionControl/SelectionControl.module.css";
 import styles from "./DropdownMenu.module.css";
@@ -10,6 +11,10 @@ import styles from "./DropdownMenu.module.css";
    collision-aware positioning, Escape and outside-press dismissal. This file is
    appearance only, with one exception: choosing a checkbox or radio row keeps
    the menu open (see keepOpen). */
+
+/* The gap between a trigger and its menu. Radix takes it as a number, before
+   any CSS exists, so it is read from the token here rather than from CSS. */
+const MENU_OFFSET = tokenPx("sds-space-inline-xs");
 
 /* Radix closes the menu on every select. A checkbox or radio row is a setting,
    not an action, so it stays open and several can be changed in one visit.
@@ -27,7 +32,7 @@ export type DropdownMenuContentProps = ComponentPropsWithoutRef<typeof Radix.Con
 export const DropdownMenuContent = forwardRef<
   ComponentRef<typeof Radix.Content>,
   DropdownMenuContentProps
->(function DropdownMenuContent({ className, sideOffset = 4, align = "start", ...props }, ref) {
+>(function DropdownMenuContent({ className, sideOffset = MENU_OFFSET, align = "start", ...props }, ref) {
   return (
     <Radix.Portal>
       <Radix.Content
@@ -144,7 +149,7 @@ export type DropdownMenuSubContentProps = ComponentPropsWithoutRef<typeof Radix.
 export const DropdownMenuSubContent = forwardRef<
   ComponentRef<typeof Radix.SubContent>,
   DropdownMenuSubContentProps
->(function DropdownMenuSubContent({ className, sideOffset = 4, ...props }, ref) {
+>(function DropdownMenuSubContent({ className, sideOffset = MENU_OFFSET, ...props }, ref) {
   return (
     <Radix.Portal>
       <Radix.SubContent

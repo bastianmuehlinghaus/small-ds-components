@@ -35,6 +35,7 @@ check(`Tier 1 appears only in the ${referencing.length} composed typography clas
 const js = fs.readFileSync("dist/index.js", "utf8");
 check("react is externalised, not bundled", !/function\s+useState\s*\(/.test(js));
 check("radix is externalised, not bundled", /@radix-ui\//.test(js));
+check("tokens are imported, not bundled", /from\s*["']@small-ds\/tokens["']/.test(js) && !/"sds-border-radius-0"/.test(js));
 check("base ui is imported, not bundled", /from\s*["']@base-ui\/react\/select["']/.test(js) && js.length < 100_000,
   `index.js is ${(js.length / 1024).toFixed(0)} kB`);
 

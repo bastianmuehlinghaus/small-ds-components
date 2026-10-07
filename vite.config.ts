@@ -17,7 +17,10 @@ export default defineConfig({
     rollupOptions: {
       // Consumers bring their own React, Radix and Base UI; bundling them would
       // risk two copies of React and break their context-based composition.
-      external: [/^react/, /^react-dom/, /^@radix-ui\//, /^@base-ui\//],
+      // The tokens are external for a different reason: tokenPx() reads values
+      // from them, and the consumer loads that same package's CSS. One copy
+      // keeps the JS numbers and the CSS variables from drifting apart.
+      external: [/^react/, /^react-dom/, /^@radix-ui\//, /^@base-ui\//, /^@small-ds\/tokens/],
     },
     cssCodeSplit: false,
   },

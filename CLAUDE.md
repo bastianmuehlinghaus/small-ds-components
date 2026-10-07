@@ -117,8 +117,8 @@ deliberately small; a plausible-looking gap is usually intentional. Do not add a
 CSS custom property, a magic number, or a "temporary" literal.
 
 **2. No hardcoded values.** Every visual decision resolves to a `var(--sds-*)`.
-`npm run lint` fails the build otherwise. See *What lint does and does not
-cover* below for the honest limits of that.
+`npm run lint` fails the build otherwise, in CSS and for the positioning props
+in TSX. See *What lint does and does not cover* below for the honest limits.
 
 **3. No component reaches past the semantic layer.** Use Tier 2
 (`--sds-color-background-raised`, `--sds-space-inset-lg`) and Tier 3
@@ -275,9 +275,10 @@ with Bastian, not a token to add. See rule 1.
 ## What lint does and does not cover
 
 `npm run lint` is the only thing actually holding rules 2 and 3 in place, so be
-precise about its reach.
+precise about its reach. It is two linters, because a design value can sit in
+two kinds of file.
 
-**It covers** `src/**/*.css`: hardcoded values, Tier 1 references, bare
+**stylelint covers** `src/**/*.css`: hardcoded values, Tier 1 references, bare
 durations and easings inside `transition` / `animation` shorthands (which
 strict-value can't check, because a property name inside a shorthand legitimately
 isn't a variable), and raw colours or dimensions assigned to local custom
@@ -285,18 +286,29 @@ properties — that last one exists because `stylelint-declaration-strict-value`
 does not inspect `--*` declarations at all, so `--overlay-hover: #00000014`
 would otherwise pass while the same value on `background-color` was rejected.
 
-**It does not cover:**
+**ESLint covers** `src/**/*.{ts,tsx}`, for one thing only: a numeric literal on
+a positioning prop that takes a dimension — `sideOffset`, `alignOffset`,
+`collisionPadding`, `arrowPadding` — whether as a JSX attribute, an object key
+or a default value. Radix and Base UI position floating content from numbers
+handed to JS before any CSS is laid out, so a CSS variable cannot reach them.
+The value comes from `tokenPx("sds-space-inline-xs")` in `src/tokenPx.ts`
+instead, which reads `@small-ds/tokens` and accepts only px or a bare `0`. A
+literal `0` is allowed: no offset is the absence of a decision. The parser is
+Babel, not typescript-eslint, which does not yet support this repo's TypeScript.
 
-- **`.tsx` files.** A dimension passed as a React prop is invisible to stylelint.
-  `sideOffset = 4` in DropdownMenu is a real instance — right value, not sourced
-  from a token. Tracked in #13. The honest phrasing of rule 2 is "no hardcoded
-  values *in CSS*"; in TSX it is currently honour-based.
+**Neither covers:**
+
+- **Anything else in TSX.** ESLint checks that list of props, not every number.
+  A new Radix or Base UI prop that takes a dimension has to be added to
+  `DIMENSION_PROPS` in `eslint.config.js`; a pixel value in an inline `style`,
+  or a literal passed under another name, is not seen. Rule 2 is enforced in
+  CSS and for those props, and honour-based beyond them.
 - **`.storybook/*.css`**, which is page chrome rather than library code and is
   deliberately exempt.
 
-`npm run lint:rules` tests the config itself against fixtures in
-`test/stylelint/`. It exists because if a regex there silently stops matching,
-every other check still looks green.
+`npm run lint:rules` tests both configs against fixtures in `test/stylelint/`
+and `test/eslint/`. It exists because if a regex or selector there silently
+stops matching, every other check still looks green.
 
 ## Things that will waste your time if you don't know them
 
@@ -394,8 +406,8 @@ boundary in Figma exactly as stylelint enforces it here.
 
 ```sh
 npm run storybook    # dev, with a light/dark toolbar toggle
-npm run lint         # lint:css + lint:rules
-npm run lint:rules   # tests the stylelint config itself against fixtures
+npm run lint         # lint:css + lint:tsx + lint:rules
+npm run lint:rules   # tests the stylelint and ESLint configs against fixtures
 npm run typecheck
 npm run build        # vite lib build + declarations
 npm run verify       # asserts the built artefact obeys the same rules
@@ -419,4 +431,5 @@ exists, is in `.storybook/preview.tsx`. The first run on a new machine needs
 `npm run verify` checks `dist/`, not `src/` — `composes` pulls the tokens
 package's typography classes into the bundle and CSS Modules rewrites the class
 names on the way, so the shipped artefact needs its own assertion that nothing
-reaches past the semantic layer. It also confirms React and Radix stay external.
+reaches past the semantic layer. It also confirms React, Radix and
+`@small-ds/tokens` stay external.
