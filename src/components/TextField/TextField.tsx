@@ -6,7 +6,7 @@ import { Input } from "../Input";
 import type { InputProps } from "../Input";
 import styles from "./TextField.module.css";
 
-/* Label + Input + message, as the Figma Text Field. Radix Label handles the
+/* Label + Input + message, as the Figma Text field. Radix Label handles the
    label's association and its click-to-focus; the rest is wiring IDs so the
    message is announced with the input. */
 
