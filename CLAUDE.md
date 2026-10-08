@@ -113,6 +113,42 @@ surface).
 Their trigger Buttons are `State=Pressed`, because a Button holds the pressed
 overlay while `aria-expanded` is true.
 
+**Width: grows with its widest row, 240 to 480, then truncates.** In code the
+menu, its submenus and the Select list have `min-width` `size-overlay-min-width`
+and `max-width` `size-overlay-max-width` (added for this, with Bastian's
+approval), capped further by the space the positioning library measures beside
+the trigger. A row never wraps: its text sits in its own span (`.itemLabel`,
+which the Select's `ItemText` composes) with `nowrap` and an ellipsis, because a
+flex row cannot put an ellipsis on a bare text node. `Item` with `asChild` is
+left unwrapped, since the consumer's element owns its children then. The
+`LongLabelTruncates` and `LongOptionTruncates` stories hold it. A Select field
+wider than 480 still gets a list as wide as itself: `min-width` wins.
+
+Figma mirrors the growth, not the ellipsis, because one text layer cannot do
+both: an ellipsis needs a width imposed from outside, and growth needs the text
+to set the width. So the `Dropdown Menu` and `Listbox` surfaces hug, with
+`minWidth` and `maxWidth` bound to the two tokens; Menu Item and Listbox Item
+rows hug their label (91 for a plain row, 115 for a submenu, 119 with a box) and
+fill the surface inside it; and the label has truncation (ending, one line) set
+but hugs. When a label reaches the maximum, set **that instance's label to
+Fill**: it then ends in an ellipsis at 446 in a 470 row, exactly as Storybook
+draws it, and the surface stays at 480. Three things found building it:
+
+- A Fill *text* layer gives its parent no width, so a hugging surface ignores
+  it, while a Fill auto-layout *frame* passes up its content's width. That is
+  why the label hugs and the rows fill.
+- Through the Plugin API, a changed label does not always re-lay out the
+  surface until a sizing property on the row is touched (Hug, then Fill again).
+  Whether typing on the canvas needs the same nudge is not yet checked; if a
+  menu looks too narrow for its widest row, that is the cause.
+- Making a component's width hug resets its instances' Fill. After changing a
+  row's sizing, set the rows in every `Items` slot back to Fill.
+
+The submenu chevron sits in a `Chevron container` with an 8px start padding
+(`space/inline/sm`, the row gap), and the row spaces its children apart: a
+hugging space-between row would otherwise put the chevron against the label,
+where CSS keeps the gap plus `margin-inline-start: auto`.
+
 A Menu Item has no Focus and no Selected state. Radix moves one highlight with
 the pointer and the keyboard, so keyboard focus on a row is the `Hover` variant
 (`color/state/hover`), with no ring. A submenu trigger whose submenu is open

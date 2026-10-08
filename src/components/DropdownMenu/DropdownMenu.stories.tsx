@@ -294,3 +294,57 @@ export const SelectionKeepsMenuOpen: Story = {
     await closed();
   },
 };
+
+const longLabel = "Export the semantic colour tokens for content, border and background, with their dark-mode values";
+
+/* The surface grows with its widest row up to size-overlay-max-width (480);
+   past that a row keeps its one line and its label ends in an ellipsis. */
+export const LongLabelTruncates: Story = {
+  tags: ["!autodocs", "test"],
+  render: () => (
+    <DropdownMenu.Root>
+      <DropdownMenu.Trigger asChild>
+        <Button variant="secondary">Open menu</Button>
+      </DropdownMenu.Trigger>
+      <DropdownMenu.Content>
+        <DropdownMenu.Item>Duplicate</DropdownMenu.Item>
+        <DropdownMenu.Item>{longLabel}</DropdownMenu.Item>
+        <DropdownMenu.CheckboxItem>{longLabel}</DropdownMenu.CheckboxItem>
+        <DropdownMenu.Sub>
+          <DropdownMenu.SubTrigger>{longLabel}</DropdownMenu.SubTrigger>
+          <DropdownMenu.SubContent>
+            <DropdownMenu.Item>Duplicate</DropdownMenu.Item>
+          </DropdownMenu.SubContent>
+        </DropdownMenu.Sub>
+      </DropdownMenu.Content>
+    </DropdownMenu.Root>
+  ),
+  play: async ({ canvas, userEvent }) => {
+    await userEvent.click(canvas.getByRole("button", { name: "Open menu" }));
+    const menu = await page.findByRole("menu");
+    const max = parseFloat(getComputedStyle(menu).getPropertyValue("--sds-size-overlay-max-width"));
+    const row = parseFloat(getComputedStyle(menu).getPropertyValue("--sds-size-control-default"));
+
+    // offsetWidth, not the bounding box: the menu scales in.
+    await expect(menu.offsetWidth).toBe(max);
+
+    // The plain row and the submenu trigger are both menuitems.
+    const rows = [
+      ...page.getAllByRole("menuitem", { name: longLabel }),
+      page.getByRole("menuitemcheckbox", { name: longLabel }),
+    ];
+    await expect(rows).toHaveLength(3);
+    for (const item of rows) {
+      const label = within(item).getByText(longLabel);
+      await expect(item.offsetHeight).toBe(row);
+      await expect(getComputedStyle(label).textOverflow).toBe("ellipsis");
+      await expect(label.scrollWidth).toBeGreaterThan(label.clientWidth);
+    }
+    // The short row is not cut.
+    const short = within(page.getByRole("menuitem", { name: "Duplicate" })).getByText("Duplicate");
+    await expect(short.scrollWidth).toBe(short.clientWidth);
+
+    await userEvent.keyboard("{Escape}");
+    await waitFor(() => expect(page.queryByRole("menu")).toBeNull());
+  },
+};

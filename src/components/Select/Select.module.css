@@ -182,10 +182,13 @@
 /* The same surface as DropdownMenu.content: raised, a 1px default border,
    surface radius, inset-xs padding, the overlay shadow. It is at least as wide
    as the field (a measurement Base UI takes from the trigger) and at least the
-   overlay minimum, so a narrow field does not give a narrow list. */
+   overlay minimum, so a narrow field does not give a narrow list. It grows with
+   its widest option up to the overlay maximum, as the menu does; a field wider
+   than that still gets a list as wide as itself, since min-width wins. */
 .popup {
   box-sizing: border-box;
   min-width: max(var(--anchor-width), var(--sds-size-overlay-min-width));
+  max-width: min(var(--sds-size-overlay-max-width), var(--available-width));
   max-height: var(--available-height);
   padding: var(--sds-space-inset-xs);
   overflow-y: auto;
@@ -221,6 +224,11 @@
    data-disabled, so the menu's selectors apply unchanged. */
 .item {
   composes: item selectionItem from "../DropdownMenu/DropdownMenu.module.css";
+}
+
+/* The menu's row label: past the maximum width it ends in an ellipsis. */
+.itemText {
+  composes: itemLabel from "../DropdownMenu/DropdownMenu.module.css";
 }
 
 @media (prefers-reduced-motion: reduce) {

@@ -22,6 +22,10 @@
   max-height: var(--radix-dropdown-menu-content-available-height);
   overflow-y: auto;
 
+  /* It grows with its widest row up to the maximum, or to the space Radix
+     measures beside the trigger if that is less. Past that, labels truncate. */
+  max-width: min(var(--sds-size-overlay-max-width), var(--radix-dropdown-menu-content-available-width));
+
   /* Grow from the edge nearest the trigger rather than from the centre. */
   transform-origin: var(--radix-dropdown-menu-content-transform-origin);
 }
@@ -86,6 +90,17 @@
    Checked rows get no selected background: the box already says checked. */
 .selectionItem {
   gap: var(--sds-space-inline-xs);
+}
+
+/* The row's text. min-width: 0 lets it shrink below its content in the flex
+   row, so a label longer than the surface allows ends in an ellipsis rather
+   than wrapping or overflowing. */
+.itemLabel {
+  flex: 1 1 auto;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 
 .subChevron {

@@ -1,5 +1,5 @@
 import { forwardRef } from "react";
-import type { ComponentPropsWithoutRef, ComponentRef } from "react";
+import type { ComponentPropsWithoutRef, ComponentRef, ReactNode } from "react";
 import * as Radix from "@radix-ui/react-dropdown-menu";
 import { cx } from "../../cx";
 import { tokenPx } from "../../tokenPx";
@@ -25,6 +25,13 @@ function keepOpen(onSelect?: (event: Event) => void) {
     onSelect?.(event);
     event.preventDefault();
   };
+}
+
+/* A row's text, in its own box so it can truncate: a flex row cannot put an
+   ellipsis on a bare text node. The surface grows with its widest row up to
+   size-overlay-max-width, and past that the label truncates. */
+function ItemLabel({ children }: { children?: ReactNode }) {
+  return <span className={styles.itemLabel}>{children}</span>;
 }
 
 export type DropdownMenuContentProps = ComponentPropsWithoutRef<typeof Radix.Content>;
@@ -55,8 +62,13 @@ export type DropdownMenuItemProps = ComponentPropsWithoutRef<typeof Radix.Item>;
 export const DropdownMenuItem = forwardRef<
   ComponentRef<typeof Radix.Item>,
   DropdownMenuItemProps
->(function DropdownMenuItem({ className, ...props }, ref) {
-  return <Radix.Item ref={ref} className={cx(styles.item, className)} {...props} />;
+>(function DropdownMenuItem({ className, children, asChild, ...props }, ref) {
+  return (
+    <Radix.Item ref={ref} className={cx(styles.item, className)} asChild={asChild} {...props}>
+      {/* asChild hands the row to the consumer's element, which owns its children. */}
+      {asChild ? children : <ItemLabel>{children}</ItemLabel>}
+    </Radix.Item>
+  );
 });
 
 export type DropdownMenuCheckboxItemProps = ComponentPropsWithoutRef<typeof Radix.CheckboxItem>;
@@ -84,7 +96,7 @@ export const DropdownMenuCheckboxItem = forwardRef<
           </Radix.ItemIndicator>
         </span>
       </span>
-      {children}
+      <ItemLabel>{children}</ItemLabel>
     </Radix.CheckboxItem>
   );
 });
@@ -107,7 +119,7 @@ export const DropdownMenuRadioItem = forwardRef<
           <Radix.ItemIndicator className={selection.dot} />
         </span>
       </span>
-      {children}
+      <ItemLabel>{children}</ItemLabel>
     </Radix.RadioItem>
   );
 });
@@ -138,7 +150,7 @@ export const DropdownMenuSubTrigger = forwardRef<
 >(function DropdownMenuSubTrigger({ className, children, ...props }, ref) {
   return (
     <Radix.SubTrigger ref={ref} className={cx(styles.subTrigger, className)} {...props}>
-      {children}
+      <ItemLabel>{children}</ItemLabel>
       <ChevronRightIcon className={styles.subChevron} />
     </Radix.SubTrigger>
   );
