@@ -124,9 +124,12 @@
 }
 
 
+/* A disabled button has no rank, so a disabled secondary looks like the other
+   two. The border goes transparent rather than away, so the button keeps its
+   width when it toggles; the disabled fill shows through it. */
 .secondary:disabled {
   background-color: var(--sds-button-secondary-color-background-disabled);
-  border-color: var(--sds-button-secondary-color-border-disabled);
+  border-color: transparent;
   color: var(--sds-button-secondary-color-content-disabled);
 }
 
