@@ -36,7 +36,7 @@ export const All: Story = {
   render: () => <Grid />,
 };
 
-/** The three icon sizes: 16 (Button, Menu Item, Checkbox, Chip), 20 (Accordion) and 24, which no component draws an icon at today. */
+/** The three icon sizes: 16 (Button, Menu item, Checkbox, Chip), 20 (Accordion) and 24, which no component draws an icon at today. */
 export const Sizes: Story = {
   render: () => (
     <div style={{ display: "grid", gap: "1.5rem" }}>

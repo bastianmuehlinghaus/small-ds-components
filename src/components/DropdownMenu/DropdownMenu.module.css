@@ -85,7 +85,7 @@
 
 /* Checkbox and radio rows lead with the 24px selection footprint. Its 4px
    inset plus this 4px gap puts the label 8px from the visible box — the same
-   distance as a standalone Checkbox, and as the Figma Menu Item.
+   distance as a standalone Checkbox, and as the Figma Menu item.
 
    Checked rows get no selected background: the box already says checked. */
 .selectionItem {
@@ -110,11 +110,11 @@
   margin-inline-start: auto;
 
   /* No colour of its own: it follows the row's content colour, as the Figma
-     Menu Item binds it — including content/disabled on a disabled row. */
+     Menu item binds it — including content/disabled on a disabled row. */
 }
 
 /* Group label. The larger top inset is what separates one group from the
-   next, as in the Figma Menu Group Label. */
+   next, as in the Figma Menu group label. */
 .label {
   composes: sds-type-label-small from "@small-ds/tokens/typography.css";
 
