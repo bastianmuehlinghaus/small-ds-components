@@ -4,35 +4,75 @@ React components on Radix primitives, driven entirely by `@small-ds/tokens`.
 Currently Button, Checkbox, RadioGroup, Input, TextField, Chip, Select, SelectField, Accordion and DropdownMenu.
 
 **Figma:** [Small DS: Components](https://www.figma.com/design/VBd0r5d1gcGPQSKrR8LzCp/Small-DS--Components)
-(`VBd0r5d1gcGPQSKrR8LzCp`) has one page per component, and each page shows the
-component the way Storybook does. From the top:
+(`VBd0r5d1gcGPQSKrR8LzCp`) is the library **and its documentation**: designers
+read it as well as place from it. One page per component you place, each built
+from the same template (2026-10-08).
 
-1. A `Header` at (64, 64): the name in Heading/Large and a one-line description
-   in Body/Small.
-2. The building-block set: the variant matrix.
-3. Any composite component that mirrors a code root. For example, the Radio
-   group page has `Radio group` as well as `Radio`, because the code is
-   `RadioGroup.Root` + `.Item`.
-4. An `Examples` heading (Heading/Small), then one `Example / <Story>` group per
-   Storybook story, captioned with the story name (Label/Small). Stories that
-   would look identical to the set, such as Controlled, Playground and
-   Checkbox States, are left out. So are behaviour tests: stories tagged
-   `test` (and `!autodocs`) that exist for their `play` function.
+**The page template.** Each page is one vertical auto-layout frame named after
+the page, at (0, 0), with 64 padding and 120 between blocks, so a new example or
+bullet reflows the page with no coordinates to fix. Its fill is
+`color/background/raised`, a display backdrop (Bastian, 2026-10-08): every
+component, sets and single components alike, is shown on the same white, from
+one place. A transparent component such as the `Accordion` cannot carry that
+fill itself, since every instance would bring a white box, so the page provides
+it. It is a frame, not a Section, because a frame grows with its content and a
+Section does not (tried and reverted the same day). Component set frames keep
+their own `color/background/raised` fill, also display only; instances do not
+carry it. The `_Doc / Context` card is `color/background/default`, so it stays
+a card on the raised page. Setting the frame's `Tier 2 / Semantics — Color`
+mode to Dark shows the whole page in Dark.
+
+1. **Header**, a `_Doc / Header` instance: the name (Heading/Large), one line on
+   what it is for (Body/Small) and the code it maps to (Label/Small, "Code: …").
+2. **Component**: a `_Doc / Context` card, then the component you place (its
+   set, or a row of components for Icons).
+3. **Examples**: a `_Doc / Section title`, then one `Example / <Story>` group per
+   Storybook story, captioned with the story name (Label/Small), in a wrapping
+   row 1600 wide. Stories that would look identical to the set, such as
+   Controlled, Playground and Checkbox States, are left out. So are behaviour
+   tests: stories tagged `test` (and `!autodocs`) that exist for their `play`
+   function. Examples are built from published components only, so copying one
+   never gives a designer a building block.
+4. **Building blocks**, only on pages that have any: a `_Doc / Section title`
+   with its note on ("Not published. To add …"), then the hidden components.
+
+The three `_Doc` components live on the **Doc template** page, below `---`,
+with Bastian's original Select field Context card that they were made from.
+**Context** is short on purpose: a title naming the nearest alternative
+("Radio group vs Checkbox"), one sentence on the difference, a "Use … when"
+heading with two or three bullets, and a link to the alternative's page (a node
+link set in the text panel; the `Link` toggle hides it where there is none). The
+bullets are not a text property: setting a text property replaces the
+formatting, so the bullets would lose their list style. Edit them on the canvas.
+
+**Building blocks are hidden from the library** with a leading underscore:
+`_Accordion item`, `_Radio`, `_Menu item`, `_Menu group label`,
+`_Menu separator`, `_Listbox item` and `_Focus ring` (2026-10-08). Each is only
+meaningful inside another component, and a designer searching "radio" would
+otherwise place the exact match, a lone radio that code cannot build
+(`RadioGroup.Item` exists only inside `RadioGroup.Root`). Nested instances of a
+hidden component still work in a published one. The cost is the slots' **Add
+instances** picker, which (per a Figma forum report, April 2026; Figma's docs
+are silent) cannot offer an unpublished component to library users. Instead,
+designers duplicate an item already in the slot and switch its variant: every
+slot's default content holds each item type it needs, and resetting the slot
+brings the defaults back. Each slot property's description says so, and so does
+each hidden component's. Forum reports also disagree on whether `_` still hides
+a component, or only `.` does, so check the **Hidden** section of the publish
+dialog on the first publish. The rest of this file mostly names them without the
+underscore, as concepts (a Menu item row, a Radio).
 
 **Field pages (Text field, Select field) have no building block.** Code exports
 the bare `Input` and `Select` as well as `TextField` and `SelectField`, but
-Figma has only the fields. A designer searching "select" or "input" would
-otherwise place the bare control, draw a label beside it by hand, and hand off a
+Figma has only the fields, for the same reason: a designer searching "select"
+would place the bare control, draw a label beside it by hand, and hand off a
 control with no accessible name. Every example is a field instance, including
 those for the bare `Input` and `Select` stories, which are the field with
-`Label` and `Show description` off: the same pixels, and copying one gives the
-right component. In code a field without a visible label needs an `aria-label`,
-and the field descriptions say so. The bare sets (`_Input`, `_Select`, briefly
-under a `Building blocks` heading) were deleted on 2026-10-08: nothing in the
-file used them, since each field draws its own box, and a second drawing of the
-box was a copy to keep in step for nothing. In code `Input` and `Select` stay
-exported, as the escape hatch for a layout `TextField` and `SelectField` cannot
-make.
+`Label` and `Show description` off: the same pixels. In code a field without a
+visible label needs an `aria-label`, and the field descriptions say so. The bare
+sets were deleted outright, not hidden: each field draws its own box, so nothing
+used them. In code `Input` and `Select` stay exported, as the escape hatch for a
+layout `TextField` and `SelectField` cannot make.
 
 Everything is built from the token library. Examples keep the components'
 placeholder copy ("Label", "Menu item"). Bastian chose not to retype the story
@@ -40,17 +80,21 @@ text.
 
 | Page | Components | Variants | Code | Examples (= stories) |
 |---|---|---|---|---|
-| Button | `Button` set | 15: Variant × State | `Button` | Variants, Disabled, WithIcon |
+| Button | `Button` set; building block `_Focus ring` | 15: Variant × State | `Button` | Variants, Disabled, WithIcon |
 | Checkbox | `Checkbox` set | 15: Checked (False, True, Indeterminate) × State | `Checkbox` | Default, SelectAll, LongLabel, WithoutLabel |
-| Accordion | `Accordion item` set (`Content` slot when Open); `Accordion` (`Items` slot, 3 items by default) | 6: Variant (Closed, Open) × State | `Accordion.Item`; `Accordion.Root` | Single, Multiple, AllClosed |
-| Radio group | `Radio` set; `Radio group` set (`Items` slot of Radios) | 10: Checked × State; 6: Orientation × State | `RadioGroup.Item`; `RadioGroup.Root` | Default, Horizontal, DisabledItem, DisabledGroup, Invalid |
+| Accordion | `Accordion` (`Items` slot, 3 items by default); building block `_Accordion item` set (`Content` slot when Open) | 6: Variant (Closed, Open) × State | `Accordion.Item`; `Accordion.Root` | Single, Multiple, AllClosed |
+| Radio group | `Radio group` set (`Items` slot of Radios); building block `_Radio` set | 10: Checked × State; 6: Orientation × State | `RadioGroup.Item`; `RadioGroup.Root` | Default, Horizontal, DisabledItem, DisabledGroup, Invalid |
 | Text field | `Text field` set (label, input box, description) | 10: State × Value (Placeholder, Filled) | `TextField`; `Input` | Input / Default (a Text field with Label off), TextField / Default, WithDescription, Invalid, Disabled |
-| Dropdown menu | `Menu item` set; `Menu group label`; `Menu separator`; `Dropdown menu` surface (`Items` slot) | 12: Type (Item, Submenu, Checkbox, Radio) × State (Default, Hover, Disabled) | `.Item` and friends; `.Label`; `.Separator`; `.Content` | Basic, OpenByDefault, WithSelection, SelectAll, WithSubmenu |
+| Dropdown menu | `Dropdown menu` surface (`Items` slot); building blocks `_Menu item` set, `_Menu group label`, `_Menu separator` | 12: Type (Item, Submenu, Checkbox, Radio) × State (Default, Hover, Disabled) | `.Item` and friends; `.Label`; `.Separator`; `.Content` | Basic, OpenByDefault, WithSelection, SelectAll, WithSubmenu |
 | Chip | `Chip` set | 7: Removable × State (Default, Hover, Pressed, Focus, Disabled; a chip without a remove button has only Default and Disabled) | `Chip` | Default, Removable, Disabled, LongLabel |
 | Select field | `Select field` set (label, select box, description) | 15: State × Value (Placeholder, Filled, Chips) | `SelectField`; `Select` | SelectField: Default, WithDescription, Invalid, Disabled, Multiple. Select: SingleOpen, MultipleOpen (a Select field with Label off, over a Listbox). The closed Select stories look like the set and are left out |
-| Listbox | `Listbox item` set; `Listbox` (`Items` slot of Listbox items) | 12: Type (Single, Multiple) × State (Default, Highlighted, Disabled) × Checked; the Listbox has none | none of its own: the list inside `Select` | none. `Select`'s `SingleOpen` and `MultipleOpen` use it |
+| Listbox | `Listbox` (`Items` slot of Listbox items); building block `_Listbox item` set | 12: Type (Single, Multiple) × State (Default, Highlighted, Disabled) × Checked; the Listbox has none | none of its own: the list inside `Select` | none. `Select`'s `SingleOpen` and `MultipleOpen` use it |
 | Icons | six `Icon / <name>` components | n/a | `ChevronRightIcon`, `ChevronDownIcon`, `ChevronUpIcon`, `CheckmarkIcon`, `DashIcon`, `CloseIcon` | Sizes (16 / 20 / 24, bound to `size/icon/*`) |
-| Focus ring | `Focus ring` set | 2: Border width | none. CSS uses `outline`. Used by the Button Focus variants, with the colour overridden to `button/color/border/focus` | n/a |
+
+`_Focus ring` (2 variants: Border width) has no page of its own since
+2026-10-08: it sits in Button's Building blocks, because only the Button Focus
+variants use it, with the colour overridden to `button/color/border/focus`. In
+code it is CSS `outline`, not a component.
 
 **Always update the component descriptions.** Every component and component set
 in the file carries a `description` (Dev Mode shows it), and it must match the
@@ -198,7 +242,7 @@ it holds and mirroring the children the code accepts:
 |---|---|---|---|
 | `Dropdown menu` | `Items` | Menu item, Menu group label, Menu separator | `DropdownMenu.Content` children |
 | `Accordion` | `Items` | Accordion item | `Accordion.Root` children |
-| `Accordion item` | `Content` (Open variants only) | none: any content | `Accordion.Content` children |
+| `_Accordion item` | `Content` (Open variants only) | none: any content | `Accordion.Content` children |
 | `Listbox` | `Items` | Listbox item | the `options` array inside `Select` |
 | `Radio group` | `Items` | Radio | `RadioGroup.Root` children |
 
