@@ -27,13 +27,13 @@ text.
 |---|---|---|---|---|
 | Button | `Button` set | 15: Variant × State | `Button` | Variants, Disabled, WithIcon |
 | Checkbox | `Checkbox` set | 15: Checked (False, True, Indeterminate) × State | `Checkbox` | Default, SelectAll, WithoutLabel |
-| Accordion | `Accordion Item` set; `Accordion` (3 exposed items) | 6: Variant (Closed, Open) × State | `Accordion.Item`; `Accordion.Root` | Single, Multiple, AllClosed |
-| Radio group | `Radio` set; `Radio Group` set (items are exposed Radios) | 10: Checked × State; 6: Orientation × State | `RadioGroup.Item`; `RadioGroup.Root` | Default, Horizontal, DisabledItem, DisabledGroup, Invalid |
+| Accordion | `Accordion Item` set (`Content` slot when Open); `Accordion` (`Items` slot, 3 items by default) | 6: Variant (Closed, Open) × State | `Accordion.Item`; `Accordion.Root` | Single, Multiple, AllClosed |
+| Radio group | `Radio` set; `Radio Group` set (`Items` slot of Radios) | 10: Checked × State; 6: Orientation × State | `RadioGroup.Item`; `RadioGroup.Root` | Default, Horizontal, DisabledItem, DisabledGroup, Invalid |
 | Text field | `Input` set; `Text Field` set (label, Input, message) | 10: State × Value (Placeholder, Filled), on both sets | `Input`; `TextField` | Input / Default, TextField / Default, WithDescription, Invalid, Disabled |
-| Dropdown menu | `Menu Item` set; `Menu Group Label`; `Menu Separator`; `Dropdown Menu` surface | 12: Type (Item, Submenu, Checkbox, Radio) × State (Default, Hover, Disabled) | `.Item` and friends; `.Label`; `.Separator`; `.Content` | Basic, OpenByDefault, WithSelection, SelectAll, WithSubmenu |
+| Dropdown menu | `Menu Item` set; `Menu Group Label`; `Menu Separator`; `Dropdown Menu` surface (`Items` slot) | 12: Type (Item, Submenu, Checkbox, Radio) × State (Default, Hover, Disabled) | `.Item` and friends; `.Label`; `.Separator`; `.Content` | Basic, OpenByDefault, WithSelection, SelectAll, WithSubmenu |
 | Chip | `Chip` set | 7: Removable × State (Default, Hover, Pressed, Focus, Disabled; a chip without a remove button has only Default and Disabled) | `Chip` | Default, Removable, Disabled, LongLabel |
 | Select | `Select` set; `Select Field` set (label, Select, message) | 15: State × Value (Placeholder, Filled, Chips), on both sets | `Select`; `SelectField` | Select: Single, SingleWithValue, Multiple, MultipleEmpty, MultipleWrapping, Invalid, Disabled, DisabledMultiple. SelectField: Default, WithDescription, Invalid, Disabled, Multiple |
-| Listbox | `Option` set; `Listbox` set (a surface of Option instances) | 12: Type (Single, Multiple) × State (Default, Highlighted, Disabled) × Checked; 2: Selection (Single, Multiple) | none of its own: the list inside `Select` | none. `Select`'s `SingleOpen` and `MultipleOpen` use it |
+| Listbox | `Listbox Item` set; `Listbox` (`Items` slot of Listbox Items) | 12: Type (Single, Multiple) × State (Default, Highlighted, Disabled) × Checked; the Listbox has none | none of its own: the list inside `Select` | none. `Select`'s `SingleOpen` and `MultipleOpen` use it |
 | Icons | six `Icon / <name>` components | n/a | `ChevronRightIcon`, `ChevronDownIcon`, `ChevronUpIcon`, `CheckmarkIcon`, `DashIcon`, `CloseIcon` | Sizes (16 / 20 / 24, bound to `size/icon/*`) |
 | Focus ring | `Focus Ring` set | 2: borderWidth | none. CSS uses `outline`. Used by the Button Focus variants, with the colour overridden to `button/color/border/focus` | n/a |
 
@@ -65,20 +65,20 @@ and Figma is where that difference has to be visible before anyone codes:
   the value of a form field. Screen readers, type-ahead and form behaviour all
   follow from that role, so a designer who draws a select with a Menu has
   specified the wrong thing, however similar the pixels are. A separate,
-  differently named component (`Option`, not `Menu Item`; `Listbox`, not
+  differently named component (`Listbox Item`, not `Menu Item`; `Listbox`, not
   `Dropdown Menu`) puts the choice in the layer panel.
-- **It is narrower on purpose.** An Option is only ever a radio (single) or a
+- **It is narrower on purpose.** A Listbox Item is only ever a radio (single) or a
   checkbox (multiple) row. There are no plain actions, submenus, group labels or
   separators in it, which the menu has. If one is needed, that is a decision to
   take with Bastian, not a variant to add.
-- **Its states have a different vocabulary.** An Option is *Highlighted* (by
+- **Its states have a different vocabulary.** A Listbox Item is *Highlighted* (by
   pointer or keyboard), *Disabled*, and *Checked*. The Menu Item calls its
   highlight `Hover`, though the keyboard moves it too, and a checked row has no
   selected fill in either, because the box already says it.
 - **Its behaviour differs.** A single Select closes on choice, where the menu's
   radio rows stay open. Its surface is at least as wide as the field and opens
   below it, with a 4px offset.
-- **One source for the rows.** `Option` wraps a `Menu Item` instance, so a change
+- **One source for the rows.** `Listbox Item` wraps a `Menu Item` instance, so a change
   to the menu's row reaches the Listbox with no second copy to keep in step, as
   `Select`'s CSS does by composing the menu's `.item`. Before this page the open
   Select was drawn as a detached copy of the menu, and a detached copy is the
@@ -107,7 +107,9 @@ surface with checkbox or radio items, which is what the code reuses.
 The `Dropdown Menu` surface mirrors `.content` exactly: `background/raised`, a
 1px `border/default` (inside, counted in layout, as CSS `border-box` does),
 `radius/surface`, `inset-xs` padding and the `shadow/overlay` effect style.
-Examples whose rows differ from it are detached frames with the same bindings.
+Its rows sit in an `Items` slot, so every example is a `Dropdown Menu` instance
+with its own rows, the WithSubmenu submenu included (SubContent has the same
+surface).
 Their trigger Buttons are `State=Pressed`, because a Button holds the pressed
 overlay while `aria-expanded` is true.
 
@@ -125,6 +127,70 @@ is not drawn. CSS hides it, so a consumer can't double up the divider.
 
 A new component gets its own page in the same shape, with an example for each
 of its stories.
+
+### Slots and text properties
+
+Containers whose children vary take a native Figma **slot**, named after what
+it holds and mirroring the children the code accepts:
+
+| Component | Slot | Preferred instances | Code |
+|---|---|---|---|
+| `Dropdown Menu` | `Items` | Menu Item, Menu Group Label, Menu Separator | `DropdownMenu.Content` children |
+| `Accordion` | `Items` | Accordion Item | `Accordion.Root` children |
+| `Accordion Item` | `Content` (Open variants only) | none: any content | `Accordion.Content` children |
+| `Listbox` | `Items` | Listbox Item | the `options` array inside `Select` |
+| `Radio Group` | `Items` | Radio | `RadioGroup.Root` children |
+
+Each slot holds the component's old fixed children as default content (three
+items, as Nathan Curtis recommends for lists), so nothing changed on the canvas
+when they were added (2026-10-08, every example checked before and after).
+Preferred instances are what the slot's "+" offers; a slot cannot refuse other
+content, so they guide rather than enforce. Slot content survives a variant
+switch, so an Accordion Item's panel content survives Closed and back to Open.
+The **Listbox** is one component, not a set: it had a `Selection` variant
+(Single, Multiple) that only changed the default options, and once the options
+were a slot either variant could hold either kind, so the variant promised
+something it could not enforce. Single or multiple is now read from the Listbox
+Items inside, as the code reads it from `multiple` on `Select`; its default content
+is the single list, and `MultipleOpen` fills the slot with checkbox Listbox
+Items (2026-10-08). The set was called `Option` until the same day; it was
+renamed so the row is named after its list, as `Menu Item` is, and the slot
+went from `Options` to `Items` with it.
+
+The flip side of state variants on a slotted container is the **Radio
+Group**: its `State` styles only the default
+items. Once the items are edited, set Disabled or Invalid on each Radio, as the
+`DisabledItem` example already does for one.
+
+Not slotted, on purpose: small components with states. The Button keeps its
+icon booleans and instance swaps, labels stay text properties, and Input has no
+before/after slot because the code has none.
+
+Text properties: `Button`, `Chip` and `Menu Item` have `Label text`;
+`Accordion Item` has `Title text`. `Listbox Item` has none. Its label is inside its
+nested Menu Item, and a property cannot reach an instance sublayer; exposing
+the instance would list Menu Item's `Type` and `State` beside its own, the
+panel that was rejected for the fields above. Edit a Listbox Item's label on the
+canvas.
+
+Building slots through the Plugin API (`component.createSlot()`):
+
+- A slot only lays out with auto layout. Give it the container's direction and
+  gap (with the gap's variable binding, as Radio Group's `space/stack/xs` and
+  `space/inline/lg` are), no padding and no fill, and set it and its children to
+  fill the width.
+- **`createSlot()` on variants of an existing set makes one property per
+  variant.** Point every variant's slot at one key
+  (`slot.componentPropertyReferences = { slotContentId: key }`) and delete the
+  others. Variants combined with `combineAsVariants` *after* their slots exist
+  share one property automatically.
+- Moving an instance into a slot keeps its overrides and clears
+  `isExposedInstance`: slot content is selected directly, so exposure has no
+  use there.
+- Set preferred instances with `editComponentProperty(key, { preferredValues })`
+  using component or component set **keys**, not ids.
+- After moving instances into a slot, a `figma.root.findAll` may hit a stale
+  sublayer id and throw; search page by page instead.
 
 Tokens live in [Small DS: Design Tokens](https://www.figma.com/design/DABmspHvLwmzYjMrFBjVQW/Small-DS--Design-Tokens)
 (`DABmspHvLwmzYjMrFBjVQW`).
@@ -488,8 +554,9 @@ check before copying the pattern:
   `createComponentFromNode`, because `appendChild` of a Söhne instance failed.
   Plain `appendChild` into a frame should work now. The old route still works.
 - Label text on composite instances could not be overridden, and was retyped by
-  hand. Setting TEXT properties on instances should work now, but has not been
-  tested.
+  hand. Setting TEXT properties on instances works now (tested 2026-10-08 on a
+  Button and on a Menu Item inside a Dropdown Menu's slot: Söhne stays, the
+  Button resizes).
 
 Effect styles (`shadow/*`) come from the token library like variables. They
 could only be imported once they had been published there.
