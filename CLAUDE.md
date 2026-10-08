@@ -37,6 +37,22 @@ text.
 | Icons | six `Icon / <name>` components | n/a | `ChevronRightIcon`, `ChevronDownIcon`, `ChevronUpIcon`, `CheckmarkIcon`, `DashIcon`, `CloseIcon` | Sizes (16 / 20 / 24, bound to `size/icon/*`) |
 | Focus ring | `Focus Ring` set | 2: borderWidth | none. CSS uses `outline`. Used by the Button Focus variants, with the colour overridden to `button/color/border/focus` | n/a |
 
+**Always update the component descriptions.** Every component and component set
+in the file carries a `description` (Dev Mode shows it), and it must match the
+table above. Whenever you add, remove or rename a variant, a state, a property
+or a size, or change what a component is, update the description in the same
+piece of work, and the table with it. Do this for every component you touch and
+for any new one; none may be left empty. A description names the component, then
+its variant axes and values in the order of the panel, then its optional parts,
+in short sentences with no token names or sizes that Figma already shows. There
+is one control size (rule 6), so say "One size, 32px" and never "Small or
+Medium". Set it with `figma_execute` (`node.description = "…"`) or
+`figma_set_description`, and read all of them back afterwards
+(`componentPropertyDefinitions` gives the real axes). A stale description is
+worse than none: on 2026-10-08 Button, Input and Text Field still said "Small or
+Medium", Menu Item said "Item or Submenu" with four types, Icon / close said
+"Dash", and five sets had none.
+
 ### Why there is a Listbox page, and not just the Dropdown Menu
 
 The Listbox looks like the Dropdown Menu's surface with checkbox or radio rows,
@@ -265,22 +281,39 @@ stylesheet for the label and message.
 
 In Figma, `Text Field` and `Select Field` carry their own `State` (Default,
 Hover, Focus, Disabled, Invalid) and `Value`, the same matrix as `Input` and
-`Select`; each variant sets its nested instance to match. The nested instance
-is deliberately **not exposed**. Exposing shows all of its properties, its
-`State` included, so a field could be Disabled with a focused box inside it,
-and Figma cannot expose some properties and not others. A field-level property
-cannot reach into a nested instance either ("Cannot set component property
-references on instance sublayer"), so the value and placeholder text are edited
-on the canvas, by double-clicking them, not in the properties panel. The
-field's own layers are another matter: both fields have `Label text`, `Label`
-and `Message` (show/hide), linked in every variant. Message text has no
-property, because Invalid's "Error message" differs from the others' "Helper
-text" and one text property has one default. This is how
-Figma's Simple Design System and Carbon build fields: one component whose own
-`State` sets the label, the box and the message together (issue #87). In code
-nothing changes: hover and focus are browser states, not `TextField` or
-`SelectField` props. On their pages the building-block set comes first and the
-field set below it.
+`Select`. Each field draws its own box: a frame named `Input` or `Select`
+between the label and the message, with the same token bindings as the building
+block. It used to be a nested instance of that block. That could not carry
+text properties: a field-level property cannot reach into a nested instance
+("Cannot set component property references on instance sublayer"), and
+exposing the instance lists all of its properties, so the panel showed `State`
+and `Value` twice, once for the field and once for the instance, and Figma
+cannot expose some and not others. The nested instance was detached on
+2026-10-08, with every variant pixel-identical before and after. This is
+Material's structure: one component, one `State`, and text properties on it.
+The cost is that the box is drawn twice, in the building block and in each
+field, so a change to the `Input` or `Select` box has to be made in the field
+too, as Select's trigger repeats Input's states in CSS.
+
+The field's properties: `Label` and `Message` (show/hide), `Label text`,
+`Supporting text`, `Placeholder text` and `Value text`; `Text Field` also has
+`Placeholder` (show/hide). `Placeholder text` is linked on the Placeholder
+variants, `Value text` on the Filled variants, and the Chips variants of Select
+Field have no text. A Select's placeholder is not optional: it has no
+`Placeholder` toggle, on `Select` or `Select Field`, while `Input` and `Text
+Field` keep theirs. Its `Placeholder text` defaults to "Select", not
+"Placeholder". `Supporting text` (default "Supporting text") is linked in
+**every** variant, Invalid included. Like Material, helper and error are one
+slot. One text property has one default, so the Invalid variants no longer carry
+"Error message" as their copy: an Invalid instance shows "Supporting text" until
+it is overridden, and the Invalid examples set "Error message" that way. The red
+comes from the layer's fill (`color/content/utility-error` in Invalid), not from
+the text. The `Select` building block has `Placeholder text` and `Value text`, as `Input`
+does. This is how Figma's Simple Design System and
+Carbon build fields: one component whose own `State` sets the label, the box and
+the message together (issue #87). In code nothing changes: hover and focus are
+browser states, not `TextField` or `SelectField` props. On their pages the
+building-block set comes first and the field set below it.
 
 **Inside a Radix Dialog** (tested, and kept as the `InsideRadixDialog` story, a
 regression test confirmed to fail without either fix) a Select needs two things
