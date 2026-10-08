@@ -26,7 +26,7 @@ text.
 | Page | Components | Variants | Code | Examples (= stories) |
 |---|---|---|---|---|
 | Button | `Button` set | 15: Variant × State | `Button` | Variants, Disabled, WithIcon |
-| Checkbox | `Checkbox` set | 15: Checked (False, True, Indeterminate) × State | `Checkbox` | Default, SelectAll, WithoutLabel |
+| Checkbox | `Checkbox` set | 15: Checked (False, True, Indeterminate) × State | `Checkbox` | Default, SelectAll, LongLabel, WithoutLabel |
 | Accordion | `Accordion Item` set (`Content` slot when Open); `Accordion` (`Items` slot, 3 items by default) | 6: Variant (Closed, Open) × State | `Accordion.Item`; `Accordion.Root` | Single, Multiple, AllClosed |
 | Radio group | `Radio` set; `Radio Group` set (`Items` slot of Radios) | 10: Checked × State; 6: Orientation × State | `RadioGroup.Item`; `RadioGroup.Root` | Default, Horizontal, DisabledItem, DisabledGroup, Invalid |
 | Text field | `Input` set; `Text Field` set (label, Input, message) | 10: State × Value (Placeholder, Filled), on both sets | `Input`; `TextField` | Input / Default, TextField / Default, WithDescription, Invalid, Disabled |
@@ -434,6 +434,19 @@ its `data-state` picks one in CSS, so it works uncontrolled too. DropdownMenu
 CheckboxItem does the same with Radix's ItemIndicator. In Figma, the Menu
 Item's nested Checkbox instance exposes `Checked`, so Indeterminate needs no
 Menu Item variants of its own.
+
+A long label wraps, and the box stays level with the **first line**. In code
+`.field` aligns to the start and `.text` pads its block by
+`calc((size-icon-lg - 1lh) / 2)`, 2px at Label/Medium, so the first line's
+centre meets the box's. Figma mirrors it on every Checkbox and Radio variant:
+top alignment, and the label inside a `Label container` frame whose top and
+bottom padding is bound to `space/inline/xxs`. Figma cannot compute the
+`calc()`, so that 2px is fixed: if Label/Medium's line height changes, change
+the binding too (Bastian's choice over a new token, 2026-10-08). The `Label`
+show/hide property sits on the container, so a hidden label takes its padding
+with it; `Label text` stays on the text. The `LongLabel` example is 288 wide
+(18rem) and 44 high, as in Storybook. On one line nothing moved: all 77
+Checkbox and Radio instances in the file kept their size when it was built.
 
 If a component needs a Tier 3 token that doesn't exist, that is a conversation
 with Bastian, not a token to add. See rule 1.
