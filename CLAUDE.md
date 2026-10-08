@@ -11,13 +11,28 @@ component the way Storybook does. From the top:
    in Body/Small.
 2. The building-block set: the variant matrix.
 3. Any composite component that mirrors a code root. For example, the Radio
-   group page has `Radio Group` as well as `Radio`, because the code is
+   group page has `Radio group` as well as `Radio`, because the code is
    `RadioGroup.Root` + `.Item`.
 4. An `Examples` heading (Heading/Small), then one `Example / <Story>` group per
    Storybook story, captioned with the story name (Label/Small). Stories that
    would look identical to the set, such as Controlled, Playground and
    Checkbox States, are left out. So are behaviour tests: stories tagged
    `test` (and `!autodocs`) that exist for their `play` function.
+
+**Field pages (Text field, Select field) have no building block.** Code exports
+the bare `Input` and `Select` as well as `TextField` and `SelectField`, but
+Figma has only the fields. A designer searching "select" or "input" would
+otherwise place the bare control, draw a label beside it by hand, and hand off a
+control with no accessible name. Every example is a field instance, including
+those for the bare `Input` and `Select` stories, which are the field with
+`Label` and `Show description` off: the same pixels, and copying one gives the
+right component. In code a field without a visible label needs an `aria-label`,
+and the field descriptions say so. The bare sets (`_Input`, `_Select`, briefly
+under a `Building blocks` heading) were deleted on 2026-10-08: nothing in the
+file used them, since each field draws its own box, and a second drawing of the
+box was a copy to keep in step for nothing. In code `Input` and `Select` stay
+exported, as the escape hatch for a layout `TextField` and `SelectField` cannot
+make.
 
 Everything is built from the token library. Examples keep the components'
 placeholder copy ("Label", "Menu item"). Bastian chose not to retype the story
@@ -27,15 +42,15 @@ text.
 |---|---|---|---|---|
 | Button | `Button` set | 15: Variant × State | `Button` | Variants, Disabled, WithIcon |
 | Checkbox | `Checkbox` set | 15: Checked (False, True, Indeterminate) × State | `Checkbox` | Default, SelectAll, LongLabel, WithoutLabel |
-| Accordion | `Accordion Item` set (`Content` slot when Open); `Accordion` (`Items` slot, 3 items by default) | 6: Variant (Closed, Open) × State | `Accordion.Item`; `Accordion.Root` | Single, Multiple, AllClosed |
-| Radio group | `Radio` set; `Radio Group` set (`Items` slot of Radios) | 10: Checked × State; 6: Orientation × State | `RadioGroup.Item`; `RadioGroup.Root` | Default, Horizontal, DisabledItem, DisabledGroup, Invalid |
-| Text field | `Input` set; `Text Field` set (label, Input, message) | 10: State × Value (Placeholder, Filled), on both sets | `Input`; `TextField` | Input / Default, TextField / Default, WithDescription, Invalid, Disabled |
-| Dropdown menu | `Menu Item` set; `Menu Group Label`; `Menu Separator`; `Dropdown Menu` surface (`Items` slot) | 12: Type (Item, Submenu, Checkbox, Radio) × State (Default, Hover, Disabled) | `.Item` and friends; `.Label`; `.Separator`; `.Content` | Basic, OpenByDefault, WithSelection, SelectAll, WithSubmenu |
+| Accordion | `Accordion item` set (`Content` slot when Open); `Accordion` (`Items` slot, 3 items by default) | 6: Variant (Closed, Open) × State | `Accordion.Item`; `Accordion.Root` | Single, Multiple, AllClosed |
+| Radio group | `Radio` set; `Radio group` set (`Items` slot of Radios) | 10: Checked × State; 6: Orientation × State | `RadioGroup.Item`; `RadioGroup.Root` | Default, Horizontal, DisabledItem, DisabledGroup, Invalid |
+| Text field | `Text field` set (label, input box, description) | 10: State × Value (Placeholder, Filled) | `TextField`; `Input` | Input / Default (a Text field with Label off), TextField / Default, WithDescription, Invalid, Disabled |
+| Dropdown menu | `Menu item` set; `Menu group label`; `Menu separator`; `Dropdown menu` surface (`Items` slot) | 12: Type (Item, Submenu, Checkbox, Radio) × State (Default, Hover, Disabled) | `.Item` and friends; `.Label`; `.Separator`; `.Content` | Basic, OpenByDefault, WithSelection, SelectAll, WithSubmenu |
 | Chip | `Chip` set | 7: Removable × State (Default, Hover, Pressed, Focus, Disabled; a chip without a remove button has only Default and Disabled) | `Chip` | Default, Removable, Disabled, LongLabel |
-| Select | `Select` set; `Select Field` set (label, Select, message) | 15: State × Value (Placeholder, Filled, Chips), on both sets | `Select`; `SelectField` | Select: Single, SingleWithValue, Multiple, MultipleEmpty, MultipleWrapping, Invalid, Disabled, DisabledMultiple. SelectField: Default, WithDescription, Invalid, Disabled, Multiple |
-| Listbox | `Listbox Item` set; `Listbox` (`Items` slot of Listbox Items) | 12: Type (Single, Multiple) × State (Default, Highlighted, Disabled) × Checked; the Listbox has none | none of its own: the list inside `Select` | none. `Select`'s `SingleOpen` and `MultipleOpen` use it |
+| Select field | `Select field` set (label, select box, description) | 15: State × Value (Placeholder, Filled, Chips) | `SelectField`; `Select` | SelectField: Default, WithDescription, Invalid, Disabled, Multiple. Select: SingleOpen, MultipleOpen (a Select field with Label off, over a Listbox). The closed Select stories look like the set and are left out |
+| Listbox | `Listbox item` set; `Listbox` (`Items` slot of Listbox items) | 12: Type (Single, Multiple) × State (Default, Highlighted, Disabled) × Checked; the Listbox has none | none of its own: the list inside `Select` | none. `Select`'s `SingleOpen` and `MultipleOpen` use it |
 | Icons | six `Icon / <name>` components | n/a | `ChevronRightIcon`, `ChevronDownIcon`, `ChevronUpIcon`, `CheckmarkIcon`, `DashIcon`, `CloseIcon` | Sizes (16 / 20 / 24, bound to `size/icon/*`) |
-| Focus ring | `Focus Ring` set | 2: borderWidth | none. CSS uses `outline`. Used by the Button Focus variants, with the colour overridden to `button/color/border/focus` | n/a |
+| Focus ring | `Focus ring` set | 2: Border width | none. CSS uses `outline`. Used by the Button Focus variants, with the colour overridden to `button/color/border/focus` | n/a |
 
 **Always update the component descriptions.** Every component and component set
 in the file carries a `description` (Dev Mode shows it), and it must match the
@@ -49,36 +64,46 @@ is one control size (rule 6), so say "One size, 32px" and never "Small or
 Medium". Set it with `figma_execute` (`node.description = "…"`) or
 `figma_set_description`, and read all of them back afterwards
 (`componentPropertyDefinitions` gives the real axes). A stale description is
-worse than none: on 2026-10-08 Button, Input and Text Field still said "Small or
-Medium", Menu Item said "Item or Submenu" with four types, Icon / close said
+worse than none: on 2026-10-08 Button, Input and Text field still said "Small or
+Medium", Menu item said "Item or Submenu" with four types, Icon / close said
 "Dash", and five sets had none.
 
-### Why there is a Listbox page, and not just the Dropdown Menu
+**Sentence case everywhere in Figma**: component and set names, component
+properties, layer names, descriptions and canvas text (`Menu item`, `Has left
+icon`, `Border width`). Proper nouns keep their capitals (Söhne, Radix,
+Storybook). Code identifiers stay as written in code: story names in `Example /
+<Story>` and their captions (`WithSubmenu`, `TextField / Default`). **Variables
+are excluded entirely**: variable names stay the lowercase token names the code
+reads (`color/content/default`), and so do the effect styles named after them
+(`shadow/overlay`) and the collection names the token build looks up
+(`Tier 2 / Semantics — Color`). Set 2026-10-08.
 
-The Listbox looks like the Dropdown Menu's surface with checkbox or radio rows,
+### Why there is a Listbox page, and not just the Dropdown menu
+
+The Listbox looks like the Dropdown menu's surface with checkbox or radio rows,
 and it is built from them. It exists anyway, because it is a different pattern,
 and Figma is where that difference has to be visible before anyone codes:
 
-- **A menu runs actions, a listbox chooses a value.** The Dropdown Menu is
+- **A menu runs actions, a listbox chooses a value.** The Dropdown menu is
   `role="menu"` with `menuitem`s: commands and view settings. The Listbox is
   what a `Select` opens: `role="listbox"` with `option`s that are `aria-selected`,
   the value of a form field. Screen readers, type-ahead and form behaviour all
   follow from that role, so a designer who draws a select with a Menu has
   specified the wrong thing, however similar the pixels are. A separate,
-  differently named component (`Listbox Item`, not `Menu Item`; `Listbox`, not
-  `Dropdown Menu`) puts the choice in the layer panel.
-- **It is narrower on purpose.** A Listbox Item is only ever a radio (single) or a
+  differently named component (`Listbox item`, not `Menu item`; `Listbox`, not
+  `Dropdown menu`) puts the choice in the layer panel.
+- **It is narrower on purpose.** A Listbox item is only ever a radio (single) or a
   checkbox (multiple) row. There are no plain actions, submenus, group labels or
   separators in it, which the menu has. If one is needed, that is a decision to
   take with Bastian, not a variant to add.
-- **Its states have a different vocabulary.** A Listbox Item is *Highlighted* (by
-  pointer or keyboard), *Disabled*, and *Checked*. The Menu Item calls its
+- **Its states have a different vocabulary.** A Listbox item is *Highlighted* (by
+  pointer or keyboard), *Disabled*, and *Checked*. The Menu item calls its
   highlight `Hover`, though the keyboard moves it too, and a checked row has no
   selected fill in either, because the box already says it.
 - **Its behaviour differs.** A single Select closes on choice, where the menu's
   radio rows stay open. Its surface is at least as wide as the field and opens
   below it, with a 4px offset.
-- **One source for the rows.** `Listbox Item` wraps a `Menu Item` instance, so a change
+- **One source for the rows.** `Listbox item` wraps a `Menu item` instance, so a change
   to the menu's row reaches the Listbox with no second copy to keep in step, as
   `Select`'s CSS does by composing the menu's `.item`. Before this page the open
   Select was drawn as a detached copy of the menu, and a detached copy is the
@@ -89,25 +114,25 @@ In code there is no standalone `Listbox`: the list is internal to `Select`
 Figma page is its specification. Extracting a public component, for a future
 Combobox or a standalone list, is an open decision; it needs a use case first.
 
-The Chip and Select pages were built with Inter placeholder text, back when
+The Chip and Select field pages were built with Inter placeholder text, back when
 Söhne was unavailable to the official Figma MCP (see below). All of it now
 carries its text style (checked 2026-10-07: no Inter or unstyled text left on
 either page): Header title Heading/Large, Header description Body/Small,
 `Examples` Heading/Small, example captions and the Chip label Label/Small, the
-Select value and placeholder Body/XSmall, and the Select Field label and
-message Label/Medium. The one detached frame, the `SelectField / Default`
-example, needs the style applied to its own Label; it does not follow the main
-component.
+Select value and placeholder Body/XSmall, and the Select field label and
+message Label/Medium. The `SelectField / Default` example used to be a detached
+frame; it was replaced by a `Select field` instance on 2026-10-08, so every
+example now follows the main component.
 Apply a style to the main components' text and instances follow. The Listbox
-page is the exception: its rows are Menu Item instances with Söhne text already,
-so only its Header needs styles, in the same way. The Select set
-is drawn closed, as the stories are; its open list is the `Dropdown Menu`
-surface with checkbox or radio items, which is what the code reuses.
+page is the exception: its rows are Menu item instances with Söhne text already,
+so only its Header needs styles, in the same way. The Select field set
+is drawn closed, as the stories are; its open list is the `Listbox`, whose rows
+wrap the `Dropdown menu`'s, which is what the code reuses.
 
-The `Dropdown Menu` surface mirrors `.content` exactly: `background/raised`, a
+The `Dropdown menu` surface mirrors `.content` exactly: `background/raised`, a
 1px `border/default` (inside, counted in layout, as CSS `border-box` does),
 `radius/surface`, `inset-xs` padding and the `shadow/overlay` effect style.
-Its rows sit in an `Items` slot, so every example is a `Dropdown Menu` instance
+Its rows sit in an `Items` slot, so every example is a `Dropdown menu` instance
 with its own rows, the WithSubmenu submenu included (SubContent has the same
 surface).
 Their trigger Buttons are `State=Pressed`, because a Button holds the pressed
@@ -126,8 +151,8 @@ wider than 480 still gets a list as wide as itself: `min-width` wins.
 
 Figma mirrors the growth, not the ellipsis, because one text layer cannot do
 both: an ellipsis needs a width imposed from outside, and growth needs the text
-to set the width. So the `Dropdown Menu` and `Listbox` surfaces hug, with
-`minWidth` and `maxWidth` bound to the two tokens; Menu Item and Listbox Item
+to set the width. So the `Dropdown menu` and `Listbox` surfaces hug, with
+`minWidth` and `maxWidth` bound to the two tokens; Menu item and Listbox item
 rows hug their label (91 for a plain row, 115 for a submenu, 119 with a box) and
 fill the surface inside it; and the label has truncation (ending, one line) set
 but hugs. When a label reaches the maximum, set **that instance's label to
@@ -149,7 +174,7 @@ The submenu chevron sits in a `Chevron container` with an 8px start padding
 hugging space-between row would otherwise put the chevron against the label,
 where CSS keeps the gap plus `margin-inline-start: auto`.
 
-A Menu Item has no Focus and no Selected state. Radix moves one highlight with
+A Menu item has no Focus and no Selected state. Radix moves one highlight with
 the pointer and the keyboard, so keyboard focus on a row is the `Hover` variant
 (`color/state/hover`), with no ring. A submenu trigger whose submenu is open
 keeps that same highlight, as `.subTrigger[data-state="open"]` does. The set
@@ -157,7 +182,7 @@ used to have `Item` and `Submenu` `Selected` variants in `color/state/selected`;
 no state in the code reached them and nothing in the file used them, so they
 were removed (issue #85).
 
-A `Menu Group Label` (`.Label` in code, Radix's name) divides groups on its
+A `Menu group label` (`.Label` in code, Radix's name) divides groups on its
 own: its `inset-md` top padding is the gap. A separator directly before one
 is not drawn. CSS hides it, so a consumer can't double up the divider.
 
@@ -171,18 +196,18 @@ it holds and mirroring the children the code accepts:
 
 | Component | Slot | Preferred instances | Code |
 |---|---|---|---|
-| `Dropdown Menu` | `Items` | Menu Item, Menu Group Label, Menu Separator | `DropdownMenu.Content` children |
-| `Accordion` | `Items` | Accordion Item | `Accordion.Root` children |
-| `Accordion Item` | `Content` (Open variants only) | none: any content | `Accordion.Content` children |
-| `Listbox` | `Items` | Listbox Item | the `options` array inside `Select` |
-| `Radio Group` | `Items` | Radio | `RadioGroup.Root` children |
+| `Dropdown menu` | `Items` | Menu item, Menu group label, Menu separator | `DropdownMenu.Content` children |
+| `Accordion` | `Items` | Accordion item | `Accordion.Root` children |
+| `Accordion item` | `Content` (Open variants only) | none: any content | `Accordion.Content` children |
+| `Listbox` | `Items` | Listbox item | the `options` array inside `Select` |
+| `Radio group` | `Items` | Radio | `RadioGroup.Root` children |
 
 Each slot holds the component's old fixed children as default content (three
 items, as Nathan Curtis recommends for lists), so nothing changed on the canvas
 when they were added (2026-10-08, every example checked before and after).
 Preferred instances are what the slot's "+" offers; a slot cannot refuse other
 content, so they guide rather than enforce. Slot content survives a variant
-switch, so an Accordion Item's panel content survives Closed and back to Open.
+switch, so an Accordion item's panel content survives Closed and back to Open.
 The **Listbox** is one component, not a set: it had a `Selection` variant
 (Single, Multiple) that only changed the default options, and once the options
 were a slot either variant could hold either kind, so the variant promised
@@ -190,7 +215,7 @@ something it could not enforce. Single or multiple is now read from the Listbox
 Items inside, as the code reads it from `multiple` on `Select`; its default content
 is the single list, and `MultipleOpen` fills the slot with checkbox Listbox
 Items (2026-10-08). The set was called `Option` until the same day; it was
-renamed so the row is named after its list, as `Menu Item` is, and the slot
+renamed so the row is named after its list, as `Menu item` is, and the slot
 went from `Options` to `Items` with it.
 
 The flip side of state variants on a slotted container is the **Radio
@@ -199,20 +224,20 @@ items. Once the items are edited, set Disabled or Invalid on each Radio, as the
 `DisabledItem` example already does for one.
 
 Not slotted, on purpose: small components with states. The Button keeps its
-icon booleans and instance swaps, labels stay text properties, and Input has no
+icon booleans and instance swaps, labels stay text properties, and Text field has no
 before/after slot because the code has none.
 
-Text properties: `Button`, `Chip` and `Menu Item` have `Label text`;
-`Accordion Item` has `Title text`. `Listbox Item` has none. Its label is inside its
-nested Menu Item, and a property cannot reach an instance sublayer; exposing
-the instance would list Menu Item's `Type` and `State` beside its own, the
-panel that was rejected for the fields above. Edit a Listbox Item's label on the
+Text properties: `Button`, `Chip` and `Menu item` have `Label text`;
+`Accordion item` has `Title text`. `Listbox item` has none. Its label is inside its
+nested Menu item, and a property cannot reach an instance sublayer; exposing
+the instance would list Menu item's `Type` and `State` beside its own, the
+panel that was rejected for the fields above. Edit a Listbox item's label on the
 canvas.
 
 Building slots through the Plugin API (`component.createSlot()`):
 
 - A slot only lays out with auto layout. Give it the container's direction and
-  gap (with the gap's variable binding, as Radio Group's `space/stack/xs` and
+  gap (with the gap's variable binding, as Radio group's `space/stack/xs` and
   `space/inline/lg` are), no padding and no fill, and set it and its children to
   fill the width.
 - **`createSlot()` on variants of an existing set makes one property per
@@ -291,14 +316,14 @@ on its base class. Button did that while it had two sizes.
 box. A fixed height clips it. Verified behaviour: a Button holds at 32px
 through a 24px base font and grows to 42px at 32px, never clipping.
 
-Figma mirrors this. Button, Input, Menu Item, Select and Chip hug vertically,
+Figma mirrors this. Button, Input, Menu item, Select and Chip hug vertically,
 with the size token bound to `minHeight`, not `height`: `button/size/height`,
 `input/size/height` (Input and Select), `size/control/default` and
 `chip/size/height`. Figma has no rem, so on the canvas a fixed 32 and hug-min-32
 look the same; the point is that the component grows the way the code does.
 The Select's `Chips` row wraps, with its row gap bound to `space/inline/xs` as
 `gap` is in CSS, so a narrow multiple Select grows to 54 (two rows of chips) in
-both. Until 2026-10-07 Button, Input and Menu Item had fixed heights while
+both. Until 2026-10-07 Button, Input and Menu item had fixed heights while
 Select and Chip already hugged; do not go back to fixed.
 
 This is the majority practice among large systems: Material, Spectrum,
@@ -381,11 +406,11 @@ trigger's states repeat Input's, because an `<input>` and a `<button>` cannot
 share a rule set; change them together. SelectField shares TextField's
 stylesheet for the label and message.
 
-In Figma, `Text Field` and `Select Field` carry their own `State` (Default,
-Hover, Focus, Disabled, Invalid) and `Value`, the same matrix as `Input` and
-`Select`. Each field draws its own box: a frame named `Input` or `Select`
-between the label and the message, with the same token bindings as the building
-block. It used to be a nested instance of that block. That could not carry
+In Figma, `Text field` and `Select field` carry their own `State` (Default,
+Hover, Focus, Disabled, Invalid) and `Value`. Each field draws its own box: a
+frame named `Input` or `Select` between the label and the description, bound to
+the same tokens as `Input` and `Select` in CSS. It used to be a nested instance
+of a separate `Input` or `Select` component. That could not carry
 text properties: a field-level property cannot reach into a nested instance
 ("Cannot set component property references on instance sublayer"), and
 exposing the instance lists all of its properties, so the panel showed `State`
@@ -393,29 +418,29 @@ and `Value` twice, once for the field and once for the instance, and Figma
 cannot expose some and not others. The nested instance was detached on
 2026-10-08, with every variant pixel-identical before and after. This is
 Material's structure: one component, one `State`, and text properties on it.
-The cost is that the box is drawn twice, in the building block and in each
-field, so a change to the `Input` or `Select` box has to be made in the field
-too, as Select's trigger repeats Input's states in CSS.
+Those separate components were then deleted (see the field-page note at the top
+of this file), so each box is drawn once. The two fields' boxes still repeat
+each other, as Select's trigger repeats Input's states in CSS: change them
+together.
 
-The field's properties: `Label` and `Message` (show/hide), `Label text`,
-`Supporting text`, `Placeholder text` and `Value text`; `Text Field` also has
+The field's properties: `Label` and `Show description` (show/hide; the
+description is off by default), `Label text`, `Description`, `Placeholder text`
+and `Value text`; `Text field` also has
 `Placeholder` (show/hide). `Placeholder text` is linked on the Placeholder
 variants, `Value text` on the Filled variants, and the Chips variants of Select
 Field have no text. A Select's placeholder is not optional: it has no
-`Placeholder` toggle, on `Select` or `Select Field`, while `Input` and `Text
-Field` keep theirs. Its `Placeholder text` defaults to "Select", not
-"Placeholder". `Supporting text` (default "Supporting text") is linked in
-**every** variant, Invalid included. Like Material, helper and error are one
-slot. One text property has one default, so the Invalid variants no longer carry
-"Error message" as their copy: an Invalid instance shows "Supporting text" until
+`Placeholder` toggle on `Select field`, while `Text field` keeps its own. Its `Placeholder text` defaults to "Select", not
+"Placeholder". `Description` (default "Description") is linked in
+**every** variant, Invalid included, on a layer named `Message`. Like Material,
+helper and error are one slot. One text property has one default, so the Invalid
+variants no longer carry "Error message" as their copy: an Invalid instance
+shows "Description" until
 it is overridden, and the Invalid examples set "Error message" that way. The red
 comes from the layer's fill (`color/content/utility-error` in Invalid), not from
-the text. The `Select` building block has `Placeholder text` and `Value text`, as `Input`
-does. This is how Figma's Simple Design System and
+the text. This is how Figma's Simple Design System and
 Carbon build fields: one component whose own `State` sets the label, the box and
 the message together (issue #87). In code nothing changes: hover and focus are
-browser states, not `TextField` or `SelectField` props. On their pages the
-building-block set comes first and the field set below it.
+browser states, not `TextField` or `SelectField` props.
 
 **Inside a Radix Dialog** (tested, and kept as the `InsideRadixDialog` story, a
 regression test confirmed to fail without either fix) a Select needs two things
@@ -469,7 +494,7 @@ checked with `DashIcon` for the mark. The Indicator renders both glyphs and
 its `data-state` picks one in CSS, so it works uncontrolled too. DropdownMenu
 CheckboxItem does the same with Radix's ItemIndicator. In Figma, the Menu
 Item's nested Checkbox instance exposes `Checked`, so Indeterminate needs no
-Menu Item variants of its own.
+Menu item variants of its own.
 
 A long label wraps, and the box stays level with the **first line**. In code
 `.field` aligns to the start and `.text` pads its block by
@@ -591,20 +616,20 @@ check before copying the pattern:
 
 - The Button is one frame, not a component wrapping an inner surface, because
   styled text could never be moved into a new parent. Its focus ring is not a
-  stroke on that frame: each Focus variant holds a `Focus Ring` instance,
+  stroke on that frame: each Focus variant holds a `Focus ring` instance,
   absolutely positioned at -2 (the `outline-offset`, which Figma cannot bind)
   and stretched with the button, so its 2px outside stroke sits 2px out, as
   CSS's `outline` does. Secondary keeps its 1px border, as in CSS. The
   instances override the ring colour to `button/color/border/focus`, the token
-  the CSS reads; the `Focus Ring` component itself stays on Tier 2
+  the CSS reads; the `Focus ring` component itself stays on Tier 2
   `color/border/focus`.
-- Composites and examples (Radio Group, Dropdown Menu, Accordion, every Example)
+- Composites and examples (Radio group, Dropdown menu, Accordion, every Example)
   were composed by grouping loose instances and calling
   `createComponentFromNode`, because `appendChild` of a Söhne instance failed.
   Plain `appendChild` into a frame should work now. The old route still works.
 - Label text on composite instances could not be overridden, and was retyped by
   hand. Setting TEXT properties on instances works now (tested 2026-10-08 on a
-  Button and on a Menu Item inside a Dropdown Menu's slot: Söhne stays, the
+  Button and on a Menu item inside a Dropdown menu's slot: Söhne stays, the
   Button resizes).
 
 Effect styles (`shadow/*`) come from the token library like variables. They
@@ -614,9 +639,9 @@ Three more things worth knowing before you debug them:
 
 - **`clone()` drops a layer's links to component properties.** A cloned variant
   keeps its text, styles and variable bindings, but its `Label text`, `Label`
-  and `Message` links are gone, silently: the property still shows in the
+  and `Show description` links are gone, silently: the property still shows in the
   panel and does nothing on that variant. Building the field matrices by
-  cloning broke `Label text` on every new Text Field variant until it was
+  cloning broke `Label text` on every new Text field variant until it was
   re-linked. After cloning variants, compare each layer's
   `componentPropertyReferences` with the original's.
 
