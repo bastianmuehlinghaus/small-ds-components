@@ -169,7 +169,7 @@ export const Select = forwardRef<HTMLButtonElement, SelectProps>(function Select
                     </Base.ItemIndicator>
                   </span>
                 </span>
-                <Base.ItemText>{option.label}</Base.ItemText>
+                <Base.ItemText className={styles.itemText}>{option.label}</Base.ItemText>
               </Base.Item>
             ))}
           </Base.List>

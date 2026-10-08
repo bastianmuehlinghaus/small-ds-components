@@ -385,3 +385,31 @@ export const ControlsShareOneHeight: Story = {
     for (const el of controls) await expect(el.getBoundingClientRect().height).toBe(control);
   },
 };
+
+const longOption = "Semantic colour tokens for content, border and background, with their dark-mode values";
+const longOptions = [
+  { value: "short", label: "Light" },
+  { value: "long", label: longOption },
+];
+
+/* The list grows with its widest option up to size-overlay-max-width (480),
+   as the menu does; past that an option keeps its one line and truncates. */
+export const LongOptionTruncates: Story = {
+  tags: ["!autodocs", "test"],
+  render: () => <Select aria-label="Tokens" options={longOptions} placeholder="Choose" />,
+  play: async ({ canvas, userEvent }) => {
+    await userEvent.click(canvas.getByRole("combobox", { name: "Tokens" }));
+    const listbox = await page.findByRole("listbox");
+    const popup = listbox.parentElement!;
+    const max = parseFloat(getComputedStyle(popup).getPropertyValue("--sds-size-overlay-max-width"));
+    const row = parseFloat(getComputedStyle(popup).getPropertyValue("--sds-size-control-default"));
+
+    await expect(popup.offsetWidth).toBe(max);
+
+    const option = page.getByRole("option", { name: longOption });
+    const label = within(option).getByText(longOption);
+    await expect(option.offsetHeight).toBe(row);
+    await expect(getComputedStyle(label).textOverflow).toBe("ellipsis");
+    await expect(label.scrollWidth).toBeGreaterThan(label.clientWidth);
+  },
+};
