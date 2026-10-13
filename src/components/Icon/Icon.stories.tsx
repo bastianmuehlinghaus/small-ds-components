@@ -1,5 +1,16 @@
 import type { Meta, StoryObj } from "@storybook/react-vite";
-import { CheckmarkIcon, ChevronDownIcon, ChevronRightIcon, ChevronUpIcon, CloseIcon, DashIcon } from "./Icon";
+import {
+  CheckmarkIcon,
+  ChevronDownIcon,
+  ChevronRightIcon,
+  ChevronUpIcon,
+  CloseIcon,
+  DashIcon,
+  ErrorIcon,
+  InfoIcon,
+  SuccessIcon,
+  WarningIcon,
+} from "./Icon";
 
 const meta = {
   title: "Components/Icons",
@@ -18,6 +29,10 @@ const icons = [
   { name: "checkmark", Icon: CheckmarkIcon },
   { name: "dash", Icon: DashIcon },
   { name: "close", Icon: CloseIcon },
+  { name: "success", Icon: SuccessIcon },
+  { name: "info", Icon: InfoIcon },
+  { name: "warning", Icon: WarningIcon },
+  { name: "error", Icon: ErrorIcon },
 ];
 
 const Grid = ({ size }: { size?: string }) => (
@@ -36,7 +51,7 @@ export const All: Story = {
   render: () => <Grid />,
 };
 
-/** The three icon sizes: 16 (Button, Menu item, Checkbox, Chip), 20 (Accordion) and 24, which no component draws an icon at today. */
+/** The three icon sizes: 16 (Button, Menu item, Checkbox, Chip), 20 (Accordion) and 24 (Section message). */
 export const Sizes: Story = {
   render: () => (
     <div style={{ display: "grid", gap: "1.5rem" }}>

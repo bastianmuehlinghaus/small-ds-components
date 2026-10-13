@@ -1,0 +1,203 @@
+/**
+ * SectionMessage has no Tier 3 tokens in Figma, so it reads Tier 2 semantics,
+ * as Accordion does: the `utility` colour family for the surface and icon,
+ * and the `link/*` Tier 3 tokens for its actions. `--sds-motion-*` comes from
+ * Tier 1 under the documented exception.
+ *
+ * Built after Atlassian's section message: 16 padding, 8 radius, the icon
+ * 16 from the text, title, message and actions 8 apart, no border, and an
+ * optional compact dismiss button. The icon is 24, not Atlassian's 16, so the
+ * status reads at a glance.
+ */
+
+.message {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--sds-space-inline-lg);
+  box-sizing: border-box;
+  padding: var(--sds-space-inset-lg);
+  border-radius: var(--sds-radius-surface);
+  color: var(--sds-color-content-default);
+
+  /* A long URL or token name wraps instead of widening the page. */
+  overflow-wrap: anywhere;
+}
+
+.info {
+  background-color: var(--sds-color-background-utility-info);
+}
+
+.success {
+  background-color: var(--sds-color-background-utility-success);
+}
+
+.warning {
+  background-color: var(--sds-color-background-utility-warning);
+}
+
+.error {
+  background-color: var(--sds-color-background-utility-error);
+}
+
+/* The icon and the dismiss button are 24 and centred on the first line,
+   title (28) or message (20), at any font size. Whichever of the two is shorter is padded by half
+   the difference: the edges by (line - 24) / 2 beside the title, the message
+   by (24 - line) / 2 when it comes first. A negative calc() padding clamps to
+   0, so each rule only ever adds space, and nothing overlaps, as Atlassian's
+   -2 margin does. `composes` can't be conditional, so the edges' line comes
+   from one of two classes, chosen in TSX. Figma draws the same 2px with
+   space/inline/xxs; see CLAUDE.md. */
+.besideTitle {
+  composes: sds-type-heading-xsmall from "@small-ds/tokens/typography.css";
+}
+
+.besideBody {
+  composes: sds-type-body-xsmall from "@small-ds/tokens/typography.css";
+}
+
+.edge {
+  display: flex;
+  flex-shrink: 0;
+  padding-block: calc((1lh - var(--sds-size-icon-lg)) / 2);
+}
+
+.glyph {
+  width: var(--sds-size-icon-lg);
+  height: var(--sds-size-icon-lg);
+}
+
+.content > :first-child {
+  padding-block-start: calc((var(--sds-size-icon-lg) - 1lh) / 2);
+}
+
+.info .glyph {
+  color: var(--sds-color-content-utility-info);
+}
+
+.success .glyph {
+  color: var(--sds-color-content-utility-success);
+}
+
+.warning .glyph {
+  color: var(--sds-color-content-utility-warning);
+}
+
+.error .glyph {
+  color: var(--sds-color-content-utility-error);
+}
+
+.content {
+  display: flex;
+  flex-direction: column;
+  flex-grow: 1;
+  gap: var(--sds-space-stack-sm);
+  min-width: 0;
+}
+
+.title {
+  composes: sds-type-heading-xsmall from "@small-ds/tokens/typography.css";
+
+  margin: 0;
+}
+
+/* Paragraphs passed as children stack with the same gap as the title, and
+   lose the browser's margins, which would double it. */
+.body {
+  composes: sds-type-body-xsmall from "@small-ds/tokens/typography.css";
+
+  display: flex;
+  flex-direction: column;
+  gap: var(--sds-space-stack-sm);
+}
+
+.body > * {
+  margin-block: 0;
+}
+
+.actions {
+  composes: sds-type-body-xsmall from "@small-ds/tokens/typography.css";
+
+  display: flex;
+  flex-wrap: wrap;
+  column-gap: var(--sds-space-inline-sm);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+/* A dot between actions, as Atlassian draws it. The empty alternative text
+   keeps screen readers from reading it out; the list already says how many
+   actions there are. */
+.actionItem + .actionItem::before {
+  content: "·" / "";
+  margin-inline-end: var(--sds-space-inline-sm);
+}
+
+/* A link in look, whether it is an <a> or a <button>. */
+.action {
+  padding: 0;
+  border: none;
+  border-radius: var(--sds-radius-control-sm);
+  background: none;
+  color: var(--sds-link-color-content-default);
+  font: inherit;
+  text-decoration-line: underline;
+  text-decoration-thickness: var(--sds-link-underline-thickness-default);
+  text-underline-offset: var(--sds-link-underline-offset);
+  cursor: pointer;
+  appearance: none;
+
+  transition-property: color, text-decoration-thickness;
+  transition-duration: var(--sds-motion-duration-fast);
+  transition-timing-function: var(--sds-motion-easing-standard);
+}
+
+a.action:visited {
+  color: var(--sds-link-color-content-visited);
+}
+
+.action:hover {
+  color: var(--sds-link-color-content-hover);
+  text-decoration-thickness: var(--sds-link-underline-thickness-hover);
+}
+
+.action:focus-visible {
+  outline: var(--sds-border-width-focus) solid var(--sds-color-border-focus);
+  outline-offset: var(--sds-border-width-focus);
+}
+
+/* A compact icon button, as Atlassian's: 24 square, the minimum target, so
+   it sits in the same footprint as the icon. The fill shows only on hover and
+   press, from the state layers, which tint whatever appearance is under them. */
+.dismiss {
+  display: grid;
+  place-items: center;
+  box-sizing: border-box;
+  width: var(--sds-size-icon-lg);
+  height: var(--sds-size-icon-lg);
+  padding: 0;
+  border: none;
+  border-radius: var(--sds-radius-control);
+  background-color: transparent;
+  color: var(--sds-color-content-default);
+  cursor: pointer;
+  appearance: none;
+
+  transition-property: background-color;
+  transition-duration: var(--sds-motion-duration-fast);
+  transition-timing-function: var(--sds-motion-easing-standard);
+}
+
+.dismiss:hover {
+  background-color: var(--sds-color-state-hover);
+}
+
+.dismiss:active {
+  background-color: var(--sds-color-state-pressed);
+}
+
+/* Outside, as on Button: the message's padding leaves room for it. */
+.dismiss:focus-visible {
+  outline: var(--sds-border-width-focus) solid var(--sds-color-border-focus);
+  outline-offset: var(--sds-border-width-focus);
+}
