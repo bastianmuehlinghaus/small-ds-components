@@ -1,7 +1,7 @@
 # Small DS — Components
 
 React components on Radix primitives, driven entirely by `@small-ds/tokens`.
-Currently Button, Checkbox, RadioGroup, Switch, Input, TextField, Chip, Select, SelectField, Accordion, DropdownMenu and NavigationMenu.
+Currently Button, Checkbox, RadioGroup, Switch, Input, TextField, Chip, Select, SelectField, Accordion, DropdownMenu, NavigationMenu and SectionMessage.
 
 **Figma:** [Small DS: Components](https://www.figma.com/design/VBd0r5d1gcGPQSKrR8LzCp/Small-DS--Components)
 (`VBd0r5d1gcGPQSKrR8LzCp`) is the library **and its documentation**: designers
@@ -51,7 +51,7 @@ formatting, so the bullets would lose their list style. Edit them on the canvas.
 **Building blocks are hidden from the library** with a leading underscore:
 `_Accordion item`, `_Radio`, `_Menu item`, `_Menu group label`,
 `_Menu separator`, `_Listbox item` and `_Focus ring` (2026-10-08), and
-`_Navigation item` and `_Navigation link` (2026-10-13). Each is only
+`_Navigation item`, `_Navigation link` and `_Section message action` (2026-10-13). Each is only
 meaningful inside another component, and a designer searching "radio" would
 otherwise place the exact match, a lone radio that code cannot build
 (`RadioGroup.Item` exists only inside `RadioGroup.Root`). Nested instances of a
@@ -95,7 +95,8 @@ text.
 | Select field | `Select field` set (label, select box, description) | 15: State × Value (Placeholder, Filled, Chips) | `SelectField`; `Select` | SelectField: Default, WithDescription, Invalid, Disabled, Multiple. Select: SingleOpen, MultipleOpen (a Select field with Label off, over a Listbox). The closed Select stories look like the set and are left out |
 | Listbox | `Listbox` (`Items` slot of Listbox items); building block `_Listbox item` set | 12: Type (Single, Multiple) × State (Default, Highlighted, Disabled) × Checked; the Listbox has none | none of its own: the list inside `Select` | none. `Select`'s `SingleOpen` and `MultipleOpen` use it |
 | Navigation menu | `Navigation menu` bar (`Items` slot of Navigation items) and `Navigation panel` (`Items` slot of Navigation links); building blocks `_Navigation item` set, `_Navigation link` set | 11: Type (Link, Trigger) × State (a Link is Default, Hover, Pressed, Focus or Current; a Trigger is Default, Hover, Pressed, Focus, Open or Disabled); 5: State, with `Show description` | `.Root` and `.List`; `.Content`; `.Link` or `.Trigger` in an `.Item`; `.Link` in a panel | Default, OpenPanel, WithDescriptions |
-| Icons | six `Icon / <name>` components | n/a | `ChevronRightIcon`, `ChevronDownIcon`, `ChevronUpIcon`, `CheckmarkIcon`, `DashIcon`, `CloseIcon` | Sizes (16 / 20 / 24, bound to `size/icon/*`) |
+| Section message | `Section message` set (`Actions` slot of Section message actions); building block `_Section message action` set | 8: Appearance (Info, Success, Warning, Error) × Title (True, False); 3: State (Default, Hover, Focus), with `Show separator` | `SectionMessage`; `SectionMessageAction` | Default, Appearances, WithoutTitle, WithActions, LongContent |
+| Icons | ten `Icon / <name>` components | n/a | `ChevronRightIcon`, `ChevronDownIcon`, `ChevronUpIcon`, `CheckmarkIcon`, `DashIcon`, `CloseIcon`, `SuccessIcon`, `InfoIcon`, `WarningIcon`, `ErrorIcon` | Sizes (16 / 20 / 24, bound to `size/icon/*`) |
 
 `_Focus ring` (2 variants: Border width) has no page of its own since
 2026-10-08: it sits in Button's Building blocks, because only the Button Focus
@@ -253,6 +254,7 @@ it holds and mirroring the children the code accepts:
 | `Radio group` | `Items` | Radio | `RadioGroup.Root` children |
 | `Navigation menu` | `Items` | Navigation item | `NavigationMenu.List` children |
 | `Navigation panel` | `Items` | Navigation link | `NavigationMenu.Content` children |
+| `Section message` | `Actions` (hidden by `Show actions`) | Section message action | the `actions` prop |
 
 Each slot holds the component's old fixed children as default content (three
 items, as Nathan Curtis recommends for lists), so nothing changed on the canvas
@@ -413,6 +415,7 @@ This is deliberate and **not** an inconsistency to tidy up:
 | Checkbox, RadioGroup, Switch | Tier 3 `--sds-selection-control-*` for the box and the Switch's track and thumb, Tier 2 for the footprint, focus ring and the track's size | Tier 3 models the box only; a Switch is a selection control, so it changes with them (issue #111) |
 | DropdownMenu | Tier 2 semantics | Figma has no `menu/*` tokens |
 | NavigationMenu | Tier 2 semantics | Figma has no `nav/*` tokens; its panel is the DropdownMenu's surface |
+| SectionMessage | Tier 2 `utility` colours, plus Tier 3 `--sds-link-*` for its actions | Figma has no `section-message/*` tokens |
 
 Input is a native `<input>`: Radix has no text-input primitive, and the
 browser already owns the behaviour. TextField adds `@radix-ui/react-label`, an
@@ -639,6 +642,47 @@ the thumb's travel, and On puts the spacer first. Its height fills the
 `Control`, so 16 comes from the footprint and inset, as the box's does. The
 thumb's 10 is the one fixed number: Figma has no aspect ratio for a frame
 that fills its height. If the track's height or inset changes, change it too.
+
+SectionMessage (2026-10-13) is Atlassian's section message: a static,
+tinted block about one part of the page, with an icon, an optional title
+(Heading/XSmall, `h2` by default, `headingLevel` to change it), the message
+(Body/XSmall) and optional actions. It has no Tier 3 tokens: the surface is
+`background/utility-*` with `radius/surface` and `space/inset/lg`, the icon
+`content/utility-*`, and there is no border, as in Atlassian. It is not a
+live region, because it is there when the page renders, and it has no dismiss
+button. Error is named `error`, not "alert", after the tokens, TextField's
+`error` and Atlassian, and because `role="alert"` means something else. The
+icon is announced (`iconLabel`, "Info" by default, to translate), so the
+appearance never rests on colour. `content/utility-info`, `-success` and
+`-warning` were on 800 in Light and read almost black as icons; they moved to
+600 with error and the `border/utility-*` family (small-ds-tokens#46).
+
+The icon is 24 (`size-icon-lg`), not Atlassian's 16, at Bastian's request, and
+centred on the first line: the title's 28 or the message's 20. Whichever is
+shorter is padded by half the difference, the icon by `(1lh - 24) / 2` and the
+first text block by `(24 - 1lh) / 2`; a negative `calc()` padding clamps to 0,
+so each rule only ever adds space, at any font size. Atlassian uses a -2
+margin instead, which Figma cannot draw. In Figma the same 2px is
+`space/inline/xxs`, on the `Icon container` in Title=True and on the `Content`
+in Title=False, which is why Title is a variant and not a show/hide boolean.
+So a message without a title is 56 high (16 + 24 + 16), and 88 with one. The
+`IconCentredOnFirstLine` story holds both. If Heading/XSmall's or Body/XSmall's
+line height changes, change the Figma padding too.
+
+Actions are `SectionMessageAction`s, an `<a>` with `href` and a `<button>`
+without, both drawn as links (`link/color/*`, `link/underline/*`, Body/XSmall),
+because a filled Button on a tinted surface is too loud. Several become a
+`ul`, separated by a dot drawn with `content: "·" / ""`, so screen readers read
+the list and not the dots; one is not a list. In Figma each
+`_Section message action` carries its separator in front of it
+(`Show separator`, off on the first), as CSS draws it on `li + li`.
+
+Figma cannot draw the gap between two paragraphs in one message. Code stacks
+children with `space-stack-sm`, but a text layer's paragraph spacing belongs to
+its text style (0 for Body/XSmall), and a binding on the layer is ignored while
+the style is linked; setting a value detaches the style. So `LongContent` is 8
+shorter in Figma (168) than in Storybook (176). A paragraph spacing on the Body
+styles would fix it, and that is a token decision for Bastian.
 
 If a component needs a Tier 3 token that doesn't exist, that is a conversation
 with Bastian, not a token to add. See rule 1.
