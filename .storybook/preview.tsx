@@ -3,6 +3,7 @@ import "@small-ds/tokens/css";
 import "@small-ds/tokens/typography.css";
 import "./fonts.css";
 import "./preview.css";
+import { a11yRules } from "./a11yRules";
 
 /**
  * Drives the same `data-theme` attribute a real consumer would set, rather than
@@ -48,12 +49,7 @@ const preview: Preview = {
     // there.
     a11y: {
       test: "error",
-      config: {
-        rules: [
-          { id: "color-contrast", selector: "*:not([data-disabled], [data-disabled] *)" },
-          { id: "target-size", enabled: true },
-        ],
-      },
+      config: { rules: a11yRules },
     },
     // A "Code" tab beside Controls: the JSX of the current story, live.
     docs: { codePanel: true },

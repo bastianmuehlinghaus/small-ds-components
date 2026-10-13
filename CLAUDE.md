@@ -1,7 +1,7 @@
 # Small DS — Components
 
 React components on Radix primitives, driven entirely by `@small-ds/tokens`.
-Currently Button, Checkbox, RadioGroup, Input, TextField, Chip, Select, SelectField, Accordion and DropdownMenu.
+Currently Button, Checkbox, RadioGroup, Input, TextField, Chip, Select, SelectField, Accordion, DropdownMenu and NavigationMenu.
 
 **Figma:** [Small DS: Components](https://www.figma.com/design/VBd0r5d1gcGPQSKrR8LzCp/Small-DS--Components)
 (`VBd0r5d1gcGPQSKrR8LzCp`) is the library **and its documentation**: designers
@@ -47,7 +47,8 @@ formatting, so the bullets would lose their list style. Edit them on the canvas.
 
 **Building blocks are hidden from the library** with a leading underscore:
 `_Accordion item`, `_Radio`, `_Menu item`, `_Menu group label`,
-`_Menu separator`, `_Listbox item` and `_Focus ring` (2026-10-08). Each is only
+`_Menu separator`, `_Listbox item` and `_Focus ring` (2026-10-08), and
+`_Navigation item` and `_Navigation link` (2026-10-13). Each is only
 meaningful inside another component, and a designer searching "radio" would
 otherwise place the exact match, a lone radio that code cannot build
 (`RadioGroup.Item` exists only inside `RadioGroup.Root`). Nested instances of a
@@ -89,6 +90,7 @@ text.
 | Chip | `Chip` set | 7: Removable × State (Default, Hover, Pressed, Focus, Disabled; a chip without a remove button has only Default and Disabled) | `Chip` | Default, Removable, Disabled, LongLabel |
 | Select field | `Select field` set (label, select box, description) | 15: State × Value (Placeholder, Filled, Chips) | `SelectField`; `Select` | SelectField: Default, WithDescription, Invalid, Disabled, Multiple. Select: SingleOpen, MultipleOpen (a Select field with Label off, over a Listbox). The closed Select stories look like the set and are left out |
 | Listbox | `Listbox` (`Items` slot of Listbox items); building block `_Listbox item` set | 12: Type (Single, Multiple) × State (Default, Highlighted, Disabled) × Checked; the Listbox has none | none of its own: the list inside `Select` | none. `Select`'s `SingleOpen` and `MultipleOpen` use it |
+| Navigation menu | `Navigation menu` bar (`Items` slot of Navigation items) and `Navigation panel` (`Items` slot of Navigation links); building blocks `_Navigation item` set, `_Navigation link` set | 11: Type (Link, Trigger) × State (a Link is Default, Hover, Pressed, Focus or Current; a Trigger is Default, Hover, Pressed, Focus, Open or Disabled); 5: State, with `Show description` | `.Root` and `.List`; `.Content`; `.Link` or `.Trigger` in an `.Item`; `.Link` in a panel | Default, OpenPanel, WithDescriptions |
 | Icons | six `Icon / <name>` components | n/a | `ChevronRightIcon`, `ChevronDownIcon`, `ChevronUpIcon`, `CheckmarkIcon`, `DashIcon`, `CloseIcon` | Sizes (16 / 20 / 24, bound to `size/icon/*`) |
 
 `_Focus ring` (2 variants: Border width) has no page of its own since
@@ -245,6 +247,8 @@ it holds and mirroring the children the code accepts:
 | `_Accordion item` | `Content` (Open variants only) | none: any content | `Accordion.Content` children |
 | `Listbox` | `Items` | Listbox item | the `options` array inside `Select` |
 | `Radio group` | `Items` | Radio | `RadioGroup.Root` children |
+| `Navigation menu` | `Items` | Navigation item | `NavigationMenu.List` children |
+| `Navigation panel` | `Items` | Navigation link | `NavigationMenu.Content` children |
 
 Each slot holds the component's old fixed children as default content (three
 items, as Nathan Curtis recommends for lists), so nothing changed on the canvas
@@ -404,6 +408,7 @@ This is deliberate and **not** an inconsistency to tidy up:
 | TextField | Input for the box, Tier 2 for the label and message | no `text-field/*` tokens |
 | Checkbox, RadioGroup | Tier 3 `--sds-selection-control-*` for the box, Tier 2 for the footprint and focus ring | Tier 3 models the box only |
 | DropdownMenu | Tier 2 semantics | Figma has no `menu/*` tokens |
+| NavigationMenu | Tier 2 semantics | Figma has no `nav/*` tokens; its panel is the DropdownMenu's surface |
 
 Input is a native `<input>`: Radix has no text-input primitive, and the
 browser already owns the behaviour. TextField adds `@radix-ui/react-label`, an
@@ -497,6 +502,58 @@ must veto its own Escape while the Select is open, or one Escape closes both:
 the focus on the trigger while the list is open, so the target is the trigger,
 not the list. A future Dialog component should do both itself, with a context
 for the container.
+
+NavigationMenu is a horizontal site navigation bar on Radix NavigationMenu
+(issue #104, decided with Bastian 2026-10-13): links and triggers in a row,
+and a trigger opens a panel of links. Horizontal only, with no mobile layout
+and no submenus inside a panel. Bar items are built like a borderless Button
+(Label/Medium, 32px, 12 on a text side and 8 beside the chevron), 4 apart.
+The current page is Radix's `active` on a `Link`, which sets
+`aria-current="page"` and gets `color/state/selected`. Hover and pressed are
+flat `linear-gradient`s of the state tokens, as on Input, so they layer over
+the selected fill rather than replacing it. An open trigger keeps the hover
+layer, as an open submenu trigger does.
+
+Each panel opens **under its own trigger**, start-aligned, on the Dropdown
+menu's surface and with its 240 to 480 width. There is no Radix `Viewport` and
+no `Indicator`. Without a Viewport, Radix renders the `Content` inside its
+`Item`, so CSS positions it against the `li`, with no positioning library. The
+`Content` is a transparent wrapper whose top padding is the
+`space/inline/xs` gap, with the surface drawn inside it. The pointer never
+crosses dead space between the trigger and the panel, so it doesn't start
+Radix's close timer. A `Link` inside a `Content` is a panel row (a context
+tells it): a Menu item's row that links, with an optional `description` in
+Body/XSmall, `content/subtle`, under its one-line label. The description wraps
+and the label truncates. With `asChild`, a router's link element becomes the
+row and the label and description are put inside it.
+
+Focus in a panel is real DOM focus, which Tab and the arrow keys move
+independently of the pointer. Rows and bar items therefore get an inset
+`border/focus` ring, as the Accordion does, not the menu's hover fill, which
+would leave two rows highlighted.
+
+While a panel is open, Radix puts a **focus proxy** right after its trigger:
+a visually hidden span with `tabIndex` 0 and `aria-hidden`, which axe reports
+as `aria-hidden-focus`. It never keeps focus. Radix focuses it from the
+panel's `keydown` without cancelling the Tab, so the browser's own Tab carries
+on to the trigger or the next item. Checked with real key presses (Playwright,
+2026-10-13): Tab into the panel, Shift+Tab back to the trigger, and Tab past
+the last row to the next trigger. user-event's simulated Tab does not run that
+default action and stops on the proxy, so no play function can hold this.
+Don't "fix" the proxy on the strength of a failing `userEvent.tab()`. The axe
+exemption covers only that span, in the stories' meta.
+
+In Figma the bar and the panel are two published components, as the Dropdown
+menu's trigger and surface are: `Navigation menu` with an `Items` slot of
+`_Navigation item`s, and `Navigation panel`, the Dropdown menu's surface with
+an `Items` slot of `_Navigation link`s. An open example puts a panel under its
+`Open` trigger, at the trigger's x and 4 below the bar. Focus is a 2px inside
+stroke not counted in layout, since the CSS outline takes no space; an `Open`
+trigger shows the chevron-up icon, which CSS draws by rotating the chevron. The
+current page with the pointer over it is not drawn: in code the hover layer
+sits over the selected fill. A row's description is hidden by default
+(`Show description`). Set it to Fill in a panel at its maximum width and it
+wraps, as in code.
 
 Chip is static. Its only interactive part is the optional remove button, named
 "Remove" + the label. Its height is `chip/size/height` (20, aliasing
@@ -625,6 +682,12 @@ stops matching, every other check still looks green.
   left of the menu's item labels. Not corrected: `alignOffset={-1}` would be a
   magic number of exactly the kind rule 2 exists to prevent, and wrong the moment
   the menu's border changes. `secondary` triggers align exactly.
+- **NavigationMenu panels are not collision-aware and have no `z-index`.**
+  They are positioned by CSS, not Radix's Popper, so a panel under the last
+  trigger of a bar near the right edge can run off the screen. A positioned
+  element later in the page, such as a `position: relative` main, paints over
+  an open panel. Both need a decision from Bastian: a `z-index` would need a
+  token, and collision handling means a Viewport or a positioning library.
 
 ## Working in the Figma components file
 
@@ -733,9 +796,12 @@ under *Settings → Rules → Rulesets*.
 `npm test` runs `@storybook/addon-vitest`: each story must render, pass its
 `play` function if it has one, and show no axe violations. Behaviour that was
 once checked by hand gets a `test`-tagged story whose `play` function asserts
-it, and each was confirmed to fail when its fix is undone. The one exemption,
-contrast inside `[data-disabled]` (WCAG 1.4.3 inactive controls), and why it
-exists, is in `.storybook/preview.tsx`. The first run on a new machine needs
+it, and each was confirmed to fail when its fix is undone. The one global
+exemption, contrast inside `[data-disabled]` (WCAG 1.4.3 inactive controls), and why it
+exists, is in `.storybook/preview.tsx`. The rules every story runs with are in
+`.storybook/a11yRules.ts`. Storybook replaces arrays when it merges
+parameters, so a story or meta that adds an axe rule must spread `a11yRules`,
+or it silently drops `target-size` and that exemption. The first run on a new machine needs
 `npx playwright install chromium`.
 
 `npm run verify` checks `dist/`, not `src/` — `composes` pulls the tokens
