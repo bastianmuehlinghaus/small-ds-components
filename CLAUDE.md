@@ -51,7 +51,8 @@ formatting, so the bullets would lose their list style. Edit them on the canvas.
 **Building blocks are hidden from the library** with a leading underscore:
 `_Accordion item`, `_Radio`, `_Menu item`, `_Menu group label`,
 `_Menu separator`, `_Listbox item` and `_Focus ring` (2026-10-08), and
-`_Navigation item`, `_Navigation link` and `_Section message action` (2026-10-13). Each is only
+`_Navigation item`, `_Navigation link`, `_Section message action` and
+`_Section message dismiss` (2026-10-13). Each is only
 meaningful inside another component, and a designer searching "radio" would
 otherwise place the exact match, a lone radio that code cannot build
 (`RadioGroup.Item` exists only inside `RadioGroup.Root`). Nested instances of a
@@ -95,7 +96,7 @@ text.
 | Select field | `Select field` set (label, select box, description) | 15: State × Value (Placeholder, Filled, Chips) | `SelectField`; `Select` | SelectField: Default, WithDescription, Invalid, Disabled, Multiple. Select: SingleOpen, MultipleOpen (a Select field with Label off, over a Listbox). The closed Select stories look like the set and are left out |
 | Listbox | `Listbox` (`Items` slot of Listbox items); building block `_Listbox item` set | 12: Type (Single, Multiple) × State (Default, Highlighted, Disabled) × Checked; the Listbox has none | none of its own: the list inside `Select` | none. `Select`'s `SingleOpen` and `MultipleOpen` use it |
 | Navigation menu | `Navigation menu` bar (`Items` slot of Navigation items) and `Navigation panel` (`Items` slot of Navigation links); building blocks `_Navigation item` set, `_Navigation link` set | 11: Type (Link, Trigger) × State (a Link is Default, Hover, Pressed, Focus or Current; a Trigger is Default, Hover, Pressed, Focus, Open or Disabled); 5: State, with `Show description` | `.Root` and `.List`; `.Content`; `.Link` or `.Trigger` in an `.Item`; `.Link` in a panel | Default, OpenPanel, WithDescriptions |
-| Section message | `Section message` set (`Actions` slot of Section message actions); building block `_Section message action` set | 8: Appearance (Info, Success, Warning, Error) × Title (True, False); 3: State (Default, Hover, Focus), with `Show separator` | `SectionMessage`; `SectionMessageAction` | Default, Appearances, WithoutTitle, WithActions, LongContent |
+| Section message | `Section message` set (`Actions` slot of Section message actions, `Show dismiss`); building blocks `_Section message action` set, `_Section message dismiss` set | 8: Appearance (Info, Success, Warning, Error) × Title (True, False); 3: State (Default, Hover, Focus), with `Show separator`; 4: State (Default, Hover, Pressed, Focus) | `SectionMessage`; `SectionMessageAction`; `onDismiss` | Default, Appearances, WithoutTitle, WithActions, Dismissible, LongContent |
 | Icons | ten `Icon / <name>` components | n/a | `ChevronRightIcon`, `ChevronDownIcon`, `ChevronUpIcon`, `CheckmarkIcon`, `DashIcon`, `CloseIcon`, `SuccessIcon`, `InfoIcon`, `WarningIcon`, `ErrorIcon` | Sizes (16 / 20 / 24, bound to `size/icon/*`) |
 
 `_Focus ring` (2 variants: Border width) has no page of its own since
@@ -649,8 +650,7 @@ tinted block about one part of the page, with an icon, an optional title
 (Body/XSmall) and optional actions. It has no Tier 3 tokens: the surface is
 `background/utility-*` with `radius/surface` and `space/inset/lg`, the icon
 `content/utility-*`, and there is no border, as in Atlassian. It is not a
-live region, because it is there when the page renders, and it has no dismiss
-button. Error is named `error`, not "alert", after the tokens, TextField's
+live region, because it is there when the page renders. Error is named `error`, not "alert", after the tokens, TextField's
 `error` and Atlassian, and because `role="alert"` means something else. The
 icon is announced (`iconLabel`, "Info" by default, to translate), so the
 appearance never rests on colour. `content/utility-info`, `-success` and
@@ -677,12 +677,25 @@ the list and not the dots; one is not a list. In Figma each
 `_Section message action` carries its separator in front of it
 (`Show separator`, off on the first), as CSS draws it on `li + li`.
 
+`onDismiss` adds a dismiss button at the end, as Chip's `onRemove` adds its
+remove button: the message does not hide itself, so the consumer unmounts it
+and moves focus, since the focused button goes with it. It is Atlassian's
+compact icon button: 24 square (`size-icon-lg`, the minimum target) with the
+16 close glyph, `radius-control`, `state/hover` and `state/pressed` fills that
+tint any appearance, and Button's outside focus ring. It shares the icon's
+first-line padding, so the two are level, and it is named "Dismiss" + the
+title (`dismissLabel` to translate), so two messages don't offer two identical
+buttons. In Figma it is a hidden `_Section message dismiss` set in a
+`Dismiss container` that repeats the `Icon container`'s padding, shown by
+`Show dismiss` (off by default). The `DismissButton` story holds the name, the
+size and the alignment.
+
 Figma cannot draw the gap between two paragraphs in one message. Code stacks
 children with `space-stack-sm`, but a text layer's paragraph spacing belongs to
 its text style (0 for Body/XSmall), and a binding on the layer is ignored while
 the style is linked; setting a value detaches the style. So `LongContent` is 8
 shorter in Figma (168) than in Storybook (176). A paragraph spacing on the Body
-styles would fix it, and that is a token decision for Bastian.
+styles would fix it; Bastian decided against it (2026-10-13), so leave it.
 
 If a component needs a Tier 3 token that doesn't exist, that is a conversation
 with Bastian, not a token to add. See rule 1.
