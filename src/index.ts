@@ -79,5 +79,23 @@ export type {
   NavigationMenuLinkProps,
 } from "./components/NavigationMenu";
 
-export { ChevronRightIcon, ChevronDownIcon, ChevronUpIcon, CheckmarkIcon, DashIcon, CloseIcon } from "./components/Icon";
+export { SectionMessage, SectionMessageAction } from "./components/SectionMessage";
+export type {
+  SectionMessageProps,
+  SectionMessageAppearance,
+  SectionMessageActionProps,
+} from "./components/SectionMessage";
+
+export {
+  ChevronRightIcon,
+  ChevronDownIcon,
+  ChevronUpIcon,
+  CheckmarkIcon,
+  DashIcon,
+  CloseIcon,
+  SuccessIcon,
+  InfoIcon,
+  WarningIcon,
+  ErrorIcon,
+} from "./components/Icon";
 export type { IconProps } from "./components/Icon";
