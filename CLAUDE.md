@@ -11,16 +11,19 @@ from the same template (2026-10-08).
 **The page template.** Each page is one vertical auto-layout frame named after
 the page, at (0, 0), with 64 padding and 120 between blocks, so a new example or
 bullet reflows the page with no coordinates to fix. Its fill is
-`color/background/raised`, a display backdrop (Bastian, 2026-10-08): every
-component, sets and single components alike, is shown on the same white, from
-one place. A transparent component such as the `Accordion` cannot carry that
-fill itself, since every instance would bring a white box, so the page provides
+`color/background/default`, a display backdrop (Bastian, 2026-10-08): every
+component, sets and single components alike, is shown on the same background,
+from one place. A transparent component such as the `Accordion` cannot carry
+that fill itself, since every instance would bring a box, so the page provides
 it. It is a frame, not a Section, because a frame grows with its content and a
 Section does not (tried and reverted the same day). Component set frames keep
-their own `color/background/raised` fill, also display only; instances do not
-carry it. The `_Doc / Context` card is `color/background/default`, so it stays
-a card on the raised page. Setting the frame's `Tier 2 / Semantics — Color`
-mode to Dark shows the whole page in Dark.
+their own `color/background/default` fill, also display only; instances do not
+carry it. (`Dropdown menu` and `Listbox` are single components whose `raised`
+fill is their real surface, not a backdrop.) The `_Doc / Context` card is
+`color/background/raised`, so it reads as a card on the page. The canvas behind
+the component pages is #D8D8D8, the same as the Foundations page in the tokens
+file. Setting the frame's `Tier 2 / Semantics — Color` mode to Dark shows the
+whole page in Dark.
 
 1. **Header**, a `_Doc / Header` instance: the name (Heading/Large), one line on
    what it is for (Body/Small) and the code it maps to (Label/Small, "Code: …").
