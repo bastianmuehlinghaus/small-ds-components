@@ -1,0 +1,45 @@
+/**
+ * Link reads the `link/*` Tier 3 tokens, plus Tier 2 for its focus ring.
+ * `--sds-motion-*` comes from Tier 1 under the documented exception.
+ *
+ * No typography of its own: `font: inherit`, so a link is the size and weight
+ * of the text it sits in. That is also why it has no padding or height, and
+ * why the 24px minimum target does not apply (WCAG 2.5.8 exempts inline
+ * links).
+ */
+
+/* A link in look, whether it is an <a> or a <button>. A <button> lays out as
+   an inline block, so a long link that is a button wraps inside itself rather
+   than with the sentence. */
+.link {
+  padding: 0;
+  border: none;
+  border-radius: var(--sds-radius-control-sm);
+  background: none;
+  color: var(--sds-link-color-content-default);
+  font: inherit;
+  text-align: inherit;
+  text-decoration-line: underline;
+  text-decoration-thickness: var(--sds-link-underline-thickness-default);
+  text-underline-offset: var(--sds-link-underline-offset);
+  cursor: pointer;
+  appearance: none;
+
+  transition-property: color, text-decoration-thickness;
+  transition-duration: var(--sds-motion-duration-fast);
+  transition-timing-function: var(--sds-motion-easing-standard);
+}
+
+.link:visited {
+  color: var(--sds-link-color-content-visited);
+}
+
+.link:hover {
+  color: var(--sds-link-color-content-hover);
+  text-decoration-thickness: var(--sds-link-underline-thickness-hover);
+}
+
+.link:focus-visible {
+  outline: var(--sds-border-width-focus) solid var(--sds-color-border-focus);
+  outline-offset: var(--sds-border-width-focus);
+}

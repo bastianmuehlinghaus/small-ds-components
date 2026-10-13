@@ -1,7 +1,7 @@
 /**
  * SectionMessage has no Tier 3 tokens in Figma, so it reads Tier 2 semantics,
  * as Accordion does: the `utility` colour family for the surface and icon,
- * and the `link/*` Tier 3 tokens for its actions. `--sds-motion-*` comes from
+ * and its actions are `Link`s, which bring their own. `--sds-motion-*` comes from
  * Tier 1 under the documented exception.
  *
  * Built after Atlassian's section message: 16 padding, 8 radius, the icon
@@ -131,39 +131,6 @@
 .actionItem + .actionItem::before {
   content: "·" / "";
   margin-inline-end: var(--sds-space-inline-sm);
-}
-
-/* A link in look, whether it is an <a> or a <button>. */
-.action {
-  padding: 0;
-  border: none;
-  border-radius: var(--sds-radius-control-sm);
-  background: none;
-  color: var(--sds-link-color-content-default);
-  font: inherit;
-  text-decoration-line: underline;
-  text-decoration-thickness: var(--sds-link-underline-thickness-default);
-  text-underline-offset: var(--sds-link-underline-offset);
-  cursor: pointer;
-  appearance: none;
-
-  transition-property: color, text-decoration-thickness;
-  transition-duration: var(--sds-motion-duration-fast);
-  transition-timing-function: var(--sds-motion-easing-standard);
-}
-
-a.action:visited {
-  color: var(--sds-link-color-content-visited);
-}
-
-.action:hover {
-  color: var(--sds-link-color-content-hover);
-  text-decoration-thickness: var(--sds-link-underline-thickness-hover);
-}
-
-.action:focus-visible {
-  outline: var(--sds-border-width-focus) solid var(--sds-color-border-focus);
-  outline-offset: var(--sds-border-width-focus);
 }
 
 /* A compact icon button, as Atlassian's: 24 square, the minimum target, so

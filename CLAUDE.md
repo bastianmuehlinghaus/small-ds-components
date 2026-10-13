@@ -1,7 +1,7 @@
 # Small DS — Components
 
 React components on Radix primitives, driven entirely by `@small-ds/tokens`.
-Currently Button, Checkbox, RadioGroup, Switch, Input, TextField, Chip, Select, SelectField, Accordion, DropdownMenu, NavigationMenu and SectionMessage.
+Currently Button, Link, Checkbox, RadioGroup, Switch, Input, TextField, Chip, Select, SelectField, Accordion, DropdownMenu, NavigationMenu and SectionMessage.
 
 **Figma:** [Small DS: Components](https://www.figma.com/design/VBd0r5d1gcGPQSKrR8LzCp/Small-DS--Components)
 (`VBd0r5d1gcGPQSKrR8LzCp`) is the library **and its documentation**: designers
@@ -416,7 +416,8 @@ This is deliberate and **not** an inconsistency to tidy up:
 | Checkbox, RadioGroup, Switch | Tier 3 `--sds-selection-control-*` for the box and the Switch's track and thumb, Tier 2 for the footprint, focus ring and the track's size | Tier 3 models the box only; a Switch is a selection control, so it changes with them (issue #111) |
 | DropdownMenu | Tier 2 semantics | Figma has no `menu/*` tokens |
 | NavigationMenu | Tier 2 semantics | Figma has no `nav/*` tokens; its panel is the DropdownMenu's surface |
-| SectionMessage | Tier 2 `utility` colours, plus Tier 3 `--sds-link-*` for its actions | Figma has no `section-message/*` tokens |
+| Link | Tier 3 `--sds-link-*`, plus Tier 2 for the focus ring | Figma defines `link/*` for its colour and underline |
+| SectionMessage | Tier 2 `utility` colours; its actions are Links | Figma has no `section-message/*` tokens |
 
 Input is a native `<input>`: Radix has no text-input primitive, and the
 browser already owns the behaviour. TextField adds `@radix-ui/react-label`, an
@@ -669,9 +670,9 @@ So a message without a title is 56 high (16 + 24 + 16), and 88 with one. The
 `IconCentredOnFirstLine` story holds both. If Heading/XSmall's or Body/XSmall's
 line height changes, change the Figma padding too.
 
-Actions are `SectionMessageAction`s, an `<a>` with `href` and a `<button>`
-without, both drawn as links (`link/color/*`, `link/underline/*`, Body/XSmall),
-because a filled Button on a tinted surface is too loud. Several become a
+Actions are `SectionMessageAction`s, which is `Link` under the name it had
+before Link existed: an `<a>` with `href` and a `<button>` without, in the
+message's Body/XSmall, because a filled Button on a tinted surface is too loud. Several become a
 `ul`, separated by a dot drawn with `content: "·" / ""`, so screen readers read
 the list and not the dots; one is not a list. In Figma each
 `_Section message action` carries its separator in front of it
@@ -696,6 +697,26 @@ its text style (0 for Body/XSmall), and a binding on the layer is ignored while
 the style is linked; setting a value detaches the style. So `LongContent` is 8
 shorter in Figma (168) than in Storybook (176). A paragraph spacing on the Body
 styles would fix it; Bastian decided against it (2026-10-13), so leave it.
+
+Link (issue #115, 2026-10-13) is a text link, underlined, in or after a
+sentence. It was `SectionMessageAction`'s styles, made public. Links and
+buttons stay separate, as in Atlassian, Primer, Carbon and Spectrum: a
+button without a fill is Button `secondary`, and a link that looks like a
+button is `Button asChild`. What Link renders follows what it does, an `<a>`
+with `href` and a `<button type="button">` without, and `asChild` puts its
+styles on a router's link. The look is the same in all three.
+
+It is typography, not a control: `font: inherit`, no padding, no height, so
+the one control size does not apply, and neither does the 24px target (WCAG
+2.5.8 exempts inline links). It is **always underlined**, with no standalone
+variant without one: `content/link` is `neutral-900`, the colour of body
+text, so the underline is the only thing that marks it (WCAG 1.4.1). Hover
+thickens the underline and moves to `link/color/content/hover`; `:visited`
+takes `link/color/content/visited`. There is no disabled state, as in
+Atlassian and Primer: a link that does nothing should not be there. A
+`<button>` is laid out as an inline block, so a long button-link wraps inside
+itself rather than with the sentence. The `Semantics` story holds the
+elements, the underline and the inherited type.
 
 If a component needs a Tier 3 token that doesn't exist, that is a conversation
 with Bastian, not a token to add. See rule 1.

@@ -1,16 +1,10 @@
 import { Children, forwardRef, Fragment, isValidElement, useId } from "react";
-import type {
-  AnchorHTMLAttributes,
-  ButtonHTMLAttributes,
-  ComponentType,
-  HTMLAttributes,
-  ReactElement,
-  ReactNode,
-  Ref,
-} from "react";
+import type { ComponentType, HTMLAttributes, ReactElement, ReactNode } from "react";
 import { cx } from "../../cx";
 import { CloseIcon, ErrorIcon, InfoIcon, SuccessIcon, WarningIcon } from "../Icon";
 import type { IconProps } from "../Icon";
+import { Link } from "../Link";
+import type { LinkProps } from "../Link";
 import styles from "./SectionMessage.module.css";
 
 /* A message about one part of the page, in that part of the page, following
@@ -133,34 +127,11 @@ export const SectionMessage = forwardRef<HTMLElement, SectionMessageProps>(funct
   );
 });
 
-type ActionAsLink = AnchorHTMLAttributes<HTMLAnchorElement> & { href: string };
-type ActionAsButton = ButtonHTMLAttributes<HTMLButtonElement> & { href?: undefined };
-
-export type SectionMessageActionProps = ActionAsLink | ActionAsButton;
+export type SectionMessageActionProps = LinkProps;
 
 /**
- * An action in a Section message: a link with `href`, a button without.
- * Both look like links, underlined in the link colour, because the message's
- * tinted background is not a place for a filled Button.
+ * An action in a Section message: a `Link`, so an `<a>` with `href` and a
+ * button without. A link, not a filled Button, because the message's tinted
+ * background is not a place for one.
  */
-export const SectionMessageAction = forwardRef<HTMLAnchorElement | HTMLButtonElement, SectionMessageActionProps>(
-  function SectionMessageAction({ className, ...props }, ref) {
-    if (props.href !== undefined) {
-      return (
-        <a
-          ref={ref as Ref<HTMLAnchorElement>}
-          className={cx(styles.action, className)}
-          {...(props as ActionAsLink)}
-        />
-      );
-    }
-    return (
-      <button
-        ref={ref as Ref<HTMLButtonElement>}
-        type="button"
-        className={cx(styles.action, className)}
-        {...(props as ActionAsButton)}
-      />
-    );
-  },
-);
+export const SectionMessageAction = Link;
