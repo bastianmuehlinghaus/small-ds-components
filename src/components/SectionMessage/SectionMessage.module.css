@@ -66,6 +66,13 @@
   height: var(--sds-size-icon-lg);
 }
 
+/* Running text stops at the measure, about 77 characters of Body/XSmall,
+   however wide the message is. Each block is capped rather than the column,
+   so the column still fills the row and the dismiss button stays at the end. */
+.content > * {
+  max-width: var(--sds-size-text-max-width);
+}
+
 .content > :first-child {
   padding-block-start: calc((var(--sds-size-icon-lg) - 1lh) / 2);
 }
