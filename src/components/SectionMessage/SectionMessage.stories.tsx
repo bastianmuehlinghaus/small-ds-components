@@ -90,7 +90,9 @@ export const IconCentredOnFirstLine: Story = {
   render: (args) => (
     <div style={{ display: "grid", gap: "var(--sds-space-stack-md)" }}>
       <SectionMessage {...args} data-testid="with-title" />
-      <SectionMessage {...args} title={undefined} data-testid="without-title" />
+      <SectionMessage {...args} title={undefined} data-testid="without-title">
+        The tokens package was rebuilt.
+      </SectionMessage>
     </div>
   ),
   play: async ({ canvas }) => {
@@ -182,5 +184,29 @@ export const DismissButton: Story = {
       await expect(button.top).toBeCloseTo(glyph.top, 1);
       await expect(button.right).toBeCloseTo(message.getBoundingClientRect().right - 16, 1);
     }
+  },
+};
+
+/** In a wide container the text stops at the measure, about 77 characters a
+ *  line, while the tint and the dismiss button still span the full width. */
+export const TextMeasure: Story = {
+  tags: ["!autodocs", "test"],
+  args: {
+    onDismiss: fn(),
+    children:
+      "Two variables changed in Figma since the last build. Rebuild the tokens package to pick them up, then accept the library update in the Components file so the new values show there too.",
+  },
+  decorators: [(Story) => <div style={{ width: "60rem" }}><Story /></div>],
+  play: async ({ canvasElement, canvas }) => {
+    const message = canvasElement.querySelector("section")!;
+    const measure = parseFloat(getComputedStyle(message).getPropertyValue("--sds-size-text-max-width"));
+    const content = message.children[1] as HTMLElement;
+    for (const block of Array.from(content.children) as HTMLElement[]) {
+      await expect(block.offsetWidth).toBeLessThanOrEqual(measure);
+    }
+    // the message itself still fills its container, the button stays at the end
+    await expect(message.offsetWidth).toBe(960);
+    const button = canvas.getByRole("button").getBoundingClientRect();
+    await expect(button.right).toBeCloseTo(message.getBoundingClientRect().right - 16, 1);
   },
 };

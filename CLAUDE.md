@@ -697,6 +697,15 @@ buttons. In Figma it is a hidden `_Section message dismiss` set in a
 `Show dismiss` (off by default). The `DismissButton` story holds the name, the
 size and the alignment.
 
+Running text stops at the measure, `size/text/max-width` (480, about 77
+characters of Body/XSmall; small-ds-tokens#48), however wide the message is,
+while the tint and the dismiss button still span the container. CSS caps each
+block in `.content` rather than the column, so the column still fills the row
+and pushes the dismiss button to the end. Figma cannot bind a max width on a
+text layer, so the title, message and `Actions` slot sit in a `Text` frame
+inside `Content`, which carries the binding; `Content` still fills. A 960 wide
+message with three lines is 128 high in both. The `TextMeasure` story holds it.
+
 Figma cannot draw the gap between two paragraphs in one message. Code stacks
 children with `space-stack-sm`, but a text layer's paragraph spacing belongs to
 its text style (0 for Body/XSmall), and a binding on the layer is ignored while
