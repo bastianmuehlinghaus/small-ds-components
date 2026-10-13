@@ -1,6 +1,9 @@
 export { Button } from "./components/Button";
 export type { ButtonProps, ButtonVariant } from "./components/Button";
 
+export { Link } from "./components/Link";
+export type { LinkProps } from "./components/Link";
+
 export { Checkbox } from "./components/Checkbox";
 export type { CheckboxProps, CheckboxCheckedState } from "./components/Checkbox";
 

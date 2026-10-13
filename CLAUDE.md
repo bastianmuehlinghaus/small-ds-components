@@ -1,7 +1,7 @@
 # Small DS — Components
 
 React components on Radix primitives, driven entirely by `@small-ds/tokens`.
-Currently Button, Checkbox, RadioGroup, Switch, Input, TextField, Chip, Select, SelectField, Accordion, DropdownMenu, NavigationMenu and SectionMessage.
+Currently Button, Link, Checkbox, RadioGroup, Switch, Input, TextField, Chip, Select, SelectField, Accordion, DropdownMenu, NavigationMenu and SectionMessage.
 
 **Figma:** [Small DS: Components](https://www.figma.com/design/VBd0r5d1gcGPQSKrR8LzCp/Small-DS--Components)
 (`VBd0r5d1gcGPQSKrR8LzCp`) is the library **and its documentation**: designers
@@ -86,6 +86,7 @@ text.
 | Page | Components | Variants | Code | Examples (= stories) |
 |---|---|---|---|---|
 | Button | `Button` set; building block `_Focus ring` | 15: Variant × State | `Button` | Variants, Disabled, WithIcon |
+| Link | `Link` set | 4: State (Default, Hover, Focus, Visited) | `Link` | Default, InheritsTheText. AsButton and AsChild look like Default and are left out |
 | Checkbox | `Checkbox` set | 15: Checked (False, True, Indeterminate) × State | `Checkbox` | Default, SelectAll, LongLabel, WithoutLabel |
 | Accordion | `Accordion` (`Items` slot, 3 items by default); building block `_Accordion item` set (`Content` slot when Open) | 6: Variant (Closed, Open) × State | `Accordion.Item`; `Accordion.Root` | Single, Multiple, AllClosed |
 | Radio group | `Radio group` set (`Items` slot of Radios); building block `_Radio` set | 10: Checked × State; 6: Orientation × State | `RadioGroup.Item`; `RadioGroup.Root` | Default, Horizontal, DisabledItem, DisabledGroup, Invalid |
@@ -96,7 +97,7 @@ text.
 | Select field | `Select field` set (label, select box, description) | 15: State × Value (Placeholder, Filled, Chips) | `SelectField`; `Select` | SelectField: Default, WithDescription, Invalid, Disabled, Multiple. Select: SingleOpen, MultipleOpen (a Select field with Label off, over a Listbox). The closed Select stories look like the set and are left out |
 | Listbox | `Listbox` (`Items` slot of Listbox items); building block `_Listbox item` set | 12: Type (Single, Multiple) × State (Default, Highlighted, Disabled) × Checked; the Listbox has none | none of its own: the list inside `Select` | none. `Select`'s `SingleOpen` and `MultipleOpen` use it |
 | Navigation menu | `Navigation menu` bar (`Items` slot of Navigation items) and `Navigation panel` (`Items` slot of Navigation links); building blocks `_Navigation item` set, `_Navigation link` set | 11: Type (Link, Trigger) × State (a Link is Default, Hover, Pressed, Focus or Current; a Trigger is Default, Hover, Pressed, Focus, Open or Disabled); 5: State, with `Show description` | `.Root` and `.List`; `.Content`; `.Link` or `.Trigger` in an `.Item`; `.Link` in a panel | Default, OpenPanel, WithDescriptions |
-| Section message | `Section message` set (`Actions` slot of Section message actions, `Show dismiss`); building blocks `_Section message action` set, `_Section message dismiss` set | 8: Appearance (Info, Success, Warning, Error) × Title (True, False); 3: State (Default, Hover, Focus), with `Show separator`; 4: State (Default, Hover, Pressed, Focus) | `SectionMessage`; `SectionMessageAction`; `onDismiss` | Default, Appearances, WithoutTitle, WithActions, Dismissible, LongContent |
+| Section message | `Section message` set (`Actions` slot of Section message actions, `Show dismiss`); building blocks `_Section message action` (a Link, with `Show separator`), `_Section message dismiss` set | 8: Appearance (Info, Success, Warning, Error) × Title (True, False); none on the action, whose Link has its own; 4: State (Default, Hover, Pressed, Focus) | `SectionMessage`; `SectionMessageAction`; `onDismiss` | Default, Appearances, WithoutTitle, WithActions, Dismissible, LongContent |
 | Icons | ten `Icon / <name>` components | n/a | `ChevronRightIcon`, `ChevronDownIcon`, `ChevronUpIcon`, `CheckmarkIcon`, `DashIcon`, `CloseIcon`, `SuccessIcon`, `InfoIcon`, `WarningIcon`, `ErrorIcon` | Sizes (16 / 20 / 24, bound to `size/icon/*`) |
 
 `_Focus ring` (2 variants: Border width) has no page of its own since
@@ -416,7 +417,8 @@ This is deliberate and **not** an inconsistency to tidy up:
 | Checkbox, RadioGroup, Switch | Tier 3 `--sds-selection-control-*` for the box and the Switch's track and thumb, Tier 2 for the footprint, focus ring and the track's size | Tier 3 models the box only; a Switch is a selection control, so it changes with them (issue #111) |
 | DropdownMenu | Tier 2 semantics | Figma has no `menu/*` tokens |
 | NavigationMenu | Tier 2 semantics | Figma has no `nav/*` tokens; its panel is the DropdownMenu's surface |
-| SectionMessage | Tier 2 `utility` colours, plus Tier 3 `--sds-link-*` for its actions | Figma has no `section-message/*` tokens |
+| Link | Tier 3 `--sds-link-*`, plus Tier 2 for the focus ring | Figma defines `link/*` for its colour and underline |
+| SectionMessage | Tier 2 `utility` colours; its actions are Links | Figma has no `section-message/*` tokens |
 
 Input is a native `<input>`: Radix has no text-input primitive, and the
 browser already owns the behaviour. TextField adds `@radix-ui/react-label`, an
@@ -669,13 +671,18 @@ So a message without a title is 56 high (16 + 24 + 16), and 88 with one. The
 `IconCentredOnFirstLine` story holds both. If Heading/XSmall's or Body/XSmall's
 line height changes, change the Figma padding too.
 
-Actions are `SectionMessageAction`s, an `<a>` with `href` and a `<button>`
-without, both drawn as links (`link/color/*`, `link/underline/*`, Body/XSmall),
-because a filled Button on a tinted surface is too loud. Several become a
+Actions are `SectionMessageAction`s, which is `Link` under the name it had
+before Link existed: an `<a>` with `href` and a `<button>` without, in the
+message's Body/XSmall, because a filled Button on a tinted surface is too loud. Several become a
 `ul`, separated by a dot drawn with `content: "·" / ""`, so screen readers read
 the list and not the dots; one is not a list. In Figma each
 `_Section message action` carries its separator in front of it
-(`Show separator`, off on the first), as CSS draws it on `li + li`.
+(`Show separator`, off on the first), as CSS draws it on `li + li`. It is one
+component, not a set: a separator and an exposed `Link` instance in
+Body/XSmall, so its state and label are the Link's. Until Link existed it was a
+set with its own `State` and `Label text` (and a 1px underline on Hover, where
+CSS draws 2); a parent property cannot reach a nested instance's text, so
+keeping them would have listed `State` twice.
 
 `onDismiss` adds a dismiss button at the end, as Chip's `onRemove` adds its
 remove button: the message does not hide itself, so the consumer unmounts it
@@ -696,6 +703,37 @@ its text style (0 for Body/XSmall), and a binding on the layer is ignored while
 the style is linked; setting a value detaches the style. So `LongContent` is 8
 shorter in Figma (168) than in Storybook (176). A paragraph spacing on the Body
 styles would fix it; Bastian decided against it (2026-10-13), so leave it.
+
+Link (issue #115, 2026-10-13) is a text link, underlined, in or after a
+sentence. It was `SectionMessageAction`'s styles, made public. Links and
+buttons stay separate, as in Atlassian, Primer, Carbon and Spectrum: a
+button without a fill is Button `secondary`, and a link that looks like a
+button is `Button asChild`. What Link renders follows what it does, an `<a>`
+with `href` and a `<button type="button">` without, and `asChild` puts its
+styles on a router's link. The look is the same in all three.
+
+It is typography, not a control: `font: inherit`, no padding, no height, so
+the one control size does not apply, and neither does the 24px target (WCAG
+2.5.8 exempts inline links). It is **always underlined**, with no standalone
+variant without one: `content/link` is `neutral-900`, the colour of body
+text, so the underline is the only thing that marks it (WCAG 1.4.1). Hover
+thickens the underline and moves to `link/color/content/hover`; `:visited`
+takes `link/color/content/visited`. There is no disabled state, as in
+Atlassian and Primer: a link that does nothing should not be there. A
+`<button>` is laid out as an inline block, so a long button-link wraps inside
+itself rather than with the sentence. The `Semantics` story holds the
+elements, the underline and the inherited type.
+
+In Figma, Link is a set of four states in Body/Medium, `Label text` "Link",
+with the radius and the `_Focus ring` that the Section message action had.
+Figma cannot inherit a font, so an instance gets the type of its text by
+changing the label's text style on the instance. A text style resets the
+underline, so set it again (Underline, 2 offset, 1 thick, 2 on Hover); the
+offset and thickness are numbers because Figma cannot bind a variable to them.
+An instance cannot sit inside a paragraph, so inline links are styled words,
+and the examples are rows of a text and a Link, `space/inline/xs` apart, for
+the space between them. Hover and Visited share a colour and differ in the
+underline.
 
 If a component needs a Tier 3 token that doesn't exist, that is a conversation
 with Bastian, not a token to add. See rule 1.
