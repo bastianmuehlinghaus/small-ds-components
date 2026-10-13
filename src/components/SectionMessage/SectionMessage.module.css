@@ -5,8 +5,9 @@
  * Tier 1 under the documented exception.
  *
  * Built after Atlassian's section message: 16 padding, 8 radius, the icon
- * 16 from the text, title, message and actions 8 apart, and no border. The
- * icon is 24, not Atlassian's 16, so the status reads at a glance.
+ * 16 from the text, title, message and actions 8 apart, no border, and an
+ * optional compact dismiss button. The icon is 24, not Atlassian's 16, so the
+ * status reads at a glance.
  */
 
 .message {
@@ -38,23 +39,23 @@
   background-color: var(--sds-color-background-utility-error);
 }
 
-/* The glyph is 24 and centred on the first line, title (28) or message
-   (20), at any font size. Whichever of the two is shorter is padded by half
-   the difference: the icon by (line - 24) / 2 beside the title, the message
+/* The icon and the dismiss button are 24 and centred on the first line,
+   title (28) or message (20), at any font size. Whichever of the two is shorter is padded by half
+   the difference: the edges by (line - 24) / 2 beside the title, the message
    by (24 - line) / 2 when it comes first. A negative calc() padding clamps to
    0, so each rule only ever adds space, and nothing overlaps, as Atlassian's
-   -2 margin does. `composes` can't be conditional, so the icon's line comes
+   -2 margin does. `composes` can't be conditional, so the edges' line comes
    from one of two classes, chosen in TSX. Figma draws the same 2px with
    space/inline/xxs; see CLAUDE.md. */
-.iconBesideTitle {
+.besideTitle {
   composes: sds-type-heading-xsmall from "@small-ds/tokens/typography.css";
 }
 
-.iconBesideBody {
+.besideBody {
   composes: sds-type-body-xsmall from "@small-ds/tokens/typography.css";
 }
 
-.icon {
+.edge {
   display: flex;
   flex-shrink: 0;
   padding-block: calc((1lh - var(--sds-size-icon-lg)) / 2);
@@ -69,19 +70,19 @@
   padding-block-start: calc((var(--sds-size-icon-lg) - 1lh) / 2);
 }
 
-.info .icon {
+.info .glyph {
   color: var(--sds-color-content-utility-info);
 }
 
-.success .icon {
+.success .glyph {
   color: var(--sds-color-content-utility-success);
 }
 
-.warning .icon {
+.warning .glyph {
   color: var(--sds-color-content-utility-warning);
 }
 
-.error .icon {
+.error .glyph {
   color: var(--sds-color-content-utility-error);
 }
 
@@ -161,6 +162,42 @@ a.action:visited {
 }
 
 .action:focus-visible {
+  outline: var(--sds-border-width-focus) solid var(--sds-color-border-focus);
+  outline-offset: var(--sds-border-width-focus);
+}
+
+/* A compact icon button, as Atlassian's: 24 square, the minimum target, so
+   it sits in the same footprint as the icon. The fill shows only on hover and
+   press, from the state layers, which tint whatever appearance is under them. */
+.dismiss {
+  display: grid;
+  place-items: center;
+  box-sizing: border-box;
+  width: var(--sds-size-icon-lg);
+  height: var(--sds-size-icon-lg);
+  padding: 0;
+  border: none;
+  border-radius: var(--sds-radius-control);
+  background-color: transparent;
+  color: var(--sds-color-content-default);
+  cursor: pointer;
+  appearance: none;
+
+  transition-property: background-color;
+  transition-duration: var(--sds-motion-duration-fast);
+  transition-timing-function: var(--sds-motion-easing-standard);
+}
+
+.dismiss:hover {
+  background-color: var(--sds-color-state-hover);
+}
+
+.dismiss:active {
+  background-color: var(--sds-color-state-pressed);
+}
+
+/* Outside, as on Button: the message's padding leaves room for it. */
+.dismiss:focus-visible {
   outline: var(--sds-border-width-focus) solid var(--sds-color-border-focus);
   outline-offset: var(--sds-border-width-focus);
 }

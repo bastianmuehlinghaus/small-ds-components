@@ -1,4 +1,4 @@
-import { Children, forwardRef, Fragment, isValidElement } from "react";
+import { Children, forwardRef, Fragment, isValidElement, useId } from "react";
 import type {
   AnchorHTMLAttributes,
   ButtonHTMLAttributes,
@@ -9,7 +9,7 @@ import type {
   Ref,
 } from "react";
 import { cx } from "../../cx";
-import { ErrorIcon, InfoIcon, SuccessIcon, WarningIcon } from "../Icon";
+import { CloseIcon, ErrorIcon, InfoIcon, SuccessIcon, WarningIcon } from "../Icon";
 import type { IconProps } from "../Icon";
 import styles from "./SectionMessage.module.css";
 
@@ -18,8 +18,8 @@ import styles from "./SectionMessage.module.css";
    optional actions as links separated by dots. Static. It is not a live
    region, because it is on the page when the page renders; something that
    appears later to announce itself (a toast, a banner) is a different
-   component. There is no dismiss button: a message that can be ignored
-   probably should not be a section message. */
+   component. `onDismiss` adds a dismiss button, as Chip's `onRemove` adds a
+   remove button: the consumer unmounts the message. */
 
 export type SectionMessageAppearance = "info" | "success" | "warning" | "error";
 
@@ -47,15 +47,35 @@ export interface SectionMessageProps extends Omit<HTMLAttributes<HTMLElement>, "
    *  appearance in English ("Info", "Success", "Warning", "Error");
    *  translate it, since the colour alone does not carry the meaning. */
   iconLabel?: string;
+  /** Adds a dismiss button at the end. Remove the message in it, and move
+   *  focus somewhere sensible, since the focused button goes with it. */
+  onDismiss?: () => void;
+  /** Prefix of the dismiss button's accessible name, which reads
+   *  "{dismissLabel} {title}". Defaults to "Dismiss". Translate it. */
+  dismissLabel?: string;
   /** The message. Text, or paragraphs: block children are stacked with the
    *  same gap as the title, and lose their own margins. */
   children?: ReactNode;
 }
 
 export const SectionMessage = forwardRef<HTMLElement, SectionMessageProps>(function SectionMessage(
-  { appearance = "info", title, headingLevel: Heading = "h2", actions, iconLabel, children, className, ...props },
+  {
+    appearance = "info",
+    title,
+    headingLevel: Heading = "h2",
+    actions,
+    iconLabel,
+    onDismiss,
+    dismissLabel = "Dismiss",
+    children,
+    className,
+    ...props
+  },
   ref,
 ) {
+  const id = useId();
+  const titleId = `${id}-title`;
+  const dismissId = `${id}-dismiss`;
   const { Icon, label } = appearances[appearance];
   const hasTitle = title != null && title !== false && title !== "";
 
@@ -65,16 +85,22 @@ export const SectionMessage = forwardRef<HTMLElement, SectionMessageProps>(funct
       ? (actions as ReactElement<{ children?: ReactNode }>).props.children
       : actions;
   const actionList = Children.toArray(actionElements);
+  const firstLine = hasTitle ? styles.besideTitle : styles.besideBody;
 
   return (
     <section ref={ref} className={cx(styles.message, styles[appearance], className)} {...props}>
-      {/* The icon's box takes the line height of whatever comes first, title
-          or message, so the glyph is centred on that line at any font size. */}
-      <span className={cx(styles.icon, hasTitle ? styles.iconBesideTitle : styles.iconBesideBody)}>
+      {/* The icon's box, and the dismiss button's, take the line height of
+          whatever comes first, title or message, so both are centred on that
+          line at any font size. */}
+      <span className={cx(styles.edge, firstLine)}>
         <Icon className={styles.glyph} role="img" aria-hidden={false} aria-label={iconLabel ?? label} />
       </span>
       <div className={styles.content}>
-        {hasTitle && <Heading className={styles.title}>{title}</Heading>}
+        {hasTitle && (
+          <Heading id={titleId} className={styles.title}>
+            {title}
+          </Heading>
+        )}
         {children != null && <div className={styles.body}>{children}</div>}
         {actionList.length > 1 && (
           <ul className={styles.actions}>
@@ -87,6 +113,22 @@ export const SectionMessage = forwardRef<HTMLElement, SectionMessageProps>(funct
         )}
         {actionList.length === 1 && <div className={styles.actions}>{actionList[0]}</div>}
       </div>
+      {onDismiss && (
+        <span className={cx(styles.edge, firstLine)}>
+          <button
+            id={dismissId}
+            type="button"
+            className={styles.dismiss}
+            onClick={onDismiss}
+            // "Dismiss" + the title, so two messages don't offer two identical
+            // "Dismiss" buttons.
+            aria-label={dismissLabel}
+            aria-labelledby={hasTitle ? `${dismissId} ${titleId}` : undefined}
+          >
+            <CloseIcon />
+          </button>
+        </span>
+      )}
     </section>
   );
 });

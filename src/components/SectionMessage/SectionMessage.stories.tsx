@@ -57,6 +57,12 @@ export const WithActions: Story = {
   },
 };
 
+/** `onDismiss` adds a compact dismiss button at the end, level with the
+ *  icon. The message doesn't hide itself: remove it in `onDismiss`. */
+export const Dismissible: Story = {
+  args: { appearance: "success", title: "Tokens rebuilt", children: "The package picked up two changed variables.", onDismiss: fn() },
+};
+
 /** Paragraphs stack with the same gap as the title, and the message wraps
  *  inside whatever width it is given. */
 export const LongContent: Story = {
@@ -147,5 +153,34 @@ export const Semantics: Story = {
     const second = list.querySelectorAll("li")[1]!;
     await expect(getComputedStyle(second, "::before").content).toContain("·");
     await expect(second).toHaveTextContent(/^View changes$/);
+  },
+};
+
+/** The dismiss button is named for its message, a 24 target, and level with
+ *  the icon with or without a title. */
+export const DismissButton: Story = {
+  tags: ["!autodocs", "test"],
+  args: { onDismiss: fn() },
+  render: (args) => (
+    <div style={{ display: "grid", gap: "var(--sds-space-stack-md)" }}>
+      <SectionMessage {...args} data-testid="with-title" />
+      <SectionMessage {...args} title={undefined} data-testid="without-title" />
+    </div>
+  ),
+  play: async ({ canvas, args, userEvent }) => {
+    const named = canvas.getByRole("button", { name: "Dismiss Tokens are out of date" });
+    await expect([named.offsetWidth, named.offsetHeight]).toEqual([24, 24]);
+    await userEvent.click(named);
+    await expect(args.onDismiss).toHaveBeenCalledTimes(1);
+    // without a title the name is the prefix alone
+    await expect(canvas.getByRole("button", { name: "Dismiss" })).toBeVisible();
+
+    for (const id of ["with-title", "without-title"]) {
+      const message = canvas.getByTestId(id);
+      const glyph = message.querySelector("[role=img]")!.getBoundingClientRect();
+      const button = message.querySelector("button")!.getBoundingClientRect();
+      await expect(button.top).toBeCloseTo(glyph.top, 1);
+      await expect(button.right).toBeCloseTo(message.getBoundingClientRect().right - 16, 1);
+    }
   },
 };
