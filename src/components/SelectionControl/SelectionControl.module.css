@@ -1,5 +1,6 @@
 /**
- * The visual half of Checkbox, Radio and the DropdownMenu selection items.
+ * The visual half of Checkbox, Radio, Switch and the DropdownMenu selection
+ * items.
  * Internal: not exported, because the menu needs the box without a second
  * interactive element inside its menuitemcheckbox.
  *
@@ -155,6 +156,84 @@
 
 .interactive[data-disabled] {
   cursor: not-allowed;
+}
+
+/* --- switch --------------------------------------------------------------- */
+
+/* The same 24px-high footprint and inset as the box, around a 32 × 16 track
+   (Atlassian's regular toggle), so a Switch lines up with a Checkbox and its
+   label in the same place. The footprint grows to the track's width, and the
+   focus ring follows the pill. */
+.switch {
+  width: auto;
+  border-radius: var(--sds-radius-pill);
+}
+
+/* Built as the box is: a real 1px border inside a border-box, with the thumb
+   in the content area, as the Radio's dot is. 16 − 2 × border − 2 × inset
+   gives a 10px thumb. The track is twice its height wide, so the thumb always
+   travels exactly one track height: no calc() for the distance. */
+.track {
+  display: flex;
+  box-sizing: border-box;
+  width: calc(var(--sds-size-icon-sm) * 2);
+  height: var(--sds-size-icon-sm);
+  padding: var(--sds-space-inline-xxs);
+  border: var(--sds-border-width-default) solid var(--sds-selection-control-color-border-default);
+  border-radius: var(--sds-radius-pill);
+  background-color: var(--sds-selection-control-color-background-default);
+  transition-property: background-color, border-color;
+  transition-duration: var(--sds-motion-duration-fast);
+  transition-timing-function: var(--sds-motion-easing-standard);
+}
+
+/* Off, the thumb takes the border's colour: the outlined look of an
+   unchecked box. */
+.thumb {
+  display: block;
+  height: 100%;
+  aspect-ratio: 1;
+  border-radius: var(--sds-radius-pill);
+  background-color: var(--sds-selection-control-color-border-default);
+  transition-property: margin-inline-start, background-color;
+  transition-duration: var(--sds-motion-duration-fast);
+  transition-timing-function: var(--sds-motion-easing-standard);
+}
+
+/* A logical margin rather than a transform, so On sits at the end in
+   right-to-left text too. */
+.thumb[data-state="checked"] {
+  margin-inline-start: var(--sds-size-icon-sm);
+  background-color: var(--sds-selection-control-color-content-checked);
+}
+
+/* On is a checked box: the knockout fill and border. */
+.switch[data-state="checked"] > .track {
+  border-color: var(--sds-selection-control-color-border-checked);
+  background-color: var(--sds-selection-control-color-background-checked);
+}
+
+/* Disabled looks the same on and off apart from where the thumb sits, as a
+   disabled box keeps its mark. */
+.switch[data-disabled] > .track {
+  border-color: var(--sds-selection-control-color-border-disabled);
+  background-color: var(--sds-selection-control-color-background-disabled);
+}
+
+.switch[data-disabled] .thumb {
+  background-color: var(--sds-color-content-disabled);
+}
+
+/* Hover is the state layer, Off only, as on an unchecked box. A flat gradient
+   rather than ::after, so it sits under the thumb. */
+:is(.switch:hover, .field:hover > .switch)[data-state="unchecked"]:not([data-disabled]) > .track {
+  background-image: linear-gradient(var(--sds-color-state-hover), var(--sds-color-state-hover));
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .thumb {
+    transition-property: background-color;
+  }
 }
 
 /* --- labelled field ------------------------------------------------------- */

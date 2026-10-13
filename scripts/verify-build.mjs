@@ -40,7 +40,7 @@ check("base ui is imported, not bundled", /from\s*["']@base-ui\/react\/select["'
   `index.js is ${(js.length / 1024).toFixed(0)} kB`);
 
 const dts = fs.readFileSync("dist/index.d.ts", "utf8");
-for (const name of ["Button", "Checkbox", "RadioGroup", "Input", "TextField", "Accordion", "DropdownMenu", "Chip", "Select", "SelectField", "NavigationMenu"]) {
+for (const name of ["Button", "Checkbox", "Switch", "RadioGroup", "Input", "TextField", "Accordion", "DropdownMenu", "Chip", "Select", "SelectField", "NavigationMenu"]) {
   check(`${name} is exported with types`, js.includes(name) && dts.includes(name));
 }
 
