@@ -1,0 +1,252 @@
+/**
+ * NavigationMenu has no Tier 3 tokens in Figma, so it composes from Tier 2
+ * semantics, as DropdownMenu does. `--sds-motion-*` comes from Tier 1 under the
+ * documented exception.
+ *
+ * Hover and pressed are flat `linear-gradient`s of the state tokens, as on
+ * Input, so they layer over the current page's selected fill rather than
+ * replacing it.
+ */
+
+.root {
+  position: relative;
+}
+
+.list {
+  display: flex;
+  align-items: center;
+  gap: var(--sds-space-inline-xs);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+/* The panel is positioned against its item: without a Radix Viewport the
+   Content renders inside the Item. */
+.item {
+  position: relative;
+}
+
+/* --- bar: links and triggers -----------------------------------------------
+   Built like a borderless Button: one control size, Label/Medium, 12 on a
+   text side and 8 on the chevron side, 4 between label and chevron. */
+
+.control {
+  composes: sds-type-label-medium from "@small-ds/tokens/typography.css";
+
+  display: inline-flex;
+  align-items: center;
+  gap: var(--sds-space-inline-xs);
+  box-sizing: border-box;
+  min-height: var(--sds-size-control-default);
+  padding-block: var(--sds-space-inset-xs);
+  padding-inline: var(--sds-space-inset-md);
+  border: none;
+  border-radius: var(--sds-radius-control);
+  background-color: transparent;
+  color: var(--sds-color-content-default);
+  text-decoration: none;
+  white-space: nowrap;
+  appearance: none;
+  cursor: pointer;
+
+  transition-property: background-color;
+  transition-duration: var(--sds-motion-duration-fast);
+  transition-timing-function: var(--sds-motion-easing-standard);
+}
+
+.trigger {
+  padding-inline-end: var(--sds-space-inset-sm);
+}
+
+/* Inset, as on the Accordion: the bar's items sit 4 apart, and an outside
+   ring would touch the next one. */
+.control:focus-visible {
+  outline: var(--sds-border-width-focus) solid var(--sds-color-border-focus);
+  outline-offset: calc(var(--sds-border-width-focus) * -1);
+}
+
+.control:disabled {
+  color: var(--sds-color-content-disabled);
+  cursor: not-allowed;
+}
+
+/* An open trigger keeps the hover layer while the pointer is in its panel, as
+   a Dropdown menu's open submenu trigger does. */
+.control:hover:not(:disabled),
+.trigger[data-state="open"] {
+  background-image: linear-gradient(var(--sds-color-state-hover), var(--sds-color-state-hover));
+}
+
+.control:active:not(:disabled) {
+  background-image: linear-gradient(var(--sds-color-state-pressed), var(--sds-color-state-pressed));
+}
+
+/* The current page. Radix sets data-active and aria-current="page" from the
+   Link's `active` prop. */
+.control[data-active] {
+  background-color: var(--sds-color-state-selected);
+}
+
+/* No colour of its own: it follows the trigger's content colour. */
+.chevron {
+  flex-shrink: 0;
+  width: var(--sds-size-icon-sm);
+  height: var(--sds-size-icon-sm);
+
+  transition-property: transform;
+  transition-duration: var(--sds-motion-duration-fast);
+  transition-timing-function: var(--sds-motion-easing-standard);
+}
+
+.trigger[data-state="open"] .chevron {
+  transform: rotate(180deg);
+}
+
+/* --- panel ------------------------------------------------------------------
+   The Content is a transparent wrapper under its trigger, start-aligned. Its
+   top padding is the gap, so the pointer stays inside the panel's hit area on
+   the way down from the trigger. */
+
+.content {
+  position: absolute;
+  top: 100%;
+  inset-inline-start: 0;
+  padding-block-start: var(--sds-space-inline-xs);
+  transform-origin: top left;
+}
+
+.content:dir(rtl) {
+  transform-origin: top right;
+}
+
+.content[data-state="open"] {
+  animation-name: enter;
+  animation-duration: var(--sds-motion-duration-fast);
+  animation-timing-function: var(--sds-motion-easing-entrance);
+}
+
+.content[data-state="closed"] {
+  animation-name: exit;
+  animation-duration: var(--sds-motion-duration-fast);
+  animation-timing-function: var(--sds-motion-easing-exit);
+}
+
+/* The Dropdown menu's surface. It grows with its widest row, from the minimum
+   to the maximum, and past that a label truncates and a description wraps. */
+.surface {
+  box-sizing: border-box;
+  width: max-content;
+  min-width: var(--sds-size-overlay-min-width);
+  max-width: var(--sds-size-overlay-max-width);
+  padding: var(--sds-space-inset-xs);
+  border: var(--sds-border-width-default) solid var(--sds-color-border-default);
+  border-radius: var(--sds-radius-surface);
+  background-color: var(--sds-color-background-raised);
+  box-shadow: var(--sds-shadow-overlay);
+}
+
+.panelList {
+  display: flex;
+  flex-direction: column;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.panelItem {
+  display: flex;
+  flex-direction: column;
+}
+
+/* A panel row is a Menu item's row that links: same type, height, insets and
+   radius. With a description it grows to two lines. */
+.row {
+  composes: sds-type-label-medium from "@small-ds/tokens/typography.css";
+
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  box-sizing: border-box;
+  min-height: var(--sds-size-control-default);
+  padding-block: var(--sds-space-inset-xs);
+  padding-inline: var(--sds-space-inset-md);
+  border-radius: var(--sds-radius-control);
+  color: var(--sds-color-content-default);
+  text-decoration: none;
+  cursor: pointer;
+
+  transition-property: background-color;
+  transition-duration: var(--sds-motion-duration-fast);
+  transition-timing-function: var(--sds-motion-easing-standard);
+}
+
+.row:hover {
+  background-image: linear-gradient(var(--sds-color-state-hover), var(--sds-color-state-hover));
+}
+
+.row:active {
+  background-image: linear-gradient(var(--sds-color-state-pressed), var(--sds-color-state-pressed));
+}
+
+.row[data-active] {
+  background-color: var(--sds-color-state-selected);
+}
+
+/* A ring, not the menu's hover fill: focus here is real DOM focus, which Tab
+   and the arrow keys move independently of the pointer, so a fill would leave
+   two rows highlighted. Inset, so the surface's padding never clips it. */
+.row:focus-visible {
+  outline: var(--sds-border-width-focus) solid var(--sds-color-border-focus);
+  outline-offset: calc(var(--sds-border-width-focus) * -1);
+}
+
+/* As in the Dropdown menu: one line, and an ellipsis once the surface is at
+   its maximum. */
+.rowLabel {
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.rowDescription {
+  composes: sds-type-body-xsmall from "@small-ds/tokens/typography.css";
+
+  color: var(--sds-color-content-subtle);
+}
+
+@keyframes enter {
+  from {
+    opacity: 0;
+    transform: scale(0.96);
+  }
+
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+@keyframes exit {
+  from {
+    opacity: 1;
+    transform: scale(1);
+  }
+
+  to {
+    opacity: 0;
+    transform: scale(0.96);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .content[data-state="open"],
+  .content[data-state="closed"] {
+    animation: none;
+  }
+
+  .chevron {
+    transition: none;
+  }
+}
