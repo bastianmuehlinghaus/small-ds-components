@@ -47,7 +47,8 @@ formatting, so the bullets would lose their list style. Edit them on the canvas.
 
 **Building blocks are hidden from the library** with a leading underscore:
 `_Accordion item`, `_Radio`, `_Menu item`, `_Menu group label`,
-`_Menu separator`, `_Listbox item` and `_Focus ring` (2026-10-08). Each is only
+`_Menu separator`, `_Listbox item` and `_Focus ring` (2026-10-08), and
+`_Navigation item` and `_Navigation link` (2026-10-13). Each is only
 meaningful inside another component, and a designer searching "radio" would
 otherwise place the exact match, a lone radio that code cannot build
 (`RadioGroup.Item` exists only inside `RadioGroup.Root`). Nested instances of a
@@ -89,6 +90,7 @@ text.
 | Chip | `Chip` set | 7: Removable × State (Default, Hover, Pressed, Focus, Disabled; a chip without a remove button has only Default and Disabled) | `Chip` | Default, Removable, Disabled, LongLabel |
 | Select field | `Select field` set (label, select box, description) | 15: State × Value (Placeholder, Filled, Chips) | `SelectField`; `Select` | SelectField: Default, WithDescription, Invalid, Disabled, Multiple. Select: SingleOpen, MultipleOpen (a Select field with Label off, over a Listbox). The closed Select stories look like the set and are left out |
 | Listbox | `Listbox` (`Items` slot of Listbox items); building block `_Listbox item` set | 12: Type (Single, Multiple) × State (Default, Highlighted, Disabled) × Checked; the Listbox has none | none of its own: the list inside `Select` | none. `Select`'s `SingleOpen` and `MultipleOpen` use it |
+| Navigation menu | `Navigation menu` bar (`Items` slot of Navigation items) and `Navigation panel` (`Items` slot of Navigation links); building blocks `_Navigation item` set, `_Navigation link` set | 11: Type (Link, Trigger) × State (a Link is Default, Hover, Pressed, Focus or Current; a Trigger is Default, Hover, Pressed, Focus, Open or Disabled); 5: State, with `Show description` | `.Root` and `.List`; `.Content`; `.Link` or `.Trigger` in an `.Item`; `.Link` in a panel | Default, OpenPanel, WithDescriptions |
 | Icons | six `Icon / <name>` components | n/a | `ChevronRightIcon`, `ChevronDownIcon`, `ChevronUpIcon`, `CheckmarkIcon`, `DashIcon`, `CloseIcon` | Sizes (16 / 20 / 24, bound to `size/icon/*`) |
 
 `_Focus ring` (2 variants: Border width) has no page of its own since
@@ -245,6 +247,8 @@ it holds and mirroring the children the code accepts:
 | `_Accordion item` | `Content` (Open variants only) | none: any content | `Accordion.Content` children |
 | `Listbox` | `Items` | Listbox item | the `options` array inside `Select` |
 | `Radio group` | `Items` | Radio | `RadioGroup.Root` children |
+| `Navigation menu` | `Items` | Navigation item | `NavigationMenu.List` children |
+| `Navigation panel` | `Items` | Navigation link | `NavigationMenu.Content` children |
 
 Each slot holds the component's old fixed children as default content (three
 items, as Nathan Curtis recommends for lists), so nothing changed on the canvas
@@ -538,6 +542,18 @@ the last row to the next trigger. user-event's simulated Tab does not run that
 default action and stops on the proxy, so no play function can hold this.
 Don't "fix" the proxy on the strength of a failing `userEvent.tab()`. The axe
 exemption covers only that span, in the stories' meta.
+
+In Figma the bar and the panel are two published components, as the Dropdown
+menu's trigger and surface are: `Navigation menu` with an `Items` slot of
+`_Navigation item`s, and `Navigation panel`, the Dropdown menu's surface with
+an `Items` slot of `_Navigation link`s. An open example puts a panel under its
+`Open` trigger, at the trigger's x and 4 below the bar. Focus is a 2px inside
+stroke not counted in layout, since the CSS outline takes no space; an `Open`
+trigger shows the chevron-up icon, which CSS draws by rotating the chevron. The
+current page with the pointer over it is not drawn: in code the hover layer
+sits over the selected fill. A row's description is hidden by default
+(`Show description`). Set it to Fill in a panel at its maximum width and it
+wraps, as in code.
 
 Chip is static. Its only interactive part is the optional remove button, named
 "Remove" + the label. Its height is `chip/size/height` (20, aliasing
