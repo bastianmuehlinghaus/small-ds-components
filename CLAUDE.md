@@ -86,6 +86,7 @@ text.
 | Page | Components | Variants | Code | Examples (= stories) |
 |---|---|---|---|---|
 | Button | `Button` set; building block `_Focus ring` | 15: Variant × State | `Button` | Variants, Disabled, WithIcon |
+| Link | `Link` set | 4: State (Default, Hover, Focus, Visited) | `Link` | Default, InheritsTheText. AsButton and AsChild look like Default and are left out |
 | Checkbox | `Checkbox` set | 15: Checked (False, True, Indeterminate) × State | `Checkbox` | Default, SelectAll, LongLabel, WithoutLabel |
 | Accordion | `Accordion` (`Items` slot, 3 items by default); building block `_Accordion item` set (`Content` slot when Open) | 6: Variant (Closed, Open) × State | `Accordion.Item`; `Accordion.Root` | Single, Multiple, AllClosed |
 | Radio group | `Radio group` set (`Items` slot of Radios); building block `_Radio` set | 10: Checked × State; 6: Orientation × State | `RadioGroup.Item`; `RadioGroup.Root` | Default, Horizontal, DisabledItem, DisabledGroup, Invalid |
@@ -96,7 +97,7 @@ text.
 | Select field | `Select field` set (label, select box, description) | 15: State × Value (Placeholder, Filled, Chips) | `SelectField`; `Select` | SelectField: Default, WithDescription, Invalid, Disabled, Multiple. Select: SingleOpen, MultipleOpen (a Select field with Label off, over a Listbox). The closed Select stories look like the set and are left out |
 | Listbox | `Listbox` (`Items` slot of Listbox items); building block `_Listbox item` set | 12: Type (Single, Multiple) × State (Default, Highlighted, Disabled) × Checked; the Listbox has none | none of its own: the list inside `Select` | none. `Select`'s `SingleOpen` and `MultipleOpen` use it |
 | Navigation menu | `Navigation menu` bar (`Items` slot of Navigation items) and `Navigation panel` (`Items` slot of Navigation links); building blocks `_Navigation item` set, `_Navigation link` set | 11: Type (Link, Trigger) × State (a Link is Default, Hover, Pressed, Focus or Current; a Trigger is Default, Hover, Pressed, Focus, Open or Disabled); 5: State, with `Show description` | `.Root` and `.List`; `.Content`; `.Link` or `.Trigger` in an `.Item`; `.Link` in a panel | Default, OpenPanel, WithDescriptions |
-| Section message | `Section message` set (`Actions` slot of Section message actions, `Show dismiss`); building blocks `_Section message action` set, `_Section message dismiss` set | 8: Appearance (Info, Success, Warning, Error) × Title (True, False); 3: State (Default, Hover, Focus), with `Show separator`; 4: State (Default, Hover, Pressed, Focus) | `SectionMessage`; `SectionMessageAction`; `onDismiss` | Default, Appearances, WithoutTitle, WithActions, Dismissible, LongContent |
+| Section message | `Section message` set (`Actions` slot of Section message actions, `Show dismiss`); building blocks `_Section message action` (a Link, with `Show separator`), `_Section message dismiss` set | 8: Appearance (Info, Success, Warning, Error) × Title (True, False); none on the action, whose Link has its own; 4: State (Default, Hover, Pressed, Focus) | `SectionMessage`; `SectionMessageAction`; `onDismiss` | Default, Appearances, WithoutTitle, WithActions, Dismissible, LongContent |
 | Icons | ten `Icon / <name>` components | n/a | `ChevronRightIcon`, `ChevronDownIcon`, `ChevronUpIcon`, `CheckmarkIcon`, `DashIcon`, `CloseIcon`, `SuccessIcon`, `InfoIcon`, `WarningIcon`, `ErrorIcon` | Sizes (16 / 20 / 24, bound to `size/icon/*`) |
 
 `_Focus ring` (2 variants: Border width) has no page of its own since
@@ -676,7 +677,12 @@ message's Body/XSmall, because a filled Button on a tinted surface is too loud. 
 `ul`, separated by a dot drawn with `content: "·" / ""`, so screen readers read
 the list and not the dots; one is not a list. In Figma each
 `_Section message action` carries its separator in front of it
-(`Show separator`, off on the first), as CSS draws it on `li + li`.
+(`Show separator`, off on the first), as CSS draws it on `li + li`. It is one
+component, not a set: a separator and an exposed `Link` instance in
+Body/XSmall, so its state and label are the Link's. Until Link existed it was a
+set with its own `State` and `Label text` (and a 1px underline on Hover, where
+CSS draws 2); a parent property cannot reach a nested instance's text, so
+keeping them would have listed `State` twice.
 
 `onDismiss` adds a dismiss button at the end, as Chip's `onRemove` adds its
 remove button: the message does not hide itself, so the consumer unmounts it
@@ -717,6 +723,17 @@ Atlassian and Primer: a link that does nothing should not be there. A
 `<button>` is laid out as an inline block, so a long button-link wraps inside
 itself rather than with the sentence. The `Semantics` story holds the
 elements, the underline and the inherited type.
+
+In Figma, Link is a set of four states in Body/Medium, `Label text` "Link",
+with the radius and the `_Focus ring` that the Section message action had.
+Figma cannot inherit a font, so an instance gets the type of its text by
+changing the label's text style on the instance. A text style resets the
+underline, so set it again (Underline, 2 offset, 1 thick, 2 on Hover); the
+offset and thickness are numbers because Figma cannot bind a variable to them.
+An instance cannot sit inside a paragraph, so inline links are styled words,
+and the examples are rows of a text and a Link, `space/inline/xs` apart, for
+the space between them. Hover and Visited share a colour and differ in the
+underline.
 
 If a component needs a Tier 3 token that doesn't exist, that is a conversation
 with Bastian, not a token to add. See rule 1.
