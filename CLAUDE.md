@@ -1,7 +1,7 @@
 # Small DS — Components
 
 React components on Radix primitives, driven entirely by `@small-ds/tokens`.
-Currently Button, Checkbox, RadioGroup, Input, TextField, Chip, Select, SelectField, Accordion, DropdownMenu and NavigationMenu.
+Currently Button, Checkbox, RadioGroup, Switch, Input, TextField, Chip, Select, SelectField, Accordion, DropdownMenu and NavigationMenu.
 
 **Figma:** [Small DS: Components](https://www.figma.com/design/VBd0r5d1gcGPQSKrR8LzCp/Small-DS--Components)
 (`VBd0r5d1gcGPQSKrR8LzCp`) is the library **and its documentation**: designers
@@ -409,7 +409,7 @@ This is deliberate and **not** an inconsistency to tidy up:
 | Select | Tier 3 `--sds-input-*` and `--sds-select-*`, plus Tier 2 for the list | the box is Input's; Figma defines two `select/*` tokens (placeholder, indicator) |
 | Chip | Tier 3 `--sds-chip-size-height`, plus Tier 2 | Figma defines one `chip/*` token, its height; `space/inline/xxs` (2) is Tier 2 |
 | TextField | Input for the box, Tier 2 for the label and message | no `text-field/*` tokens |
-| Checkbox, RadioGroup | Tier 3 `--sds-selection-control-*` for the box, Tier 2 for the footprint and focus ring | Tier 3 models the box only |
+| Checkbox, RadioGroup, Switch | Tier 3 `--sds-selection-control-*` for the box and the Switch's track and thumb, Tier 2 for the footprint, focus ring and the track's size | Tier 3 models the box only; a Switch is a selection control, so it changes with them (issue #111) |
 | DropdownMenu | Tier 2 semantics | Figma has no `menu/*` tokens |
 | NavigationMenu | Tier 2 semantics | Figma has no `nav/*` tokens; its panel is the DropdownMenu's surface |
 
@@ -612,6 +612,23 @@ show/hide property sits on the container, so a hidden label takes its padding
 with it; `Label text` stays on the text. The `LongLabel` example is 288 wide
 (18rem) and 44 high, as in Storybook. On one line nothing moved: all 77
 Checkbox and Radio instances in the file kept their size when it was built.
+
+Switch (issue #111, decided with Bastian 2026-10-13) is a selection control
+in the same stylesheet, with no tokens of its own. Its footprint is the box's,
+24 high with the same `space-inset-xs` inset and pill-shaped focus ring, grown
+to a 32 × 16 track (Atlassian's regular toggle): `size-icon-sm` high and twice
+that wide. The track is built like the box, a real 1px border in a
+border-box, so its thumb comes from padding, as the Radio's dot does:
+16 − 2 − 2 × `space-inline-xxs` = 10. Because the track is twice its height
+wide, the thumb always travels exactly `size-icon-sm`; it moves by
+`margin-inline-start`, not a transform, so On sits at the end in RTL too. Off
+is an unchecked box (the thumb in the border colour), On a checked one (the
+thumb in `content/checked`). Hover is the state layer, Off only, as a
+`linear-gradient` so it sits under the thumb. There is no Invalid and no
+indeterminate: a switch takes effect at once and is not validated. The label
+uses the same `.field` and first-line alignment, so `LongLabel` is 288 × 44
+here too. Pinned to `@radix-ui/react-switch` 1.3.8, the same Radix release as
+`react-checkbox` 1.3.12.
 
 If a component needs a Tier 3 token that doesn't exist, that is a conversation
 with Bastian, not a token to add. See rule 1.

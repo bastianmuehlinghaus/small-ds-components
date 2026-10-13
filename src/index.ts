@@ -4,6 +4,9 @@ export type { ButtonProps, ButtonVariant } from "./components/Button";
 export { Checkbox } from "./components/Checkbox";
 export type { CheckboxProps, CheckboxCheckedState } from "./components/Checkbox";
 
+export { Switch } from "./components/Switch";
+export type { SwitchProps } from "./components/Switch";
+
 export { Input } from "./components/Input";
 export type { InputProps } from "./components/Input";
 
