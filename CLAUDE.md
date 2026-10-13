@@ -88,6 +88,7 @@ text.
 | Checkbox | `Checkbox` set | 15: Checked (False, True, Indeterminate) × State | `Checkbox` | Default, SelectAll, LongLabel, WithoutLabel |
 | Accordion | `Accordion` (`Items` slot, 3 items by default); building block `_Accordion item` set (`Content` slot when Open) | 6: Variant (Closed, Open) × State | `Accordion.Item`; `Accordion.Root` | Single, Multiple, AllClosed |
 | Radio group | `Radio group` set (`Items` slot of Radios); building block `_Radio` set | 10: Checked × State; 6: Orientation × State | `RadioGroup.Item`; `RadioGroup.Root` | Default, Horizontal, DisabledItem, DisabledGroup, Invalid |
+| Switch | `Switch` set | 8: Checked (False, True) × State (Default, Hover, Focus, Disabled) | `Switch` | Default, Disabled, LongLabel, WithoutLabel |
 | Text field | `Text field` set (label, input box, description) | 10: State × Value (Placeholder, Filled) | `TextField`; `Input` | Input / Default (a Text field with Label off), TextField / Default, WithDescription, Invalid, Disabled |
 | Dropdown menu | `Dropdown menu` surface (`Items` slot); building blocks `_Menu item` set, `_Menu group label`, `_Menu separator` | 12: Type (Item, Submenu, Checkbox, Radio) × State (Default, Hover, Disabled) | `.Item` and friends; `.Label`; `.Separator`; `.Content` | Basic, OpenByDefault, WithSelection, SelectAll, WithSubmenu |
 | Chip | `Chip` set | 7: Removable × State (Default, Hover, Pressed, Focus, Disabled; a chip without a remove button has only Default and Disabled) | `Chip` | Default, Removable, Disabled, LongLabel |
@@ -629,6 +630,15 @@ indeterminate: a switch takes effect at once and is not validated. The label
 uses the same `.field` and first-line alignment, so `LongLabel` is 288 × 44
 here too. Pinned to `@radix-ui/react-switch` 1.3.8, the same Radix release as
 `react-checkbox` 1.3.12.
+
+In Figma each Switch variant is a Checkbox variant with the box turned into a
+`Track`: the `Control` hugs instead of being `size/icon/lg` wide, and the
+corners are `radius/pill`. Figma cannot multiply a token, so the track's width
+is not set: it hugs a `Thumb` and a `Spacer` bound to `size/icon/sm`, which is
+the thumb's travel, and On puts the spacer first. Its height fills the
+`Control`, so 16 comes from the footprint and inset, as the box's does. The
+thumb's 10 is the one fixed number: Figma has no aspect ratio for a frame
+that fills its height. If the track's height or inset changes, change it too.
 
 If a component needs a Tier 3 token that doesn't exist, that is a conversation
 with Bastian, not a token to add. See rule 1.
