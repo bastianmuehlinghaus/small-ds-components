@@ -5,6 +5,7 @@
   color: var(--sds-color-content-default);
   border-width: var(--sds-border-width-default); /* vs Tier 1 --sds-border-width-1 */
   min-height: var(--sds-size-control-default);   /* vs Tier 1 --sds-size-control-32 */
+  width: var(--sds-size-control-sm);             /* vs Tier 1 --sds-size-control-24 */
   border-radius: var(--sds-radius-surface);      /* vs Tier 1 --sds-border-radius-12 */
   padding: var(--sds-space-inset-lg);            /* vs Tier 1 --sds-spacing-16 */
   gap: var(--sds-space-inline-sm);
