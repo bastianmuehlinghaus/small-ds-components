@@ -46,7 +46,7 @@
    0, so each rule only ever adds space, and nothing overlaps, as Atlassian's
    -2 margin does. `composes` can't be conditional, so the edges' line comes
    from one of two classes, chosen in TSX. Figma draws the same 2px with
-   space/inline/xxs; see CLAUDE.md. */
+   space/inset/xxs; see CLAUDE.md. */
 .besideTitle {
   composes: sds-type-heading-xsmall from "@small-ds/tokens/typography.css";
 }

@@ -80,6 +80,12 @@ export const TogglesFromLabelAndKeyboard: Story = {
     const thumb = track.firstElementChild as HTMLElement;
     await expect(control).toHaveAttribute("aria-checked", "false");
 
+    // The track has no size of its own: it hugs the thumb and its travel, and
+    // takes its height from the footprint, as in Figma. That comes to 32 × 16.
+    const iconSm = parseFloat(getComputedStyle(control).getPropertyValue("--sds-size-icon-sm"));
+    await expect(track.getBoundingClientRect().width).toBeCloseTo(iconSm * 2, 1);
+    await expect(track.getBoundingClientRect().height).toBeCloseTo(iconSm, 1);
+
     await userEvent.click(canvas.getByText("Sync tokens on save"));
     await expect(control).toHaveAttribute("aria-checked", "true");
 

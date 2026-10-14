@@ -83,8 +83,9 @@
 }
 
 /* Hover is a state layer, as on Button and Input: an alpha overlay on top of
-   the background rather than a swap. Unchecked only — on the knockout fill the
-   overlay would be invisible, and Figma leaves checked boxes unchanged. */
+   the background rather than a swap. A checked box takes the knockout layer,
+   as Button primary does, since the content-coloured one would vanish on the
+   knockout fill. */
 .box::after {
   content: "";
   position: absolute;
@@ -96,6 +97,10 @@
 
 :is(.interactive:hover, .field:hover > .interactive)[data-state="unchecked"]:not([data-disabled]) > .box::after {
   background-color: var(--sds-color-state-hover);
+}
+
+:is(.interactive:hover, .field:hover > .interactive):is([data-state="checked"], [data-state="indeterminate"]):not([data-disabled]) > .box::after {
+  background-color: var(--sds-color-state-knockout-hover);
 }
 
 /* --- marks ---------------------------------------------------------------- */
@@ -169,16 +174,16 @@
   border-radius: var(--sds-radius-pill);
 }
 
-/* Built as the box is: a real 1px border inside a border-box, with the thumb
-   in the content area, as the Radio's dot is. 16 − 2 × border − 2 × inset
-   gives a 10px thumb. The track is twice its height wide, so the thumb always
-   travels exactly one track height: no calc() for the distance. */
+/* Built as the box is, and as Figma builds it: a real 1px border inside a
+   border-box, its height from the footprint and inset (16), and the thumb in
+   the content area, as the Radio's dot is: 16 − 2 × border − 2 × inset = 10.
+   No width is set. The track hugs the thumb and its travel, `size-icon-sm`,
+   which the thumb keeps as a margin on whichever side is empty, as Figma's
+   Spacer does. */
 .track {
   display: flex;
   box-sizing: border-box;
-  width: calc(var(--sds-size-icon-sm) * 2);
-  height: var(--sds-size-icon-sm);
-  padding: var(--sds-space-inline-xxs);
+  padding: var(--sds-space-inset-xxs);
   border: var(--sds-border-width-default) solid var(--sds-selection-control-color-border-default);
   border-radius: var(--sds-radius-pill);
   background-color: var(--sds-selection-control-color-background-default);
@@ -193,9 +198,10 @@
   display: block;
   height: 100%;
   aspect-ratio: 1;
+  margin-inline-end: var(--sds-size-icon-sm);
   border-radius: var(--sds-radius-pill);
   background-color: var(--sds-selection-control-color-border-default);
-  transition-property: margin-inline-start, background-color;
+  transition-property: margin-inline-start, margin-inline-end, background-color;
   transition-duration: var(--sds-motion-duration-fast);
   transition-timing-function: var(--sds-motion-easing-standard);
 }
@@ -203,7 +209,7 @@
 /* A logical margin rather than a transform, so On sits at the end in
    right-to-left text too. */
 .thumb[data-state="checked"] {
-  margin-inline-start: var(--sds-size-icon-sm);
+  margin-inline: var(--sds-size-icon-sm) 0;
   background-color: var(--sds-selection-control-color-content-checked);
 }
 
@@ -224,10 +230,14 @@
   background-color: var(--sds-color-content-disabled);
 }
 
-/* Hover is the state layer, Off only, as on an unchecked box. A flat gradient
-   rather than ::after, so it sits under the thumb. */
+/* Hover is the state layer, as on the box: content-coloured Off, knockout On.
+   A flat gradient rather than ::after, so it sits under the thumb. */
 :is(.switch:hover, .field:hover > .switch)[data-state="unchecked"]:not([data-disabled]) > .track {
   background-image: linear-gradient(var(--sds-color-state-hover), var(--sds-color-state-hover));
+}
+
+:is(.switch:hover, .field:hover > .switch)[data-state="checked"]:not([data-disabled]) > .track {
+  background-image: linear-gradient(var(--sds-color-state-knockout-hover), var(--sds-color-state-knockout-hover));
 }
 
 @media (prefers-reduced-motion: reduce) {
