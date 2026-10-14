@@ -12,7 +12,7 @@
 
 .item {
   /* Figma insets the row 16px; the bottom rule still spans the full item. */
-  padding-inline: var(--sds-space-inline-lg);
+  padding-inline: var(--sds-space-inset-lg);
   border-bottom: var(--sds-border-width-default) solid var(--sds-color-border-default);
 }
 

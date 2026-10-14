@@ -18,7 +18,7 @@
      is 16 high, so at the default size this is the height; a larger base
      font grows it. */
   min-height: var(--sds-chip-size-height);
-  padding-inline: var(--sds-space-inline-xs);
+  padding-inline: var(--sds-space-inset-xs);
   border-radius: var(--sds-radius-control);
   background-color: var(--sds-color-background-subtle);
   color: var(--sds-color-content-default);
