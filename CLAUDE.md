@@ -597,8 +597,12 @@ axe, and the `RemoveButtonHitArea` story holds the two sizes.
 
 Checkbox, RadioGroup and the DropdownMenu checkbox/radio rows share
 `SelectionControl.module.css`, which is internal. The control is sized like an
-icon, following Atlassian: a `size-icon-lg` (24) footprint with the box inset
-by `space-inset-xs`, so the box is 16px with no box-size token. The menu draws the box
+icon, following Atlassian: a 24px footprint with the box inset by
+`space-inset-xs`, so the box is 16px with no box-size token. The footprint is
+`size-control-sm`, not `size-icon-lg`: it used to borrow the icon token, which
+tied every selection control to the icon scale (small-ds-tokens#55,
+2026-10-14). `size-control-sm` is for this footprint only. The one control
+size stays `size-control-default` (rule 6). The menu draws the box
 only, never a second Radix control, because the row is already the
 `menuitemcheckbox`. Checkbox supports Radix's `"indeterminate"`, styled as
 checked with `DashIcon` for the mark. The Indicator renders both glyphs and
@@ -609,7 +613,7 @@ Menu item variants of its own.
 
 A long label wraps, and the box stays level with the **first line**. In code
 `.field` aligns to the start and `.text` pads its block by
-`calc((size-icon-lg - 1lh) / 2)`, 2px at Label/Medium, so the first line's
+`calc((size-control-sm - 1lh) / 2)`, 2px at Label/Medium, so the first line's
 centre meets the box's. Figma mirrors it on every Checkbox and Radio variant:
 top alignment, and the label inside a `Label container` frame whose top and
 bottom padding is bound to `space/inset/xxs`. Figma cannot compute the
@@ -642,7 +646,7 @@ here too. Pinned to `@radix-ui/react-switch` 1.3.8, the same Radix release as
 `react-checkbox` 1.3.12.
 
 In Figma each Switch variant is a Checkbox variant with the box turned into a
-`Track`: the `Control` hugs instead of being `size/icon/lg` wide, and the
+`Track`: the `Control` hugs instead of being `size/control/sm` wide, and the
 corners are `radius/pill`. Figma cannot multiply a token, so the track's width
 is not set: it hugs a `Thumb` and a `Spacer` bound to `size/icon/sm`, which is
 the thumb's travel, and On puts the spacer first. Its height fills the

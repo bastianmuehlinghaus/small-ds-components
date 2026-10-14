@@ -15,7 +15,7 @@ const run = async (file) => {
 
 const valid = await run("valid.css");
 const invalid = await run("invalid.css");
-const EXPECTED = 13;
+const EXPECTED = 14;
 
 let failures = 0;
 const check = (label, ok, detail = "") => {
@@ -32,8 +32,8 @@ const byRule = invalid.reduce((a, w) => ((a[w.rule] = (a[w.rule] || 0) + 1), a),
 check("5 hardcoded values caught by strict-value (3 + a raw ring width + inset off box-shadow)",
   byRule["scale-unlimited/declaration-strict-value"] === 5,
   `got ${byRule["scale-unlimited/declaration-strict-value"] ?? 0}`);
-check("8 blocked by the disallowed list (6 Tier 1 + bare timing + laundered literal)",
-  byRule["declaration-property-value-disallowed-list"] === 8,
+check("9 blocked by the disallowed list (7 Tier 1 + bare timing + laundered literal)",
+  byRule["declaration-property-value-disallowed-list"] === 9,
   `got ${byRule["declaration-property-value-disallowed-list"] ?? 0}`);
 
 console.log(failures === 0 ? "\nLint rules behave as specified.\n" : `\n${failures} check(s) failed.\n`);

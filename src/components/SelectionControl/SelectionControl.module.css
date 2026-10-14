@@ -9,8 +9,9 @@
  * under the documented exception.
  *
  * Sizing follows Atlassian's approach, as in the Figma Checkbox and Radio sets:
- * the control is an icon-sized footprint (`size-icon-lg`, 24) with the visible
- * box inset by `space-inset-xs`, which gives a 16px box and no box-size token.
+ * the control is a 24px footprint (`size-control-sm`, the size of a large icon
+ * but its own token, small-ds-tokens#55) with the visible box inset by
+ * `space-inset-xs`, which gives a 16px box and no box-size token.
  *
  * State comes from Radix's data attributes. The footprint either *is* the
  * Radix element carrying them (Checkbox.Root, RadioGroup.Item) or sits
@@ -24,8 +25,8 @@
   display: inline-grid;
   flex-shrink: 0;
   box-sizing: border-box;
-  width: var(--sds-size-icon-lg);
-  height: var(--sds-size-icon-lg);
+  width: var(--sds-size-control-sm);
+  height: var(--sds-size-control-sm);
   padding: var(--sds-space-inset-xs);
   margin: 0;
   border: none;
@@ -270,7 +271,7 @@
    With Label/Medium's 20px line this is 2px — Atlassian's label padding —
    without stating it. At large font sizes it clamps to 0. */
 .text {
-  padding-block: calc((var(--sds-size-icon-lg) - 1lh) / 2);
+  padding-block: calc((var(--sds-size-control-sm) - 1lh) / 2);
 }
 
 /* --- radio group ---------------------------------------------------------- */
