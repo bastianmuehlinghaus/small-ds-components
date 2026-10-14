@@ -76,9 +76,10 @@
 }
 
 .radio > .box {
-  /* The dot is the box's content area: 16 − 2 × border − 2 × inset = 6px.
-     CSS border-box and the Figma auto-layout agree on this exactly. */
-  padding: var(--sds-space-inset-xs);
+  /* The dot is the box's content area: 16 − 2 × border − 2 × inset = 10px,
+     the Switch thumb's size. CSS border-box and the Figma auto-layout agree
+     on this exactly. */
+  padding: var(--sds-space-inset-xxs);
   border-radius: var(--sds-selection-control-border-radius-radio);
 }
 
