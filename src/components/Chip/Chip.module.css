@@ -58,9 +58,9 @@
   flex-shrink: 0;
   place-items: center;
   box-sizing: border-box;
-  width: var(--sds-size-icon-lg);
-  height: var(--sds-size-icon-lg);
-  margin: calc((var(--sds-size-icon-sm) - var(--sds-size-icon-lg)) / 2);
+  width: var(--sds-size-control-sm);
+  height: var(--sds-size-control-sm);
+  margin: calc((var(--sds-size-icon-sm) - var(--sds-size-control-sm)) / 2);
   padding: 0;
   border: none;
   background-color: transparent;
