@@ -62,7 +62,8 @@ export const SelectAll: Story = {
         <Checkbox checked={all} onCheckedChange={setAll}>
           All tiers
         </Checkbox>
-        <div style={{ display: "grid", gap: "var(--sds-space-stack-xs)", paddingInlineStart: "var(--sds-space-inset-xl)" }}>
+        {/* Indented one footprint, so each child's box sits under the parent's label. */}
+        <div style={{ display: "grid", gap: "var(--sds-space-stack-xs)", paddingInlineStart: "var(--sds-size-icon-lg)" }}>
           {(Object.keys(tiers) as Array<keyof typeof tiers>).map((key) => (
             <Checkbox
               key={key}

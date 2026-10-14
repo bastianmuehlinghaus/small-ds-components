@@ -414,7 +414,7 @@ This is deliberate and **not** an inconsistency to tidy up:
 | Select | Tier 3 `--sds-input-*` and `--sds-select-*`, plus Tier 2 for the list | the box is Input's; Figma defines two `select/*` tokens (placeholder, indicator) |
 | Chip | Tier 3 `--sds-chip-size-height`, plus Tier 2 | Figma defines one `chip/*` token, its height; `space/inline/xxs` (2) is Tier 2 |
 | TextField | Input for the box, Tier 2 for the label and message | no `text-field/*` tokens |
-| Checkbox, RadioGroup, Switch | Tier 3 `--sds-selection-control-*` for the box and the Switch's track and thumb, Tier 2 for the footprint, focus ring and the track's size | Tier 3 models the box only; a Switch is a selection control, so it changes with them (issue #111) |
+| Checkbox, RadioGroup, Switch | Tier 3 `--sds-selection-control-*` for the box and the Switch's track and thumb, Tier 2 for the footprint, focus ring, hover layers and the thumb's travel | Tier 3 models the box only; a Switch is a selection control, so it changes with them (issue #111) |
 | DropdownMenu | Tier 2 semantics | Figma has no `menu/*` tokens |
 | NavigationMenu | Tier 2 semantics | Figma has no `nav/*` tokens; its panel is the DropdownMenu's surface |
 | Link | Tier 3 `--sds-link-*`, plus Tier 2 for the focus ring | Figma defines `link/*` for its colour and underline |
@@ -623,14 +623,17 @@ Checkbox and Radio instances in the file kept their size when it was built.
 Switch (issue #111, decided with Bastian 2026-10-13) is a selection control
 in the same stylesheet, with no tokens of its own. Its footprint is the box's,
 24 high with the same `space-inset-xs` inset and pill-shaped focus ring, grown
-to a 32 × 16 track (Atlassian's regular toggle): `size-icon-sm` high and twice
-that wide. The track is built like the box, a real 1px border in a
-border-box, so its thumb comes from padding, as the Radio's dot does:
-16 − 2 − 2 × `space-inline-xxs` = 10. Because the track is twice its height
-wide, the thumb always travels exactly `size-icon-sm`; it moves by
-`margin-inline-start`, not a transform, so On sits at the end in RTL too. Off
-is an unchecked box (the thumb in the border colour), On a checked one (the
-thumb in `content/checked`). Hover is the state layer, Off only, as a
+to a 32 × 16 track (Atlassian's regular toggle, and Carbon's small one). The
+track is built like the box, a real 1px border in a border-box, with its
+height from the footprint and inset, so its thumb comes from padding, as the
+Radio's dot does: 16 − 2 − 2 × `space-inline-xxs` = 10, square by
+`aspect-ratio`. No width is set, in code as in Figma: the track hugs the thumb
+and its travel, `size-icon-sm`, which the thumb keeps as a margin on its empty
+side (Figma's `Spacer`). It moves by swapping the two margins, not a
+transform, so On sits at the end in RTL too. The `TogglesFromLabelAndKeyboard`
+story holds the 32 × 16. Off is an unchecked box (the thumb in the border
+colour), On a checked one (the thumb in `content/checked`). Hover is the state
+layer as on the box, `state/hover` Off and `state/knockout-hover` On, as a
 `linear-gradient` so it sits under the thumb. There is no Invalid and no
 indeterminate: a switch takes effect at once and is not validated. The label
 uses the same `.field` and first-line alignment, so `LongLabel` is 288 × 44
