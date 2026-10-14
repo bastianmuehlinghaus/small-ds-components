@@ -138,7 +138,7 @@ export const CurrentPageIsMarked: Story = {
   },
 };
 
-/** The panel's surface starts at its trigger's leading edge, one space/inline/xs below it. */
+/** The panel's surface starts at its trigger's leading edge, one space/stack/xs below it. */
 export const PanelUnderTrigger: Story = {
   tags: ["!autodocs", "test"],
   render: () => <Bar defaultValue="foundations" />,
@@ -146,7 +146,7 @@ export const PanelUnderTrigger: Story = {
     const trigger = canvas.getByRole("button", { name: "Foundations" });
     const first = await canvas.findByRole("link", { name: /Colour/ });
     const surface = first.closest("ul")!.parentElement!;
-    const gap = parseFloat(getComputedStyle(surface).getPropertyValue("--sds-space-inline-xs"));
+    const gap = parseFloat(getComputedStyle(surface).getPropertyValue("--sds-space-stack-xs"));
 
     // After the entry animation, so the scale doesn't move the edges.
     await waitFor(() => expect(getComputedStyle(surface.parentElement!).opacity).toBe("1"));

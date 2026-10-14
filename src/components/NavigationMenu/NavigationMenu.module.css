@@ -112,7 +112,7 @@
   position: absolute;
   top: 100%;
   inset-inline-start: 0;
-  padding-block-start: var(--sds-space-inline-xs);
+  padding-block-start: var(--sds-space-stack-xs);
   transform-origin: top left;
 }
 

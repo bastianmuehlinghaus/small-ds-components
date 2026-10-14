@@ -529,7 +529,7 @@ menu's surface and with its 240 to 480 width. There is no Radix `Viewport` and
 no `Indicator`. Without a Viewport, Radix renders the `Content` inside its
 `Item`, so CSS positions it against the `li`, with no positioning library. The
 `Content` is a transparent wrapper whose top padding is the
-`space/inline/xs` gap, with the surface drawn inside it. The pointer never
+`space/stack/xs` gap, with the surface drawn inside it. The pointer never
 crosses dead space between the trigger and the panel, so it doesn't start
 Radix's close timer. A `Link` inside a `Content` is a panel row (a context
 tells it): a Menu item's row that links, with an optional `description` in
