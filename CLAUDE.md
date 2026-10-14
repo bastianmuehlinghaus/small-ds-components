@@ -577,7 +577,8 @@ it.
 The remove button is two squares. The glyph is the design: the × itself, 16
 square (`size-icon-sm`) with `radius-control-sm`, so its hover and pressed fill
 is a small rounded square inset from the chip's edges, not a strip. The button
-around it is the target: 24 square (`size-icon-lg`), invisible, with a negative
+around it is the target: 24 square (`size-control-sm`, a target, not an icon),
+invisible, with a negative
 margin that cancels the extra size, so the chip's layout and its 20 high are as
 if the button were 16. It sits 2 from the top, bottom and end
 (`space-inset-xxs`, small-ds-tokens#52), 4 from the label,
@@ -601,7 +602,8 @@ icon, following Atlassian: a 24px footprint with the box inset by
 `space-inset-xs`, so the box is 16px with no box-size token. The footprint is
 `size-control-sm`, not `size-icon-lg`: it used to borrow the icon token, which
 tied every selection control to the icon scale (small-ds-tokens#55,
-2026-10-14). `size-control-sm` is for this footprint only. The one control
+2026-10-14). `size-control-sm` is for this footprint and for the 24px
+targets of Chip's remove and Section message's dismiss buttons. The one control
 size stays `size-control-default` (rule 6). The menu draws the box
 only, never a second Radix control, because the row is already the
 `menuitemcheckbox`. Checkbox supports Radix's `"indeterminate"`, styled as
@@ -695,14 +697,16 @@ keeping them would have listed `State` twice.
 `onDismiss` adds a dismiss button at the end, as Chip's `onRemove` adds its
 remove button: the message does not hide itself, so the consumer unmounts it
 and moves focus, since the focused button goes with it. It is Atlassian's
-compact icon button: 24 square (`size-icon-lg`, the minimum target) with the
+compact icon button: 24 square (`size-control-sm`, the minimum target) with the
 16 close glyph, `radius-control`, `state/hover` and `state/pressed` fills that
 tint any appearance, and Button's outside focus ring. It shares the icon's
 first-line padding, so the two are level, and it is named "Dismiss" + the
 title (`dismissLabel` to translate), so two messages don't offer two identical
 buttons. In Figma it is a hidden `_Section message dismiss` set in a
 `Dismiss container` that repeats the `Icon container`'s padding, shown by
-`Show dismiss` (off by default). The `DismissButton` story holds the name, the
+`Show dismiss` (off by default). Each variant is a fixed 24 square bound to
+`size/control/sm` with the glyph centred, as in code, not a 16 glyph hugged by
+`space/inset/xs` padding, which it was until 2026-10-14. The `DismissButton` story holds the name, the
 size and the alignment.
 
 Figma cannot draw the gap between two paragraphs in one message. Code stacks

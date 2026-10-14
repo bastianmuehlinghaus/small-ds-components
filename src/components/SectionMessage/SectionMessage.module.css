@@ -140,8 +140,8 @@
   display: grid;
   place-items: center;
   box-sizing: border-box;
-  width: var(--sds-size-icon-lg);
-  height: var(--sds-size-icon-lg);
+  width: var(--sds-size-control-sm);
+  height: var(--sds-size-control-sm);
   padding: 0;
   border: none;
   border-radius: var(--sds-radius-control);
