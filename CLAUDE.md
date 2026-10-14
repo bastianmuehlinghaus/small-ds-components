@@ -567,7 +567,8 @@ wraps, as in code.
 
 Chip is static. Its only interactive part is the optional remove button, named
 "Remove" + the label. Its height is `chip/size/height` (20, aliasing
-`size/icon/md`), added with Bastian's approval so that a Select's field is as
+`size/control/xs`, tokens #57: a control height, not an icon size), added with
+Bastian's approval so that a Select's field is as
 tall as an Input: a row of 20px chips plus the field's padding fits inside the
 32px minimum, so the height changes only when chips wrap onto a second row.
 This follows Atlassian, whose multi-value tag is 20px for the same reason. A
