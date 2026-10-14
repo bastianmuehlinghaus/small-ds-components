@@ -9,17 +9,21 @@
  *
  * Written to distinguish Tier 1 from the Tier 2 names that shadow them:
  *   --sds-border-width-1   (Tier 1)  vs  --sds-border-width-default (Tier 2)
- *   --sds-size-control-32  (Tier 1)  vs  --sds-size-control-default (Tier 2)
+ *   --sds-size-32          (Tier 1)  vs  --sds-size-control-default (Tier 2)
  *   --sds-border-radius-12 (Tier 1)  vs  --sds-radius-surface       (Tier 2)
  *   --sds-spacing-16       (Tier 1)  vs  --sds-space-inset-lg       (Tier 2)
  * Hence the trailing \d on the numeric families rather than a bare prefix.
+ *
+ * The size families match any group, so a new one (size/overlay/480 slipped
+ * through, #133) is covered without an edit here. --sds-size-overlay-max-width
+ * and the Tier 3 --sds-button-size-icon have no digit after the group, and pass.
  *
  * --sds-motion-* is deliberately absent: it is the one sanctioned exception,
  * because motion has no Tier 2 layer. Durations do not change between modes and
  * the easings are already named by intent, so an alias tier would be 1:1 and
  * carry no meaning. See the tokens package README.
  */
-const TIER_1 = String.raw`/--sds-(?:color-(?:neutral|utility|alpha)|typography|layout|opacity|spacing|border-radius)-|--sds-(?:border-width|size-control|size-icon)-\d/`;
+const TIER_1 = String.raw`/--sds-(?:color-(?:neutral|utility|alpha)|typography|layout|opacity|spacing|border-radius)-|--sds-(?:border-width|size(?:-[a-z]+)?)-\d/`;
 
 /* Bare durations (200ms, .2s) and easing keywords, for the shorthand properties
    that strict-value cannot meaningfully check. */

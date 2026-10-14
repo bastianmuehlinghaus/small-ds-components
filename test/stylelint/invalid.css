@@ -1,4 +1,4 @@
-/* Every declaration here must be rejected. 14 violations expected. */
+/* Every declaration here must be rejected. 16 violations expected. */
 .hardcoded {
   padding: 12px;          /* 1 */
   color: #141414;         /* 2 */
@@ -13,22 +13,24 @@
   min-height: var(--sds-size-control-32);                /* 8 */
   border-radius: var(--sds-border-radius-12);            /* 9 */
   width: var(--sds-size-control-24);                     /* 10 */
+  max-width: var(--sds-size-overlay-480);                /* 11 */
+  height: var(--sds-size-32);                            /* 12 */
 }
 
 .bare-timing {
-  transition: background-color 200ms ease;               /* 11 */
+  transition: background-color 200ms ease;               /* 13 */
 }
 
 .laundered-through-a-custom-property {
-  --overlay-hover: #00000014;                            /* 12 */
+  --overlay-hover: #00000014;                            /* 14 */
 }
 
 /* `inset` makes a box-shadow a ring, but the ring's width is still a value. */
 .inset-ring-with-a-raw-width {
-  box-shadow: inset 0 0 0 2px var(--sds-input-color-border-focus); /* 13 */
+  box-shadow: inset 0 0 0 2px var(--sds-input-color-border-focus); /* 15 */
 }
 
 /* The keyword is allowed on box-shadow only. */
 .inset-elsewhere {
-  border-style: inset;                                   /* 14 */
+  border-style: inset;                                   /* 16 */
 }
