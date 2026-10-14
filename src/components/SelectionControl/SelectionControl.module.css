@@ -183,7 +183,7 @@
 .track {
   display: flex;
   box-sizing: border-box;
-  padding: var(--sds-space-inline-xxs);
+  padding: var(--sds-space-inset-xxs);
   border: var(--sds-border-width-default) solid var(--sds-selection-control-color-border-default);
   border-radius: var(--sds-radius-pill);
   background-color: var(--sds-selection-control-color-background-default);

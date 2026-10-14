@@ -412,7 +412,7 @@ This is deliberate and **not** an inconsistency to tidy up:
 | Accordion | Tier 2 semantics | Figma has no `accordion/*` tokens |
 | Input | Tier 3 `--sds-input-*`, plus Tier 2 border widths | Figma defines a full Tier 3 surface for it |
 | Select | Tier 3 `--sds-input-*` and `--sds-select-*`, plus Tier 2 for the list | the box is Input's; Figma defines two `select/*` tokens (placeholder, indicator) |
-| Chip | Tier 3 `--sds-chip-size-height`, plus Tier 2 | Figma defines one `chip/*` token, its height; `space/inline/xxs` (2) is Tier 2 |
+| Chip | Tier 3 `--sds-chip-size-height`, plus Tier 2 | Figma defines one `chip/*` token, its height; `space/inset/xxs` (2) is Tier 2 |
 | TextField | Input for the box, Tier 2 for the label and message | no `text-field/*` tokens |
 | Checkbox, RadioGroup, Switch | Tier 3 `--sds-selection-control-*` for the box and the Switch's track and thumb, Tier 2 for the footprint, focus ring, hover layers and the thumb's travel | Tier 3 models the box only; a Switch is a selection control, so it changes with them (issue #111) |
 | DropdownMenu | Tier 2 semantics | Figma has no `menu/*` tokens |
@@ -580,7 +580,7 @@ is a small rounded square inset from the chip's edges, not a strip. The button
 around it is the target: 24 square (`size-icon-lg`), invisible, with a negative
 margin that cancels the extra size, so the chip's layout and its 20 high are as
 if the button were 16. It sits 2 from the top, bottom and end
-(`space-inline-xxs`, added for this, with Bastian's approval), 4 from the label,
+(`space-inset-xxs`, small-ds-tokens#52), 4 from the label,
 and the label starts 4 from the start. A chip without a button pads 4 at both
 ends, so both kinds share the same start inset.
 
@@ -612,9 +612,10 @@ A long label wraps, and the box stays level with the **first line**. In code
 `calc((size-icon-lg - 1lh) / 2)`, 2px at Label/Medium, so the first line's
 centre meets the box's. Figma mirrors it on every Checkbox and Radio variant:
 top alignment, and the label inside a `Label container` frame whose top and
-bottom padding is bound to `space/inline/xxs`. Figma cannot compute the
+bottom padding is bound to `space/inset/xxs`. Figma cannot compute the
 `calc()`, so that 2px is fixed: if Label/Medium's line height changes, change
-the binding too (Bastian's choice over a new token, 2026-10-08). The `Label`
+the binding too. It was `space/inline/xxs`, a gap token, until every 2px
+padding moved to `space/inset/xxs` (small-ds-tokens#52, 2026-10-14). The `Label`
 show/hide property sits on the container, so a hidden label takes its padding
 with it; `Label text` stays on the text. The `LongLabel` example is 288 wide
 (18rem) and 44 high, as in Storybook. On one line nothing moved: all 77
@@ -626,7 +627,7 @@ in the same stylesheet, with no tokens of its own. Its footprint is the box's,
 to a 32 × 16 track (Atlassian's regular toggle, and Carbon's small one). The
 track is built like the box, a real 1px border in a border-box, with its
 height from the footprint and inset, so its thumb comes from padding, as the
-Radio's dot does: 16 − 2 − 2 × `space-inline-xxs` = 10, square by
+Radio's dot does: 16 − 2 − 2 × `space-inset-xxs` = 10, square by
 `aspect-ratio`. No width is set, in code as in Figma: the track hugs the thumb
 and its travel, `size-icon-sm`, which the thumb keeps as a margin on its empty
 side (Figma's `Spacer`). It moves by swapping the two margins, not a
@@ -668,7 +669,7 @@ shorter is padded by half the difference, the icon by `(1lh - 24) / 2` and the
 first text block by `(24 - 1lh) / 2`; a negative `calc()` padding clamps to 0,
 so each rule only ever adds space, at any font size. Atlassian uses a -2
 margin instead, which Figma cannot draw. In Figma the same 2px is
-`space/inline/xxs`, on the `Icon container` in Title=True and on the `Content`
+`space/inset/xxs`, on the `Icon container` in Title=True and on the `Content`
 in Title=False, which is why Title is a variant and not a show/hide boolean.
 So a message without a title is 56 high (16 + 24 + 16), and 88 with one. The
 `IconCentredOnFirstLine` story holds both. If Heading/XSmall's or Body/XSmall's
