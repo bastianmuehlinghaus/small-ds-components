@@ -4,16 +4,16 @@
  * and its actions are `Link`s, which bring their own. `--sds-motion-*` comes from
  * Tier 1 under the documented exception.
  *
- * Built after Atlassian's section message: 16 padding, 8 radius, the icon
- * 16 from the text, title, message and actions 8 apart, no border, and an
- * optional compact dismiss button. The icon is 24, not Atlassian's 16, so the
- * status reads at a glance.
+ * Built after Atlassian's section message: 16 padding, 8 radius, title,
+ * message and actions 8 apart, no border, and an optional compact dismiss
+ * button. The icon is 24, not Atlassian's 16, so the status reads at a
+ * glance, and 12 from the text, not 16.
  */
 
 .message {
   display: flex;
   align-items: flex-start;
-  gap: var(--sds-space-inline-lg);
+  gap: var(--sds-space-inline-md);
   box-sizing: border-box;
   padding: var(--sds-space-inset-lg);
   border-radius: var(--sds-radius-surface);
