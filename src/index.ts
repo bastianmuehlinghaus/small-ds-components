@@ -82,6 +82,27 @@ export type {
   NavigationMenuLinkProps,
 } from "./components/NavigationMenu";
 
+export {
+  Sidebar,
+  SidebarHeader,
+  SidebarHeaderItem,
+  SidebarHeaderAction,
+  SidebarContent,
+  SidebarFooter,
+  SidebarSection,
+  SidebarItem,
+} from "./components/Sidebar";
+export type {
+  SidebarProps,
+  SidebarHeaderProps,
+  SidebarHeaderItemProps,
+  SidebarHeaderActionProps,
+  SidebarContentProps,
+  SidebarFooterProps,
+  SidebarSectionProps,
+  SidebarItemProps,
+} from "./components/Sidebar";
+
 export { SectionMessage, SectionMessageAction } from "./components/SectionMessage";
 export type {
   SectionMessageProps,
@@ -100,5 +121,10 @@ export {
   InfoIcon,
   WarningIcon,
   ErrorIcon,
+  HomeIcon,
+  InboxIcon,
+  SearchIcon,
+  ComposeIcon,
+  SettingsIcon,
 } from "./components/Icon";
 export type { IconProps } from "./components/Icon";

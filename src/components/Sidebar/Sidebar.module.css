@@ -1,0 +1,311 @@
+/**
+ * Sidebar has no Tier 3 tokens in Figma beyond its width, so it composes from
+ * Tier 2 semantics, as NavigationMenu does. `--sds-motion-*` comes from Tier 1
+ * under the documented exception.
+ *
+ * One start edge for everything: the sidebar's `inset-sm` plus each row's
+ * `inset-sm`. The header item's icon, every item's icon and every section
+ * title's text sit 16 from the edge, and a header action's icon ends 16 from
+ * the other edge, level with an item's trailing icon.
+ *
+ * Hover and pressed are flat `linear-gradient`s of the state tokens, as on
+ * NavigationMenu, so they layer over the current item's selected fill.
+ */
+
+.root {
+  display: flex;
+  flex-direction: column;
+  flex-shrink: 0;
+  gap: var(--sds-space-stack-md);
+  box-sizing: border-box;
+  width: var(--sds-size-sidebar-width);
+  height: 100%;
+  padding: var(--sds-space-inset-sm);
+
+  /* A few notches under the content, which sits on background/raised: the
+     sidebar is for getting somewhere, so it recedes once you are there. */
+  background-color: var(--sds-color-background-default);
+}
+
+/* --- header ---------------------------------------------------------------- */
+
+.header {
+  display: flex;
+  align-items: center;
+  gap: var(--sds-space-inline-xs);
+}
+
+/* Everything you press in the sidebar, bar the section titles, is a row built
+   like a Menu item: one control size, Label/Medium, `inset-sm` at the sides,
+   the control radius. */
+.row {
+  composes: sds-type-label-medium from "@small-ds/tokens/typography.css";
+
+  display: flex;
+  align-items: center;
+  gap: var(--sds-space-inline-sm);
+  box-sizing: border-box;
+  min-height: var(--sds-size-control-default);
+  margin: 0;
+  padding-block: var(--sds-space-inset-xs);
+  padding-inline: var(--sds-space-inset-sm);
+  border: none;
+  border-radius: var(--sds-radius-control);
+  background-color: transparent;
+  color: var(--sds-color-content-default);
+  text-align: start;
+  text-decoration: none;
+  appearance: none;
+  cursor: pointer;
+
+  transition-property: background-color;
+  transition-duration: var(--sds-motion-duration-fast);
+  transition-timing-function: var(--sds-motion-easing-standard);
+}
+
+/* Takes the row, so the actions sit at the end and its hover area is wide. */
+.headerItem {
+  flex: 1;
+  min-width: 0;
+}
+
+/* Square: the icon with `inset-sm` round it. */
+.headerAction {
+  flex-shrink: 0;
+  justify-content: center;
+  min-width: var(--sds-size-control-default);
+}
+
+.headerChevron {
+  flex-shrink: 0;
+  width: var(--sds-size-icon-sm);
+  height: var(--sds-size-icon-sm);
+  color: var(--sds-color-content-subtle);
+}
+
+/* --- content and footer ---------------------------------------------------- */
+
+/* Takes the height the header and footer leave, and scrolls on its own. */
+.content {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  gap: var(--sds-space-stack-md);
+  min-height: 0;
+  overflow-y: auto;
+}
+
+.footer {
+  display: flex;
+  flex-direction: column;
+  gap: var(--sds-space-stack-md);
+}
+
+/* --- sections -------------------------------------------------------------- */
+
+.section {
+  display: flex;
+  flex-direction: column;
+}
+
+/* Label/Small in content/subtle, its text on the icon column. 24 high from
+   its padding and line, which is also the minimum target when it is a
+   disclosure button. */
+.sectionTitle {
+  composes: sds-type-label-small from "@small-ds/tokens/typography.css";
+
+  display: flex;
+  align-items: center;
+  gap: var(--sds-space-inline-xs);
+  box-sizing: border-box;
+  padding-block: var(--sds-space-inset-xs);
+  padding-inline: var(--sds-space-inset-sm);
+  color: var(--sds-color-content-subtle);
+}
+
+.sectionTrigger {
+  width: 100%;
+  margin: 0;
+  border: none;
+  border-radius: var(--sds-radius-control);
+  background-color: transparent;
+  text-align: start;
+  appearance: none;
+  cursor: pointer;
+
+  transition-property: background-color, color;
+  transition-duration: var(--sds-motion-duration-fast);
+  transition-timing-function: var(--sds-motion-easing-standard);
+}
+
+.sectionTrigger:hover {
+  background-image: linear-gradient(var(--sds-color-state-hover), var(--sds-color-state-hover));
+  color: var(--sds-color-content-default);
+}
+
+.sectionTrigger:active {
+  background-image: linear-gradient(var(--sds-color-state-pressed), var(--sds-color-state-pressed));
+}
+
+/* Down when open, pointing at the title's end when closed. */
+.sectionChevron {
+  flex-shrink: 0;
+  width: var(--sds-size-icon-sm);
+  height: var(--sds-size-icon-sm);
+
+  transition-property: transform;
+  transition-duration: var(--sds-motion-duration-fast);
+  transition-timing-function: var(--sds-motion-easing-standard);
+}
+
+.sectionTrigger[data-state="closed"] .sectionChevron {
+  transform: rotate(-90deg);
+}
+
+.sectionTrigger[data-state="closed"]:dir(rtl) .sectionChevron {
+  transform: rotate(90deg);
+}
+
+/* Radix measures the region and exposes --radix-collapsible-content-height,
+   as the Accordion's does. */
+.collapsibleContent {
+  overflow: hidden;
+}
+
+.collapsibleContent[data-state="open"] {
+  animation-name: slide-down;
+  animation-duration: var(--sds-motion-duration-moderate);
+  animation-timing-function: var(--sds-motion-easing-standard);
+}
+
+.collapsibleContent[data-state="closed"] {
+  animation-name: slide-up;
+  animation-duration: var(--sds-motion-duration-moderate);
+  animation-timing-function: var(--sds-motion-easing-standard);
+}
+
+/* --- items ----------------------------------------------------------------- */
+
+.list {
+  display: flex;
+  flex-direction: column;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.listItem {
+  display: flex;
+  flex-direction: column;
+}
+
+.item {
+  width: 100%;
+}
+
+/* A nested item starts where its parent's label does: past the parent's
+   icon and the gap after it. */
+.nestedItem {
+  padding-inline-start: calc(
+    var(--sds-space-inset-sm) + var(--sds-size-icon-sm) + var(--sds-space-inline-sm)
+  );
+}
+
+/* Inset, as on NavigationMenu: rows touch, and an outside ring would cover
+   the next one. */
+.row:focus-visible,
+.sectionTrigger:focus-visible {
+  outline: var(--sds-border-width-focus) solid var(--sds-color-border-focus);
+  outline-offset: calc(var(--sds-border-width-focus) * -1);
+}
+
+.row:disabled {
+  color: var(--sds-color-content-disabled);
+  cursor: not-allowed;
+}
+
+.row:hover:not(:disabled) {
+  background-image: linear-gradient(var(--sds-color-state-hover), var(--sds-color-state-hover));
+}
+
+/* A header item or action that opens a DropdownMenu holds the pressed layer
+   while it is open, as a Button does. */
+.row:active:not(:disabled),
+.row[data-state="open"] {
+  background-image: linear-gradient(var(--sds-color-state-pressed), var(--sds-color-state-pressed));
+}
+
+/* The page you are on. */
+.item[data-current] {
+  background-color: var(--sds-color-state-selected);
+}
+
+/* Icons are content/subtle and step up to content/default on the current
+   item, so the page you are on reads first. */
+.icon {
+  display: flex;
+  flex-shrink: 0;
+  align-items: center;
+  justify-content: center;
+  width: var(--sds-size-icon-sm);
+  height: var(--sds-size-icon-sm);
+  color: var(--sds-color-content-subtle);
+}
+
+.icon > svg,
+.icon > img {
+  width: 100%;
+  height: 100%;
+}
+
+.headerAction .icon,
+.item[data-current] .icon {
+  color: var(--sds-color-content-default);
+}
+
+.row:disabled .icon {
+  color: inherit;
+}
+
+.iconAfter {
+  margin-inline-start: auto;
+}
+
+/* One line, and an ellipsis at the sidebar's width. */
+.label {
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+@keyframes slide-down {
+  from {
+    height: 0;
+  }
+
+  to {
+    height: var(--radix-collapsible-content-height);
+  }
+}
+
+@keyframes slide-up {
+  from {
+    height: var(--radix-collapsible-content-height);
+  }
+
+  to {
+    height: 0;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .collapsibleContent[data-state="open"],
+  .collapsibleContent[data-state="closed"] {
+    animation: none;
+  }
+
+  .sectionChevron {
+    transition: none;
+  }
+}

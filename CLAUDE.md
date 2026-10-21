@@ -1,7 +1,7 @@
 # Small DS — Components
 
 React components on Radix primitives, driven entirely by `@small-ds/tokens`.
-Currently Button, Link, Checkbox, RadioGroup, Switch, Input, TextField, Chip, Select, SelectField, Accordion, DropdownMenu, NavigationMenu and SectionMessage.
+Currently Button, Link, Checkbox, RadioGroup, Switch, Input, TextField, Chip, Select, SelectField, Accordion, DropdownMenu, NavigationMenu, Sidebar and SectionMessage.
 
 **Figma:** [Small DS: Components](https://www.figma.com/design/VBd0r5d1gcGPQSKrR8LzCp/Small-DS--Components)
 (`VBd0r5d1gcGPQSKrR8LzCp`) is the library **and its documentation**: designers
@@ -52,7 +52,9 @@ formatting, so the bullets would lose their list style. Edit them on the canvas.
 `_Accordion item`, `_Radio`, `_Menu item`, `_Menu group label`,
 `_Menu separator`, `_Listbox item` and `_Focus ring` (2026-10-08), and
 `_Navigation item`, `_Navigation link`, `_Section message action` and
-`_Section message dismiss` (2026-10-13). Each is only
+`_Section message dismiss` (2026-10-13), and `_Sidebar item`,
+`_Sidebar section`, `_Sidebar section title`, `_Sidebar header item` and
+`_Sidebar header action` (2026-10-21). Each is only
 meaningful inside another component, and a designer searching "radio" would
 otherwise place the exact match, a lone radio that code cannot build
 (`RadioGroup.Item` exists only inside `RadioGroup.Root`). Nested instances of a
@@ -97,8 +99,9 @@ text.
 | Select field | `Select field` set (label, select box, description) | 15: State × Value (Placeholder, Filled, Chips) | `SelectField`; `Select` | SelectField: Default, WithDescription, Invalid, Disabled, Multiple. Select: SingleOpen, MultipleOpen (a Select field with Label off, over a Listbox). The closed Select stories look like the set and are left out |
 | Listbox | `Listbox` (`Items` slot of Listbox items); building block `_Listbox item` set | 12: Type (Single, Multiple) × State (Default, Highlighted, Disabled) × Checked; the Listbox has none | none of its own: the list inside `Select` | none. `Select`'s `SingleOpen` and `MultipleOpen` use it |
 | Navigation menu | `Navigation menu` bar (`Items` slot of Navigation items) and `Navigation panel` (`Items` slot of Navigation links); building blocks `_Navigation item` set, `_Navigation link` set | 11: Type (Link, Trigger) × State (a Link is Default, Hover, Pressed, Focus or Current; a Trigger is Default, Hover, Pressed, Focus, Open or Disabled); 5: State, with `Show description` | `.Root` and `.List`; `.Content`; `.Link` or `.Trigger` in an `.Item`; `.Link` in a panel | Default, OpenPanel, WithDescriptions |
+| Sidebar | `Sidebar` (`Header`, `Content` and `Footer` slots); building blocks `_Sidebar item` set, `_Sidebar section` (`Items` slot), `_Sidebar section title` set, `_Sidebar header item` set, `_Sidebar header action` set | 5: State (Default, Hover, Pressed, Focus, Current), with `Nested` and an icon before and after; 9: Type (Static, Open, Closed) × State; 4 and 4: State | `Sidebar`, `SidebarHeader`, `SidebarHeaderItem`, `SidebarHeaderAction`, `SidebarContent`, `SidebarFooter`, `SidebarSection`, `SidebarItem` | Default, IconsBeforeAndAfter, CollapsibleSections, NestedItems, LongLabelTruncates |
 | Section message | `Section message` set (`Actions` slot of Section message actions, `Show dismiss`); building blocks `_Section message action` (a Link, with `Show separator`), `_Section message dismiss` set | 8: Appearance (Info, Success, Warning, Error) × Title (True, False); none on the action, whose Link has its own; 4: State (Default, Hover, Pressed, Focus) | `SectionMessage`; `SectionMessageAction`; `onDismiss` | Default, Appearances, WithoutTitle, WithActions, Dismissible, LongContent |
-| Icons | ten `Icon / <name>` components | n/a | `ChevronRightIcon`, `ChevronDownIcon`, `ChevronUpIcon`, `CheckmarkIcon`, `DashIcon`, `CloseIcon`, `SuccessIcon`, `InfoIcon`, `WarningIcon`, `ErrorIcon` | Sizes (16 / 20 / 24, bound to `size/icon/*`) |
+| Icons | fifteen `Icon / <name>` components | n/a | `ChevronRightIcon`, `ChevronDownIcon`, `ChevronUpIcon`, `CheckmarkIcon`, `DashIcon`, `CloseIcon`, `SuccessIcon`, `InfoIcon`, `WarningIcon`, `ErrorIcon`, `HomeIcon`, `InboxIcon`, `SearchIcon`, `ComposeIcon`, `SettingsIcon` | Sizes (16 / 20 / 24, bound to `size/icon/*`) |
 
 `_Focus ring` (2 variants: Border width) has no page of its own since
 2026-10-08: it sits in Button's Building blocks, because only the Button Focus
@@ -257,6 +260,8 @@ it holds and mirroring the children the code accepts:
 | `Navigation menu` | `Items` | Navigation item | `NavigationMenu.List` children |
 | `Navigation panel` | `Items` | Navigation link | `NavigationMenu.Content` children |
 | `Section message` | `Actions` (hidden by `Show actions`) | Section message action | the `actions` prop |
+| `Sidebar` | `Header`, `Content`, `Footer` | Sidebar header item and header action; Sidebar section | `SidebarHeader`, `SidebarContent`, `SidebarFooter` children |
+| `_Sidebar section` | `Items` | Sidebar item | `SidebarSection` children |
 
 Each slot holds the component's old fixed children as default content (three
 items, as Nathan Curtis recommends for lists), so nothing changed on the canvas
@@ -419,6 +424,7 @@ This is deliberate and **not** an inconsistency to tidy up:
 | NavigationMenu | Tier 2 semantics | Figma has no `nav/*` tokens; its panel is the DropdownMenu's surface |
 | Link | Tier 3 `--sds-link-*`, plus Tier 2 for the focus ring | Figma defines `link/*` for its colour and underline |
 | SectionMessage | Tier 2 `utility` colours; its actions are Links | Figma has no `section-message/*` tokens |
+| Sidebar | Tier 2 semantics, including `size/sidebar/width` | Figma has no `sidebar/*` tokens; its width is Tier 2, as the overlay widths are |
 
 Input is a native `<input>`: Radix has no text-input primitive, and the
 browser already owns the behaviour. TextField adds `@radix-ui/react-label`, an
@@ -564,6 +570,53 @@ current page with the pointer over it is not drawn: in code the hover layer
 sits over the selected fill. A row's description is hidden by default
 (`Show description`). Set it to Fill in a panel at its maximum width and it
 wraps, as in code.
+
+Sidebar (2026-10-21, after Linear's 2024 and 2026 redesigns and Intercom's
+2025 one) is an app's main navigation down the side: a `<nav>` of links in
+lists, with no Radix primitive, because Tab through links is all the keyboard
+needs. A collapsible section is the one piece of behaviour, on Radix
+Collapsible (`@radix-ui/react-collapsible`, already Accordion's dependency).
+Decided with Bastian: a width token, `size/sidebar/width` (240, tokens repo),
+five new icons rather than consumer-only ones, collapsible sections and one
+level of nesting. No collapse to an icon rail: Intercom's hover-expand rail is
+what its users complained about.
+
+Everything aligns on one start edge, Linear's point that alignment is what you
+feel after a few minutes. The sidebar's `inset-sm` plus each row's `inset-sm`
+puts the header item's logo, every item's icon and every section title's text
+16 from the edge. A header action's icon ends 16 from the other edge, level
+with an item's trailing icon, since a header action is 32 square with its 16
+icon centred. A nested item's padding adds the icon and the gap
+(`calc(inset-sm + icon-sm + inline-sm)`), so its content starts on its parent's
+label. In Figma that is an `Indent` frame bound to `size/icon/sm` before the
+icon, shown by `Nested`, so every padding stays on a token. The
+`RowsShareOneEdge` story holds all of it (checked to fail without the indent).
+
+Rows are built like a Menu item: one control size, Label/Medium, `inset-sm` at
+the sides, `radius/control`. Items touch, with no gap, so focus is an inset
+ring, as on NavigationMenu. Icons are `content/subtle` and turn
+`content/default` on the current item, so the page you are on reads first, as
+in Linear's 2026 refresh. The current item is `current`, which sets
+`aria-current="page"` and `state/selected`; hover and pressed are flat
+`linear-gradient`s over it. A section title is Label/Small in `content/subtle`,
+24 high from its padding, which is also the minimum target when it is a
+disclosure button. Its chevron points down when open and at the title's end
+when closed: CSS rotates the down chevron, and Figma uses chevron-right.
+The sidebar sits on `background/default`, with the page's content on
+`background/raised` beside it, so the sidebar recedes without a colour of its
+own.
+
+`iconBefore` and `iconAfter` take any icon, drawn at `size/icon/sm`. An item is
+an `<a>` with `href`, a `<button>` without, or the consumer's router link with
+`asChild`, as Link is. `nestedItems` takes `SidebarItem`s, rendered as a list
+inside the parent's `li`, one level deep. `SidebarHeaderItem` is a button with
+an optional logo and a chevron, meant as `DropdownMenu.Trigger asChild`; an
+open one keeps the pressed layer. `SidebarHeaderAction` requires an
+`aria-label`. Labels truncate. Figma's header item and header action are
+separate hidden sets, and the `Sidebar`'s three slots mirror
+`SidebarHeader`, `SidebarContent` and `SidebarFooter`. Its width is bound to
+`size/sidebar/width` and its height is fixed, 576 (36rem, the stories' frame),
+since in a page it fills the height.
 
 Chip is static. Its only interactive part is the optional remove button, named
 "Remove" + the label. Its height is `chip/size/height` (20, aliasing
