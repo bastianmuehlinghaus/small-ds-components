@@ -1,13 +1,18 @@
 import type { Meta, StoryObj } from "@storybook/react-vite";
 import {
   CheckmarkIcon,
+  ComposeIcon,
   ChevronDownIcon,
   ChevronRightIcon,
   ChevronUpIcon,
   CloseIcon,
   DashIcon,
   ErrorIcon,
+  HomeIcon,
+  InboxIcon,
   InfoIcon,
+  SearchIcon,
+  SettingsIcon,
   SuccessIcon,
   WarningIcon,
 } from "./Icon";
@@ -33,6 +38,11 @@ const icons = [
   { name: "info", Icon: InfoIcon },
   { name: "warning", Icon: WarningIcon },
   { name: "error", Icon: ErrorIcon },
+  { name: "home", Icon: HomeIcon },
+  { name: "inbox", Icon: InboxIcon },
+  { name: "search", Icon: SearchIcon },
+  { name: "compose", Icon: ComposeIcon },
+  { name: "settings", Icon: SettingsIcon },
 ];
 
 const Grid = ({ size }: { size?: string }) => (
