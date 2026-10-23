@@ -99,7 +99,7 @@ text.
 | Select field | `Select field` set (label, select box, description) | 15: State × Value (Placeholder, Filled, Chips) | `SelectField`; `Select` | SelectField: Default, WithDescription, Invalid, Disabled, Multiple. Select: SingleOpen, MultipleOpen (a Select field with Label off, over a Listbox). The closed Select stories look like the set and are left out |
 | Listbox | `Listbox` (`Items` slot of Listbox items); building block `_Listbox item` set | 12: Type (Single, Multiple) × State (Default, Highlighted, Disabled) × Checked; the Listbox has none | none of its own: the list inside `Select` | none. `Select`'s `SingleOpen` and `MultipleOpen` use it |
 | Navigation menu | `Navigation menu` bar (`Items` slot of Navigation items) and `Navigation panel` (`Items` slot of Navigation links); building blocks `_Navigation item` set, `_Navigation link` set | 11: Type (Link, Trigger) × State (a Link is Default, Hover, Pressed, Focus or Current; a Trigger is Default, Hover, Pressed, Focus, Open or Disabled); 5: State, with `Show description` | `.Root` and `.List`; `.Content`; `.Link` or `.Trigger` in an `.Item`; `.Link` in a panel | Default, OpenPanel, WithDescriptions |
-| Sidebar | `Sidebar` (`Header`, `Content` and `Footer` slots); building blocks `_Sidebar item` set, `_Sidebar section` (`Items` slot), `_Sidebar section title` set, `_Sidebar header item` set, `_Sidebar header action` set | 5: State (Default, Hover, Pressed, Focus, Current), with `Nested` and an icon before and after; 9: Type (Static, Open, Closed) × State; 4 and 4: State | `Sidebar`, `SidebarHeader`, `SidebarHeaderItem`, `SidebarHeaderAction`, `SidebarContent`, `SidebarFooter`, `SidebarSection`, `SidebarItem` | Default, IconsBeforeAndAfter, CollapsibleSections, NestedItems, LongLabelTruncates |
+| Sidebar | `Sidebar` (`Header`, `Content` and `Footer` slots); building blocks `_Sidebar item` set, `_Sidebar section` (`Items` slot), `_Sidebar section title` set, `_Sidebar header item` set, `_Sidebar header action` set | 10: State (Default, Hover, Pressed, Focus, Current) × Nested, with an icon before and after; 9: Type (Static, Open, Closed) × State; 4 and 4: State | `Sidebar`, `SidebarHeader`, `SidebarHeaderItem`, `SidebarHeaderAction`, `SidebarContent`, `SidebarFooter`, `SidebarSection`, `SidebarItem` | Default, IconsBeforeAndAfter, CollapsibleSections, NestedItems, LongLabelTruncates |
 | Section message | `Section message` set (`Actions` slot of Section message actions, `Show dismiss`); building blocks `_Section message action` (a Link, with `Show separator`), `_Section message dismiss` set | 8: Appearance (Info, Success, Warning, Error) × Title (True, False); none on the action, whose Link has its own; 4: State (Default, Hover, Pressed, Focus) | `SectionMessage`; `SectionMessageAction`; `onDismiss` | Default, Appearances, WithoutTitle, WithActions, Dismissible, LongContent |
 | Icons | fifteen `Icon / <name>` components | n/a | `ChevronRightIcon`, `ChevronDownIcon`, `ChevronUpIcon`, `CheckmarkIcon`, `DashIcon`, `CloseIcon`, `SuccessIcon`, `InfoIcon`, `WarningIcon`, `ErrorIcon`, `HomeIcon`, `InboxIcon`, `SearchIcon`, `ComposeIcon`, `SettingsIcon` | Sizes (16 / 20 / 24, bound to `size/icon/*`) |
 
@@ -586,10 +586,12 @@ feel after a few minutes. The sidebar's `inset-sm` plus each row's `inset-sm`
 puts the header item's logo, every item's icon and every section title's text
 16 from the edge. A header action's icon ends 16 from the other edge, level
 with an item's trailing icon, since a header action is 32 square with its 16
-icon centred. A nested item's padding adds the icon and the gap
-(`calc(inset-sm + icon-sm + inline-sm)`), so its content starts on its parent's
-label. In Figma that is an `Indent` frame bound to `size/icon/sm` before the
-icon, shown by `Nested`, so every padding stays on a token. The
+icon centred. A nested item's start padding is `space/inset/xxl` (32, the
+parent's inset, icon and gap), so its content starts on its parent's label.
+In Figma `Nested` is a variant, not a boolean, because a boolean can only
+show a layer and cannot change padding: the True variants bind their left
+padding to `space/inset/xxl`. Until 2026-10-23 it was a boolean showing an
+`Indent` frame bound to `size/icon/sm`, and CSS a `calc()`. The
 `RowsShareOneEdge` story holds all of it (checked to fail without the indent).
 
 Rows are built like a Menu item: one control size, Label/Medium, `inset-sm` at
