@@ -63,10 +63,10 @@
   transition-timing-function: var(--sds-motion-easing-standard);
 }
 
-/* Takes the row, so the actions sit at the end and its hover area is wide. */
+/* Hugs its content and pushes the actions to the far end. */
 .headerItem {
-  flex: 1;
   min-width: 0;
+  margin-inline-end: auto;
 }
 
 /* Square: the icon with `inset-sm` round it. */
