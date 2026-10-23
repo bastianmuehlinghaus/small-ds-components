@@ -203,12 +203,10 @@
   width: 100%;
 }
 
-/* A nested item starts where its parent's label does: past the parent's
-   icon and the gap after it. */
+/* A nested item starts where its parent's label does, 32 in: the parent's
+   inset, icon and gap. */
 .nestedItem {
-  padding-inline-start: calc(
-    var(--sds-space-inset-sm) + var(--sds-size-icon-sm) + var(--sds-space-inline-sm)
-  );
+  padding-inline-start: var(--sds-space-inset-xxl);
 }
 
 /* Inset, as on NavigationMenu: rows touch, and an outside ring would cover
