@@ -69,11 +69,10 @@
   margin-inline-end: auto;
 }
 
-/* Square: the icon with `inset-sm` round it. */
+/* A `subtle`, icon-only Button: 32 square, so its icon ends `inset-sm` from
+   its edge, as a row's would. */
 .headerAction {
   flex-shrink: 0;
-  justify-content: center;
-  min-width: var(--sds-size-control-default);
 }
 
 .headerChevron {
@@ -258,7 +257,6 @@
   height: 100%;
 }
 
-.headerAction .icon,
 .item[data-current] .icon {
   color: var(--sds-color-content-default);
 }

@@ -1,13 +1,13 @@
 /**
  * SectionMessage has no Tier 3 tokens in Figma, so it reads Tier 2 semantics,
  * as Accordion does: the `utility` colour family for the surface and icon,
- * and its actions are `Link`s, which bring their own. `--sds-motion-*` comes from
- * Tier 1 under the documented exception.
+ * and its actions are `Link`s and its dismiss a `Button`, which bring their
+ * own.
  *
  * Built after Atlassian's section message: 16 padding, 8 radius, title,
- * message and actions 8 apart, no border, and an optional compact dismiss
- * button. The icon is 24, not Atlassian's 16, so the status reads at a
- * glance, and 12 from the text, not 16.
+ * message and actions 8 apart, no border, and an optional dismiss button.
+ * The icon is 24, not Atlassian's 16, so the status reads at a glance, and
+ * 12 from the text, not 16.
  */
 
 .message {
@@ -39,7 +39,7 @@
   background-color: var(--sds-color-background-utility-error);
 }
 
-/* The icon and the dismiss button are 24 and centred on the first line,
+/* The icon and the dismiss button's box are 24 and centred on the first line,
    title (28) or message (20), at any font size. Whichever of the two is shorter is padded by half
    the difference: the edges by (line - 24) / 2 beside the title, the message
    by (24 - line) / 2 when it comes first. A negative calc() padding clamps to
@@ -133,38 +133,14 @@
   margin-inline-end: var(--sds-space-inline-sm);
 }
 
-/* A compact icon button, as Atlassian's: 24 square, the minimum target, so
-   it sits in the same footprint as the icon. The fill shows only on hover and
-   press, from the state layers, which tint whatever appearance is under them. */
+/* The dismiss is a `subtle`, icon-only Button, 32 like every Button, in the
+   icon's 24 footprint: the box lays out as if the button were 24, and the
+   button overflows it by 4 on every side, centred, so its glyph sits where
+   the 24 one did and the message is no taller for it. */
 .dismiss {
-  display: grid;
-  place-items: center;
-  box-sizing: border-box;
-  width: var(--sds-size-target-min);
-  height: var(--sds-size-target-min);
-  padding: 0;
-  border: none;
-  border-radius: var(--sds-radius-control);
-  background-color: transparent;
-  color: var(--sds-color-content-default);
-  cursor: pointer;
-  appearance: none;
-
-  transition-property: background-color;
-  transition-duration: var(--sds-motion-duration-fast);
-  transition-timing-function: var(--sds-motion-easing-standard);
-}
-
-.dismiss:hover {
-  background-color: var(--sds-color-state-hover);
-}
-
-.dismiss:active {
-  background-color: var(--sds-color-state-pressed);
-}
-
-/* Outside, as on Button: the message's padding leaves room for it. */
-.dismiss:focus-visible {
-  outline: var(--sds-border-width-focus) solid var(--sds-color-border-focus);
-  outline-offset: var(--sds-border-width-focus);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: var(--sds-size-icon-lg);
+  height: var(--sds-size-icon-lg);
 }
