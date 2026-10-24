@@ -260,6 +260,7 @@ export const RowsShareOneEdge: Story = {
     await expect(right(iconOf(compose))).toBe(16);
     await expect(right(parent.lastElementChild!)).toBe(16);
     await expect(search.getBoundingClientRect().height).toBe(32);
+    await expect(search.getBoundingClientRect().width).toBe(32);
     await expect(parent.getBoundingClientRect().height).toBe(32);
   },
 };

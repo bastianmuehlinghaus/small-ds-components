@@ -13,10 +13,11 @@ function wrapLabels(children: ReactNode): ReactNode {
   });
 }
 
-export type ButtonVariant = "default" | "primary" | "secondary";
+export type ButtonVariant = "default" | "primary" | "secondary" | "subtle";
 
-export interface ButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
-  /** Visual weight. Mirrors the three variants defined in the Figma tokens. */
+interface ButtonBaseProps extends ButtonHTMLAttributes<HTMLButtonElement> {
+  /** Visual weight. Mirrors the four variants defined in the Figma tokens.
+   *  `subtle` has no fill: hover and press tint whatever surface it is on. */
   variant?: ButtonVariant;
   /**
    * Render the child element instead of a `<button>`, keeping these styles.
@@ -26,8 +27,19 @@ export interface ButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
   asChild?: boolean;
 }
 
+export type ButtonProps = ButtonBaseProps &
+  (
+    | { iconOnly?: false }
+    | {
+        /** A square button with one icon as its child and no label. */
+        iconOnly: true;
+        /** The action's name. Required: the button shows only its icon. */
+        "aria-label": string;
+      }
+  );
+
 export const Button = forwardRef<HTMLButtonElement, ButtonProps>(function Button(
-  { variant = "default", asChild = false, className, type, children, ...props },
+  { variant = "default", iconOnly = false, asChild = false, className, type, children, ...props },
   ref,
 ) {
   const Comp = asChild ? Slot : "button";
@@ -43,7 +55,7 @@ export const Button = forwardRef<HTMLButtonElement, ButtonProps>(function Button
   return (
     <Comp
       ref={ref}
-      className={[styles.base, styles[variant], className].filter(Boolean).join(" ")}
+      className={[styles.base, styles[variant], iconOnly && styles.iconOnly, className].filter(Boolean).join(" ")}
       // Buttons inside a form default to type="submit", which surprises people.
       // Only set it when actually rendering a <button>.
       {...(asChild ? {} : { type: type ?? "button" })}

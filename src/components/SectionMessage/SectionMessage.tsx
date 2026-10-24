@@ -1,6 +1,7 @@
 import { Children, forwardRef, Fragment, isValidElement, useId } from "react";
 import type { ComponentType, HTMLAttributes, ReactElement, ReactNode } from "react";
 import { cx } from "../../cx";
+import { Button } from "../Button";
 import { CloseIcon, ErrorIcon, InfoIcon, SuccessIcon, WarningIcon } from "../Icon";
 import type { IconProps } from "../Icon";
 import { Link } from "../Link";
@@ -109,18 +110,20 @@ export const SectionMessage = forwardRef<HTMLElement, SectionMessageProps>(funct
       </div>
       {onDismiss && (
         <span className={cx(styles.edge, firstLine)}>
-          <button
-            id={dismissId}
-            type="button"
-            className={styles.dismiss}
-            onClick={onDismiss}
-            // "Dismiss" + the title, so two messages don't offer two identical
-            // "Dismiss" buttons.
-            aria-label={dismissLabel}
-            aria-labelledby={hasTitle ? `${dismissId} ${titleId}` : undefined}
-          >
-            <CloseIcon />
-          </button>
+          <span className={styles.dismiss}>
+            <Button
+              id={dismissId}
+              variant="subtle"
+              iconOnly
+              onClick={onDismiss}
+              // "Dismiss" + the title, so two messages don't offer two identical
+              // "Dismiss" buttons.
+              aria-label={dismissLabel}
+              aria-labelledby={hasTitle ? `${dismissId} ${titleId}` : undefined}
+            >
+              <CloseIcon />
+            </Button>
+          </span>
         </span>
       )}
     </section>
