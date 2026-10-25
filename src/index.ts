@@ -126,5 +126,6 @@ export {
   SearchIcon,
   ComposeIcon,
   SettingsIcon,
+  ArrowLeftIcon,
 } from "./components/Icon";
 export type { IconProps } from "./components/Icon";
