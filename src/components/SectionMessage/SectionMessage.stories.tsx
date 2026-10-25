@@ -57,7 +57,7 @@ export const WithActions: Story = {
   },
 };
 
-/** `onDismiss` adds a compact dismiss button at the end, level with the
+/** `onDismiss` adds a dismiss button at the end, level with the
  *  icon. The message doesn't hide itself: remove it in `onDismiss`. */
 export const Dismissible: Story = {
   args: { appearance: "success", title: "Tokens rebuilt", children: "The package picked up two changed variables.", onDismiss: fn() },
@@ -156,8 +156,8 @@ export const Semantics: Story = {
   },
 };
 
-/** The dismiss button is named for its message, a 24 target, and level with
- *  the icon with or without a title. */
+/** The dismiss button is named for its message, a 32 icon-only Button, and
+ *  level with the icon with or without a title. */
 export const DismissButton: Story = {
   tags: ["!autodocs", "test"],
   args: { onDismiss: fn() },
@@ -169,7 +169,7 @@ export const DismissButton: Story = {
   ),
   play: async ({ canvas, args, userEvent }) => {
     const named = canvas.getByRole("button", { name: "Dismiss Tokens are out of date" });
-    await expect([named.offsetWidth, named.offsetHeight]).toEqual([24, 24]);
+    await expect([named.offsetWidth, named.offsetHeight]).toEqual([32, 32]);
     await userEvent.click(named);
     await expect(args.onDismiss).toHaveBeenCalledTimes(1);
     // without a title the name is the prefix alone
@@ -179,8 +179,11 @@ export const DismissButton: Story = {
       const message = canvas.getByTestId(id);
       const glyph = message.querySelector("[role=img]")!.getBoundingClientRect();
       const button = message.querySelector("button")!.getBoundingClientRect();
-      await expect(button.top).toBeCloseTo(glyph.top, 1);
-      await expect(button.right).toBeCloseTo(message.getBoundingClientRect().right - 16, 1);
+      // a 32 button centred in the icon's 24 footprint, which ends at the padding
+      await expect(button.top + 4).toBeCloseTo(glyph.top, 1);
+      await expect(button.right - 4).toBeCloseTo(message.getBoundingClientRect().right - 16, 1);
     }
+    // the button overflows its box, so one line of message is still 16 + 24 + 16
+    await expect(canvas.getByTestId("without-title").offsetHeight).toBe(56);
   },
 };
