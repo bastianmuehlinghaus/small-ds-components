@@ -87,7 +87,7 @@ text.
 
 | Page | Components | Variants | Code | Examples (= stories) |
 |---|---|---|---|---|
-| Button | `Button` set; building block `_Focus ring` | 15: Variant × State | `Button` | Variants, Disabled, WithIcon |
+| Button | `Button` set; building block `_Focus ring` | 40: Variant (Default, Primary, Secondary, Subtle) × State × Icon only | `Button`; `iconOnly` | Variants, Disabled, WithIcon, IconOnly |
 | Link | `Link` set | 4: State (Default, Hover, Focus, Visited) | `Link` | Default, InheritsTheText. AsButton and AsChild look like Default and are left out |
 | Checkbox | `Checkbox` set | 15: Checked (False, True, Indeterminate) × State | `Checkbox` | Default, SelectAll, LongLabel, WithoutLabel |
 | Accordion | `Accordion` (`Items` slot, 3 items by default); building block `_Accordion item` set (`Content` slot when Open) | 6: Variant (Closed, Open) × State | `Accordion.Item`; `Accordion.Root` | Single, Multiple, AllClosed |
@@ -99,9 +99,9 @@ text.
 | Select field | `Select field` set (label, select box, description) | 15: State × Value (Placeholder, Filled, Chips) | `SelectField`; `Select` | SelectField: Default, WithDescription, Invalid, Disabled, Multiple. Select: SingleOpen, MultipleOpen (a Select field with Label off, over a Listbox). The closed Select stories look like the set and are left out |
 | Listbox | `Listbox` (`Items` slot of Listbox items); building block `_Listbox item` set | 12: Type (Single, Multiple) × State (Default, Highlighted, Disabled) × Checked; the Listbox has none | none of its own: the list inside `Select` | none. `Select`'s `SingleOpen` and `MultipleOpen` use it |
 | Navigation menu | `Navigation menu` bar (`Items` slot of Navigation items) and `Navigation panel` (`Items` slot of Navigation links); building blocks `_Navigation item` set, `_Navigation link` set | 11: Type (Link, Trigger) × State (a Link is Default, Hover, Pressed, Focus or Current; a Trigger is Default, Hover, Pressed, Focus, Open or Disabled); 5: State, with `Show description` | `.Root` and `.List`; `.Content`; `.Link` or `.Trigger` in an `.Item`; `.Link` in a panel | Default, OpenPanel, WithDescriptions |
-| Sidebar | `Sidebar` (`Header`, `Content` and `Footer` slots); building blocks `_Sidebar item` set, `_Sidebar section` (`Items` slot), `_Sidebar section title` set, `_Sidebar header item` set, `_Sidebar header action` set | 10: State (Default, Hover, Pressed, Focus, Current) × Nested, with an icon before and after; 9: Type (Static, Open, Closed) × State; 4 and 4: State | `Sidebar`, `SidebarHeader`, `SidebarHeaderItem`, `SidebarHeaderAction`, `SidebarContent`, `SidebarFooter`, `SidebarSection`, `SidebarItem` | Default, IconsBeforeAndAfter, CollapsibleSections, NestedItems, LongLabelTruncates |
-| Section message | `Section message` set (`Actions` slot of Section message actions, `Show dismiss`); building blocks `_Section message action` (a Link, with `Show separator`), `_Section message dismiss` set | 8: Appearance (Info, Success, Warning, Error) × Title (True, False); none on the action, whose Link has its own; 4: State (Default, Hover, Pressed, Focus) | `SectionMessage`; `SectionMessageAction`; `onDismiss` | Default, Appearances, WithoutTitle, WithActions, Dismissible, LongContent |
-| Icons | fifteen `Icon / <name>` components | n/a | `ChevronRightIcon`, `ChevronDownIcon`, `ChevronUpIcon`, `CheckmarkIcon`, `DashIcon`, `CloseIcon`, `SuccessIcon`, `InfoIcon`, `WarningIcon`, `ErrorIcon`, `HomeIcon`, `InboxIcon`, `SearchIcon`, `ComposeIcon`, `SettingsIcon` | Sizes (16 / 20 / 24, bound to `size/icon/*`) |
+| Sidebar | `Sidebar` (`Header`, `Content` and `Footer` slots); building blocks `_Sidebar item` set, `_Sidebar section` (`Items` slot), `_Sidebar section title` set, `_Sidebar header item` set; header actions are `Button` instances (Subtle, Icon only) | 10: State (Default, Hover, Pressed, Focus, Current) × Nested, with an icon before and after; 9: Type (Static, Open, Closed) × State; 4: State | `Sidebar`, `SidebarHeader`, `SidebarHeaderItem`, `SidebarHeaderAction`, `SidebarContent`, `SidebarFooter`, `SidebarSection`, `SidebarItem` | Default, IconsBeforeAndAfter, CollapsibleSections, NestedItems, LongLabelTruncates |
+| Section message | `Section message` set (`Actions` slot of Section message actions, `Show dismiss`); building blocks `_Section message action` (a Link, with `Show separator`); the dismiss is a `Button` instance (Subtle, Icon only) | 8: Appearance (Info, Success, Warning, Error) × Title (True, False); none on the action, whose Link has its own | `SectionMessage`; `SectionMessageAction`; `onDismiss` | Default, Appearances, WithoutTitle, WithActions, Dismissible, LongContent |
+| Icons | sixteen `Icon / <name>` components | n/a | `ChevronRightIcon`, `ChevronDownIcon`, `ChevronUpIcon`, `CheckmarkIcon`, `DashIcon`, `CloseIcon`, `SuccessIcon`, `InfoIcon`, `WarningIcon`, `ErrorIcon`, `HomeIcon`, `InboxIcon`, `SearchIcon`, `ComposeIcon`, `SettingsIcon`, `ArrowLeftIcon` | Sizes (16 / 20 / 24, bound to `size/icon/*`) |
 
 `_Focus ring` (2 variants: Border width) has no page of its own since
 2026-10-08: it sits in Button's Building blocks, because only the Button Focus
@@ -426,6 +426,19 @@ This is deliberate and **not** an inconsistency to tidy up:
 | SectionMessage | Tier 2 `utility` colours; its actions are Links | Figma has no `section-message/*` tokens |
 | Sidebar | Tier 2 semantics, including `size/sidebar/width` | Figma has no `sidebar/*` tokens; its width is Tier 2, as the overlay widths are |
 
+Button has four variants. `subtle` (2026-10-24, small-ds-tokens
+`button/subtle/*`) has no fill and no border, so its hover and pressed state
+layers tint whatever surface it sits on; it has no background tokens for that
+reason. `iconOnly` makes any variant a square of `button/size/height` with
+padding 0, so it holds if the inset or icon size moves, and its pill radius
+makes it a circle. TypeScript requires an `aria-label` with it. Every
+icon-only button in the system is one: the Sidebar header actions and the
+Section message dismiss, both `subtle`. Chip's remove button is not: it is a
+16 glyph inside a 20 chip, below the one control size by design (see Chip).
+In Figma `Icon only` is a variant property, since a boolean cannot change the
+padding; its variants show `Left icon` regardless of `Has left icon`, so the
+`Left icon` swap is the icon.
+
 Input is a native `<input>`: Radix has no text-input primitive, and the
 browser already owns the behaviour. TextField adds `@radix-ui/react-label`, an
 `aria-describedby` message, and `error`, which implies `invalid`. Focus wins
@@ -613,9 +626,9 @@ an `<a>` with `href`, a `<button>` without, or the consumer's router link with
 `asChild`, as Link is. `nestedItems` takes `SidebarItem`s, rendered as a list
 inside the parent's `li`, one level deep. `SidebarHeaderItem` is a button with
 an optional logo and a chevron, meant as `DropdownMenu.Trigger asChild`; an
-open one keeps the pressed layer. `SidebarHeaderAction` requires an
-`aria-label`. Labels truncate. Figma's header item and header action are
-separate hidden sets, and the `Sidebar`'s three slots mirror
+open one keeps the pressed layer. `SidebarHeaderAction` is a `subtle`,
+icon-only Button and requires an `aria-label`. Labels truncate. Figma's header
+item is a hidden set and each header action a Button instance, and the `Sidebar`'s three slots mirror
 `SidebarHeader`, `SidebarContent` and `SidebarFooter`. Its width is bound to
 `size/sidebar/width` and its height is fixed, 576 (36rem, the stories' frame),
 since in a page it fills the height.
@@ -658,10 +671,9 @@ icon, following Atlassian: a 24px footprint with the box inset by
 `space-inset-xs`, so the box is 16px with no box-size token. The footprint is
 `size-control-sm`, not `size-icon-lg`: it used to borrow the icon token, which
 tied every selection control to the icon scale (small-ds-tokens#55,
-2026-10-14). `size-control-sm` is for this footprint only. The 24px targets
-of Chip's remove and Section message's dismiss buttons read
-`size-target-min` (small-ds-tokens#60): same 24, but from WCAG's minimum
-target, so they stay put if the footprint moves. The one control
+2026-10-14). `size-control-sm` is for this footprint only. The 24px target
+of Chip's remove button reads `size-target-min` (small-ds-tokens#60): same
+24, but from WCAG's minimum target, so it stays put if the footprint moves. The one control
 size stays `size-control-default` (rule 6). The menu draws the box
 only, never a second Radix control, because the row is already the
 `menuitemcheckbox`. Checkbox supports Radix's `"indeterminate"`, styled as
@@ -754,18 +766,19 @@ keeping them would have listed `State` twice.
 
 `onDismiss` adds a dismiss button at the end, as Chip's `onRemove` adds its
 remove button: the message does not hide itself, so the consumer unmounts it
-and moves focus, since the focused button goes with it. It is Atlassian's
-compact icon button: 24 square (`size-target-min`, the minimum target) with the
-16 close glyph, `radius-control`, `state/hover` and `state/pressed` fills that
-tint any appearance, and Button's outside focus ring. It shares the icon's
-first-line padding, so the two are level, and it is named "Dismiss" + the
-title (`dismissLabel` to translate), so two messages don't offer two identical
-buttons. In Figma it is a hidden `_Section message dismiss` set in a
-`Dismiss container` that repeats the `Icon container`'s padding, shown by
-`Show dismiss` (off by default). Each variant is a fixed 24 square bound to
-`size/target/min` with the glyph centred, as in code, not a 16 glyph hugged by
-`space/inset/xs` padding, which it was until 2026-10-14. The `DismissButton` story holds the name, the
-size and the alignment.
+and moves focus, since the focused button goes with it. It is a `subtle`,
+icon-only Button (2026-10-24), 32 like every Button, with the 16 close glyph,
+so it takes the state layers, the circle and the focus ring from Button. It
+sits in the icon's 24 footprint and overflows it by 4 on every side, centred,
+so the glyph is where the old 24 compact button's was and a dismissible
+message is no taller. It is named "Dismiss" + the title (`dismissLabel` to
+translate), so two messages don't offer two identical buttons. In Figma the
+`Dismiss container`, shown by `Show dismiss` (off by default), repeats the
+`Icon container`'s padding and holds a 24 `Footprint` frame bound to
+`size/icon/lg`, with the Button instance centred on it at -4. Until 2026-10-24
+it was its own `_Section message dismiss` set, 24 square on
+`size/target/min`. The `DismissButton` story holds the name, the size and the
+alignment.
 
 Figma cannot draw the gap between two paragraphs in one message. Code stacks
 children with `space-stack-sm`, but a text layer's paragraph spacing belongs to
@@ -777,7 +790,7 @@ styles would fix it; Bastian decided against it (2026-10-13), so leave it.
 Link (issue #115, 2026-10-13) is a text link, underlined, in or after a
 sentence. It was `SectionMessageAction`'s styles, made public. Links and
 buttons stay separate, as in Atlassian, Primer, Carbon and Spectrum: a
-button without a fill is Button `secondary`, and a link that looks like a
+button without a fill is Button `subtle`, and a link that looks like a
 button is `Button asChild`. What Link renders follows what it does, an `<a>`
 with `href` and a `<button type="button">` without, and `asChild` puts its
 styles on a router's link. The look is the same in all three.

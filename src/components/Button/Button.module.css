@@ -40,6 +40,14 @@
   padding-inline: var(--sds-button-space-label-inset-x);
 }
 
+/* Icon only: a square as wide as the button is tall, with the icon centred.
+   The width follows the height token rather than the insets, so the square
+   holds if the inset or the icon size moves. */
+.iconOnly {
+  min-width: var(--sds-button-size-height);
+  padding-inline: 0;
+}
+
 /* State layer. The overlay tokens are alpha colours designed to sit *on top of*
    the background rather than replace it, which is why this is a pseudo-element
    and not a background-color swap — a swap would lose the knockout fill. */
@@ -140,4 +148,24 @@
 .secondary:active:not(:disabled),
 .secondary[aria-expanded="true"]:not(:disabled) {
   --sds-button-overlay: var(--sds-button-secondary-color-overlay-pressed);
+}
+
+/* No fill and no border, so it sits on any surface: a Sidebar header, a
+   Section message's tint. Hover and press are the state layers alone. */
+.subtle {
+  background-color: transparent;
+  color: var(--sds-button-subtle-color-content-default);
+}
+
+.subtle:disabled {
+  color: var(--sds-button-subtle-color-content-disabled);
+}
+
+.subtle:hover:not(:disabled) {
+  --sds-button-overlay: var(--sds-button-subtle-color-overlay-hover);
+}
+
+.subtle:active:not(:disabled),
+.subtle[aria-expanded="true"]:not(:disabled) {
+  --sds-button-overlay: var(--sds-button-subtle-color-overlay-pressed);
 }

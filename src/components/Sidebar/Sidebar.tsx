@@ -9,6 +9,7 @@ import type {
 import * as Collapsible from "@radix-ui/react-collapsible";
 import { Slot } from "@radix-ui/react-slot";
 import { cx } from "../../cx";
+import { Button } from "../Button";
 import { ChevronDownIcon } from "../Icon";
 import styles from "./Sidebar.module.css";
 
@@ -71,14 +72,11 @@ export interface SidebarHeaderActionProps extends ButtonHTMLAttributes<HTMLButto
   "aria-label": string;
 }
 
-/** An icon button in the header row, such as Search or New issue. */
+/** An icon button in the header row, such as Search or New issue: a
+ *  `subtle`, icon-only Button. */
 export const SidebarHeaderAction = forwardRef<HTMLButtonElement, SidebarHeaderActionProps>(
-  function SidebarHeaderAction({ className, children, type, ...props }, ref) {
-    return (
-      <button ref={ref} type={type ?? "button"} className={cx(styles.row, styles.headerAction, className)} {...props}>
-        <span className={styles.icon}>{children}</span>
-      </button>
-    );
+  function SidebarHeaderAction({ className, ...props }, ref) {
+    return <Button ref={ref} variant="subtle" iconOnly className={cx(styles.headerAction, className)} {...props} />;
   },
 );
 
