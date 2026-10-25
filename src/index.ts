@@ -110,6 +110,9 @@ export type {
   SectionMessageActionProps,
 } from "./components/SectionMessage";
 
+export { Header, HeaderBack } from "./components/Header";
+export type { HeaderProps, HeaderLevel, HeaderBackProps } from "./components/Header";
+
 export {
   ChevronRightIcon,
   ChevronDownIcon,
