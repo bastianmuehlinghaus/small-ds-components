@@ -1,7 +1,7 @@
 # Small DS — Components
 
 React components on Radix primitives, driven entirely by `@small-ds/tokens`.
-Currently Button, Link, Checkbox, RadioGroup, Switch, Input, TextField, Chip, Select, SelectField, Accordion, DropdownMenu, NavigationMenu, Sidebar and SectionMessage.
+Currently Button, Link, Checkbox, RadioGroup, Switch, Input, TextField, Chip, Select, SelectField, Accordion, DropdownMenu, NavigationMenu, Sidebar, Header and SectionMessage.
 
 **Figma:** [Small DS: Components](https://www.figma.com/design/VBd0r5d1gcGPQSKrR8LzCp/Small-DS--Components)
 (`VBd0r5d1gcGPQSKrR8LzCp`) is the library **and its documentation**: designers
@@ -100,6 +100,7 @@ text.
 | Listbox | `Listbox` (`Items` slot of Listbox items); building block `_Listbox item` set | 12: Type (Single, Multiple) × State (Default, Highlighted, Disabled) × Checked; the Listbox has none | none of its own: the list inside `Select` | none. `Select`'s `SingleOpen` and `MultipleOpen` use it |
 | Navigation menu | `Navigation menu` bar (`Items` slot of Navigation items) and `Navigation panel` (`Items` slot of Navigation links); building blocks `_Navigation item` set, `_Navigation link` set | 11: Type (Link, Trigger) × State (a Link is Default, Hover, Pressed, Focus or Current; a Trigger is Default, Hover, Pressed, Focus, Open or Disabled); 5: State, with `Show description` | `.Root` and `.List`; `.Content`; `.Link` or `.Trigger` in an `.Item`; `.Link` in a panel | Default, OpenPanel, WithDescriptions |
 | Sidebar | `Sidebar` (`Header`, `Content` and `Footer` slots); building blocks `_Sidebar item` set, `_Sidebar section` (`Items` slot), `_Sidebar section title` set, `_Sidebar header item` set; header actions are `Button` instances (Subtle, Icon only) | 5: State (Default, Hover, Pressed, Focus, Current), with `Nested` and an icon before and after; 9: Type (Static, Open, Closed) × State; 4: State | `Sidebar`, `SidebarHeader`, `SidebarHeaderItem`, `SidebarHeaderAction`, `SidebarContent`, `SidebarFooter`, `SidebarSection`, `SidebarItem` | Default, IconsBeforeAndAfter, CollapsibleSections, NestedItems, LongLabelTruncates |
+| Header | `Header` set (`Actions` slot of Buttons, `Show back`, `Show subtitle`, `Show actions`); the back button is a `Button` instance (Subtle, Icon only) | 3: Level (Page, Section, Sub-section) | `Header` with `level`; `HeaderBack` | Default, Levels, PageWithBackAndActions, LongTitleWraps |
 | Section message | `Section message` set (`Actions` slot of Section message actions, `Show dismiss`); building blocks `_Section message action` (a Link, with `Show separator`); the dismiss is a `Button` instance (Subtle, Icon only) | 8: Appearance (Info, Success, Warning, Error) × Title (True, False); none on the action, whose Link has its own | `SectionMessage`; `SectionMessageAction`; `onDismiss` | Default, Appearances, WithoutTitle, WithActions, Dismissible, LongContent |
 | Icons | sixteen `Icon / <name>` components | n/a | `ChevronRightIcon`, `ChevronDownIcon`, `ChevronUpIcon`, `CheckmarkIcon`, `DashIcon`, `CloseIcon`, `SuccessIcon`, `InfoIcon`, `WarningIcon`, `ErrorIcon`, `HomeIcon`, `InboxIcon`, `SearchIcon`, `ComposeIcon`, `SettingsIcon`, `ArrowLeftIcon` | Sizes (16 / 20 / 24, bound to `size/icon/*`) |
 
@@ -260,6 +261,7 @@ it holds and mirroring the children the code accepts:
 | `Navigation menu` | `Items` | Navigation item | `NavigationMenu.List` children |
 | `Navigation panel` | `Items` | Navigation link | `NavigationMenu.Content` children |
 | `Section message` | `Actions` (hidden by `Show actions`) | Section message action | the `actions` prop |
+| `Header` (Page only) | `Actions` (hidden by `Show actions`) | Button | the `actions` prop |
 | `Sidebar` | `Header`, `Content`, `Footer` | Sidebar header item and header action; Sidebar section | `SidebarHeader`, `SidebarContent`, `SidebarFooter` children |
 | `_Sidebar section` | `Items` | Sidebar item | `SidebarSection` children |
 
@@ -425,6 +427,7 @@ This is deliberate and **not** an inconsistency to tidy up:
 | Link | Tier 3 `--sds-link-*`, plus Tier 2 for the focus ring | Figma defines `link/*` for its colour and underline |
 | SectionMessage | Tier 2 `utility` colours; its actions are Links | Figma has no `section-message/*` tokens |
 | Sidebar | Tier 2 semantics, including `size/sidebar/width` | Figma has no `sidebar/*` tokens; its width is Tier 2, as the overlay widths are |
+| Header | Tier 2 semantics; its back button and actions are Buttons | Figma has no `header/*` tokens |
 
 Button has four variants. `subtle` (2026-10-24, small-ds-tokens
 `button/subtle/*`) has no fill and no border, so its hover and pressed state
@@ -815,6 +818,44 @@ An instance cannot sit inside a paragraph, so inline links are styled words,
 and the examples are rows of a text and a Link, `space/inline/xs` apart, for
 the space between them. Hover and Visited share a colour and differ in the
 underline.
+
+Header (issue #148, decided with Bastian 2026-10-25) is the title of a
+page, a section or a sub-section, with `level` choosing the heading style:
+`page` is Heading/Large over a Body/Small subtitle, `section` Heading/Small
+over Body/XSmall, `subsection` Heading/XSmall alone. Three levels, not four:
+below a sub-section a heading belongs to a component (Section message,
+Accordion), and a fourth style would put two levels 4px apart. Medium is
+left out for the same reason, so the steps are 32, 24 and 18. Each level is
+`h1`, `h2` or `h3`, and `headingLevel` changes the element only, as on
+Section message, so a nested section can be an `h3` that still looks like a
+section. It is a `<div>`, not `<header>`, which outside `main` would be the
+page's banner landmark, and it has no outer margin. TypeScript allows a
+back button and actions only at page level, and a subtitle on page and
+section. The subtitle is `content/subtle`, `space/stack/xs` under the title.
+
+`HeaderBack` is a `subtle`, icon-only Button with `ArrowLeftIcon` (#146),
+named "Back" (`label` to translate): an `<a>` with `href`, a `<button>`
+without, and with `asChild` the consumer's router link, into which it puts
+the icon. Its glyph is 16 like every icon button's, which reads light beside
+a 32 title; a larger one would be a Button decision. The back button sits
+`space/inline/sm` before the title, and the actions, Buttons
+`space/inline/sm` apart, `space/inline/lg` after it. Both are 32 and
+centred on the title's 40 first line by the same `(1lh - 32) / 2` padding
+Section message uses for its icon. The header is a wrapping flex row with
+`space-between`, so the actions sit at the end beside the title and at the
+start when they wrap below it, which they do when the title's longest line
+and the actions don't fit side by side. `CentredOnTheTitle` (checked to fail
+without the padding) and `WrappedActionsStart` hold this.
+
+In Figma the `Header` set has one variant per level, 800 wide, with
+`Title text`, `Subtitle text`, `Show subtitle` (on), `Show back` and
+`Show actions` (off), and the actions in an `Actions` slot. The back button
+and the slot are padded by `space/inset/xs`, the same 4 as the `calc()`. If
+Heading/Large's line height changes, change that padding too. Figma cannot
+wrap at a text's longest line: the title fills what the actions leave, so an
+instance never moves its actions below. The `LongTitleWraps` example is
+therefore a Header without actions, with a row of Buttons 16 below
+(`space/inline/lg`, the row gap in CSS).
 
 If a component needs a Tier 3 token that doesn't exist, that is a conversation
 with Bastian, not a token to add. See rule 1.

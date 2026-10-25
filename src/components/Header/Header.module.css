@@ -1,0 +1,82 @@
+/**
+ * Header has no Tier 3 tokens in Figma, so it reads Tier 2 semantics, as
+ * SectionMessage does; its back button and actions are `Button`s, which bring
+ * their own.
+ *
+ * Three levels, each a heading style: page Heading/Large over Body/Small,
+ * section Heading/Small over Body/XSmall, sub-section Heading/XSmall alone.
+ */
+
+/* space-between puts the actions at the end beside the title, and at the
+   start when they wrap onto a line of their own. */
+.header {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: var(--sds-space-inline-lg);
+  color: var(--sds-color-content-default);
+}
+
+/* When title and actions don't fit side by side, the actions wrap below. */
+.main {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--sds-space-inline-sm);
+  min-width: 0;
+}
+
+.text {
+  display: flex;
+  flex-direction: column;
+  gap: var(--sds-space-stack-xs);
+  min-width: 0;
+
+  /* A long title wraps instead of widening the page. */
+  overflow-wrap: anywhere;
+}
+
+.title,
+.subtitle {
+  margin: 0;
+}
+
+.pageTitle {
+  composes: sds-type-heading-large from "@small-ds/tokens/typography.css";
+}
+
+.sectionTitle {
+  composes: sds-type-heading-small from "@small-ds/tokens/typography.css";
+}
+
+.subsectionTitle {
+  composes: sds-type-heading-xsmall from "@small-ds/tokens/typography.css";
+}
+
+.subtitle {
+  color: var(--sds-color-content-subtle);
+}
+
+.pageSubtitle {
+  composes: sds-type-body-small from "@small-ds/tokens/typography.css";
+}
+
+.sectionSubtitle {
+  composes: sds-type-body-xsmall from "@small-ds/tokens/typography.css";
+}
+
+/* The back button and the actions are 32, centred on the page title's first
+   line (40) at any font size: their box takes that line height and is padded
+   by half the difference. Only the page level has them. */
+.edge {
+  composes: sds-type-heading-large from "@small-ds/tokens/typography.css";
+
+  display: flex;
+  flex-shrink: 0;
+  padding-block: calc((1lh - var(--sds-size-control-default)) / 2);
+}
+
+.actions {
+  flex-wrap: wrap;
+  gap: var(--sds-space-inline-sm);
+}
