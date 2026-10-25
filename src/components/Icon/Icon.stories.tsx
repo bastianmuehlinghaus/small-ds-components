@@ -1,5 +1,6 @@
 import type { Meta, StoryObj } from "@storybook/react-vite";
 import {
+  ArrowLeftIcon,
   CheckmarkIcon,
   ComposeIcon,
   ChevronDownIcon,
@@ -43,6 +44,7 @@ const icons = [
   { name: "search", Icon: SearchIcon },
   { name: "compose", Icon: ComposeIcon },
   { name: "settings", Icon: SettingsIcon },
+  { name: "arrow-left", Icon: ArrowLeftIcon },
 ];
 
 const Grid = ({ size }: { size?: string }) => (

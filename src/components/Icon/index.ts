@@ -14,5 +14,6 @@ export {
   SearchIcon,
   ComposeIcon,
   SettingsIcon,
+  ArrowLeftIcon,
 } from "./Icon";
 export type { IconProps } from "./Icon";
